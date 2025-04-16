@@ -1,100 +1,196 @@
 <?php
 
+use App\Http\Controllers\admin\{AuthController, CategoryController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, BannerController, CardController, ManageFAQController, QuestionController, QuestionnaireManagementController, ContentPageController, NotificationController, OrderController, PlanManagementController, ScratchedCardController,LanguageController,ContactController};
+use App\Http\Controllers\admin\PreQuestionController;
 use Illuminate\Support\Facades\Route;
+use App\Models\{ContentPage,ManagefAQ};
 
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\AdminLoginController;
-use App\Http\Controllers\Admin\ForgotPasswordController;
-use App\Http\Controllers\Admin\ProfileSettingController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\NotificationController;
-use App\Http\Controllers\Admin\AdminHelpSupportController;
-use App\Http\Controllers\Admin\PageController;
-use App\Http\Controllers\Admin\AdminSubscriptionController;
-use App\Http\Controllers\Admin\AdminFaqController;
+// Route::get('/', function () {
+//     $page = ContentPage::where('slug', 'about-us')->firstOrFail();
+//     $faqs = ManagefAQ::all();
+//     return view('welcome', ['page' => $page,'faqs'=>$faqs]);
+// });
 
 
+/*Route::get('/about-us', function () {
+    $page = ContentPage::where('slug', 'about-us')->firstOrFail();
+    $faqs = ManagefAQ::all();
+    return view('home.about-us', ['page' => $page,'faqs'=>$faqs]);
+});
+
+Route::get('/news-letter', function () {
+    return view('home.news-letter');
+});
+
+
+Route::get('/faq', function () {
+ 
+    $faqs = ManagefAQ::all();
+    return view('home.faq', ['faqs'=>$faqs]);
+});
+
+
+Route::get('/contact-us', function () {
+   
+    return view('home.contact-us');
+});
+
+
+Route::get('/faq/search', function (\Illuminate\Http\Request $request) {
+    $query = $request->input('search');
+    $faqs = \App\Models\ManagefAQ::where('question', 'like', "%{$query}%")
+        ->orWhere('answer', 'like', "%{$query}%")
+        ->get();
+
+    $page = \App\Models\ContentPage::where('slug', 'about-us')->firstOrFail();
+    return view('home.faq', compact('faqs', 'page'));
+})->name('faq.search');
+*/
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::prefix('admin')->group(function () {
-    
-    Route::middleware('guest_admin')->group(function () {
-        Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
-        Route::post('/login', [AdminLoginController::class, 'login'])->name('login');
 
-        Route::get('/forgot-password', [ForgotPasswordController::class, 'forgotPasswordForm'])->name('admin-forgot-password');
-        Route::post('/forgot-password', [ForgotPasswordController::class, 'forgotPassword'])->name('admin-forgot-password');
-        Route::get('/reset-password/{token?}', [ForgotPasswordController::class, 'resetPasswordForm'])->name('admin-reset-password');
-        Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('admin-reset-password');
-    });
 
-    Route::middleware(['isAdmin'])->group(function () {
-        Route::get('/logout', [AdminLoginController::class, 'logoutAdmin'])->name('admin-logout');
+Route::fallback(function () {
+    return redirect()->route('login');
+});
+Route::get('/contentPage/{slug}', [App\Http\Controllers\admin\ContentPageController::class, 'contentPage'])->name('contentPage');
+Route::post('/contact-us', [App\Http\Controllers\admin\ContentPageController::class, 'storeContact'])->name('contact-us');
+
+
+Route::controller(AuthController::class)->group(function () {
+    Route::match(['get', 'post'], 'login', 'login')->name('login');
+    Route::match(['get', 'post'], 'register', 'register')->name('register');
+    Route::match(['get', 'post'], 'forget-password', 'forgetPassword')->name('forget-password');
+    Route::match(['get', 'post'], 'reset-password/{token}', 'resetPassword')->name('reset-password');
+});
+// Auth::routes();
+
+Route::group(['prefix' => 'admin'], function () {
+    Route::middleware(['auth', 'admin'])->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::get('profile', [ProfileSettingController::class, 'Profile'])->name('profile');
-        Route::post('profile', [ProfileSettingController::class, 'updateProfile'])->name('admin-profile');
-
-        Route::get('change-password', [ProfileSettingController::class, 'changePasswordForm'])->name('change-password');
-        Route::post('change-password', [ProfileSettingController::class, 'changePassword'])->name('change-password');
-
-        Route::prefix('user')->group(function () {
-            Route::get('/', [UserController::class, 'index'])->name('user-list');
-            Route::get('data', [UserController::class, 'getUserData'])->name('user-data');
-            Route::get('status', [UserController::class, 'updateUserStatus'])->name('user-status');
-            Route::get('details/{user_id}', [UserController::class, 'userDetails'])->name('user-details');
+        // Manage auth routes
+        Route::controller(AuthController::class)->group(function () {
+            Route::match(['get', 'post'], 'profile', 'profile')->name('profile');
+            Route::match(['get', 'post'], 'changePassword', 'changePassword')->name('changePassword');
+            Route::get('logout', 'logout')->name('logout');
         });
 
-        Route::prefix('notifications')->group(function (){
-            Route::post('/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
-            Route::get('/', [NotificationController::class, 'index'])->name('notification-list');
-            Route::get('/details/{notification_id}', [NotificationController::class, 'notificationDetails'])->name('notification-detail');  
-            Route::post('/mark-read', [NotificationController::class, 'markRead'])->name('mark-read');
-        });
+        // Manage user routes
+        Route::group(['prefix' => 'user'], function () {
+            Route::name('user.')->controller(UserController::class)->group(function () {
+                Route::get('list', 'getList')->name('list');
+                Route::match(['get', 'post'], 'add', 'add')->name('add');
+                Route::get('view/{id}', 'view')->name('view');
+                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'delete')->name('delete');
+                Route::get('changeStatus', 'changeStatus')->name('changeStatus');
+                Route::get('changeSubscription/{id}', 'changeSubscription')->name('changeSubscription');
+                Route::get('trashed/list', 'getTrashedList')->name('trashed.list');
+                Route::get('restore/{id}', 'restore')->name('restore');
+            });
 
-        Route::prefix('tickets')->group(function (){
-            Route::get('/', [AdminHelpSupportController::class, 'index'])->name('tickets');
-            Route::get('data', [AdminHelpSupportController::class, 'getTicketData'])->name('ticket-data');
-            Route::get('details/{ticket_id}', [AdminHelpSupportController::class, 'ticketDetails'])->name('ticket-details');
-            Route::post('resolved', [AdminHelpSupportController::class, 'resolvedTicket'])->name('resolved-ticket');
-            Route::get('delete/{ticket_id}', [AdminHelpSupportController::class, 'deleteTicket'])->name('delete-ticket');
-        });
-
-        Route::prefix('pages')->group(function (){
-            Route::get('/', [PageController::class, 'index'])->name('page-list');
-            Route::get('/edit/{slug}', [PageController::class, 'editPageContent'])->name('edit-page-content');
-            Route::post('/update', [PageController::class, 'update'])->name('pages.update');
-        });
-
-
-        Route::prefix('faq')->group(function (){
-            Route::get('/', [AdminFaqController::class, 'index'])->name('faq-list');
-            Route::get('data', [AdminFaqController::class, 'getFaqData'])->name('faq-data');
-            Route::get('add-faq', [AdminFaqController::class, 'addFaqForm'])->name('add-faq');
-            Route::post('add-faq', [AdminFaqController::class, 'addFaq'])->name('add-faq');
-            Route::post('update-faq/{id}', [AdminFaqController::class, 'updateFaq'])->name('update-faq');
-            Route::get('details/{faq_id}', [AdminFaqController::class, 'FaqDetails'])->name('faq-details');
-            Route::get('status', [AdminFaqController::class, 'updateFaqStatus'])->name('faq-status');
-            Route::get('delete-faq/{faq_id}', [AdminFaqController::class, 'deleteFaq'])->name('delete-faq');
+            Route::name('user.response.')->controller(QuestionController::class)->group(function () {
+                Route::get('list/{user_id}/{id?}', 'responseList')->name('list');
+            });
         });
 
 
 
-        Route::prefix('subscription')->group(function (){
-            Route::get('/', [AdminSubscriptionController::class, 'index'])->name('subscription-list');
-            Route::get('data', [AdminSubscriptionController::class, 'getSubscriptionData'])->name('subscription-data');
-            Route::get('add-subscription', [AdminSubscriptionController::class, 'addSubscriptionForm'])->name('add-subscription');
-            Route::post('add-subscription', [AdminSubscriptionController::class, 'addSubscription'])->name('add-subscription');
-            Route::post('update-subscription/{id}', [AdminSubscriptionController::class, 'updateSubscription'])->name('update-subscription');
-            Route::get('details/{subscription_id}', [AdminSubscriptionController::class, 'SubscriptionDetails'])->name('subscription-details');
-            Route::get('status', [AdminSubscriptionController::class, 'updateSubscriptionStatus'])->name('subscription-status');
-            Route::get('delete-subscription/{subscription_id}', [AdminSubscriptionController::class, 'deleteSubscription'])->name('delete-subscription');
+        // Manage help desk routes
+        Route::group(['prefix' => 'helpDesk'], function () {
+            Route::name('helpDesk.')->controller(HelpDeskController::class)->group(function () {
+                Route::get('list/{type}', 'getList')->name('list');
+                Route::match(['get', 'post'], 'add', 'add')->name('add');
+                Route::match(['get', 'post'], 'response/{id}', 'response')->name('response');
+                Route::get('changeStatus', 'changeStatus')->name('changeStatus');
+                Route::post('generate-payment-link', 'generatePaymentLink')->name('generatePaymentLink');
+            });
+        });
+
+        Route::group(['prefix' => 'contact'], function () {
+            Route::name('contact.')->controller(ContactController::class)->group(function () {
+                Route::get('list}', 'getList')->name('list');
+                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'delete')->name('delete');
+
+            });
+        });
 
 
+
+
+
+        // Manage category routes
+        Route::group(['prefix' => 'category'], function () {
+            Route::name('category.')->controller(CategoryController::class)->group(function () {
+                Route::get('list', 'getList')->name('list');
+                Route::match(['get', 'post'], 'add', 'add')->name('add');
+                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'delete')->name('delete');
+                Route::get('changeStatus', 'changeStatus')->name('changeStatus');
+            });
+        });
+
+
+
+        
+        // Manage Config setting routes
+        Route::group(['prefix' => 'config-setting'], function () {
+            Route::name('config-setting.')->controller(ConfigSettingController::class)->group(function () {
+                Route::match(['get', 'post'], 'smtp', 'smtpInformation')->name('smtp');
+                Route::match(['get', 'post'], 'stripe', 'stripeInformation')->name('stripe');
+                Route::match(['get', 'post'], 'config', 'configInformation')->name('config');
+                Route::match(['get', 'post'], 'paypal', 'payPalInformation')->name('paypal');
+            });
+        });
+
+        // Manage Config setting routes
+        Route::group(['prefix' => 'contentPages'], function () {
+            Route::name('contentPages.')->controller(ContentPageController::class)->group(function () {
+                Route::match(['get', 'post'], '{slug}', 'contentPageDetail')->name('detail');
+            });
+        });
+
+        /**Manage FAQ routes */
+        Route::group(['prefix' => 'f-a-q'], function () {
+            Route::name('f-a-q.')->controller(ManageFAQController::class)->group(function () {
+                Route::get('/', 'getList')->name('list');
+                Route::match(['get', 'post'], 'add', 'add')->name('add');
+                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'delete')->name('delete');
+                Route::get('changeStatus', 'changeStatus')->name('changeStatus');
+            });
         });
         
+         
+
+        //Manage notification routes
+        Route::group(['prefix' => 'notification'], function () {
+            Route::name('notification.')->controller(NotificationController::class)->group(function () {
+                Route::get('/', 'getList')->name('list');
+                Route::get('read/{id}', 'notificationRead')->name('read');
+                Route::get('delete/{id}', 'delete')->name('delete');
+            });
+        });
+
+
+         // Manage transactions routes
+         Route::group(['prefix' =>'transaction'],function () {
+            Route::name('transaction.')->controller(TransactionController::class)->group(function () {
+                Route::get('list','getList')->name('list');
+                Route::get('view/{id}','view')->name('view');
+            });
+
+        });
     });
-    
 });
+
+
+
+
+
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

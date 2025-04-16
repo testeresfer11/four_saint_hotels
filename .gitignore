@@ -6,6 +6,11 @@
 # Node artifact files
 node_modules/
 dist/
+/vendor
+.env
+.env.backup
+.env.production
+/public/storage
 
 # Compiled Java class files
 *.class

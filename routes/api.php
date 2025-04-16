@@ -1,49 +1,77 @@
 <?php
 
+use App\Http\Controllers\user\{AuthController, CategoryController, HelpDeskController, HomeController, SendNotificationController};
+
+use App\Http\Controllers\Api\{SubjectController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController};
+
+use App\Models\NotificationPreference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\ProfileController;
-use App\Http\Controllers\API\SupportController;
-use App\Http\Controllers\API\NotificationController;
-use App\Http\Controllers\API\PagesController;
-use App\Http\Controllers\API\SubscriptionController;
 
-Route::post('login', [AuthController::class, 'register']);
-Route::post('user-verify-Otp', [AuthController::class, 'userVerifyOtp']);
-Route::get('resend-user-otp', [AuthController::class, 'resendUserOtp']);
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
-Route::middleware('auth:api')->group(function () {
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('profile', [ProfileController::class, 'profile']);
-    Route::post('update-profile', [ProfileController::class, 'updateProfile']);
-    Route::post('upload-profile-picture', [ProfileController::class, 'uploadProfilePicture']);
+Route::controller(AuthController::class)->group(function () {
+    Route::post('register', 'register');
+    Route::post('verify-otp', 'verifyOtp');
+    Route::post('login', 'login');
+    Route::get('forget-password', 'forgetPassword');
+    Route::post('set-new-password', 'setNewPassword');
+});
 
-    Route::prefix('ticket')->group(function (){
-        Route::get('get-user-ticket', [SupportController::class, 'userTickets']);
-        Route::post('sent-ticket', [SupportController::class, 'sentTicket']);
-        Route::get('get-single-ticket', [SupportController::class, 'getSingleTicket']);
+Route::middleware(['auth:sanctum', 'user'])->group(function () {
+    Route::controller(AuthController::class)->group(function () {
+        Route::get('logout', 'logOut');
+        Route::post('change-password', 'changePassword');
+        Route::match(['get', 'post'], 'profile', 'Profile');
+        Route::get('account/delete', 'accountDelete');
+        Route::post('subscribe', 'subscribe');
+        Route::post('change/theme', 'changeTheme');
     });
 
-    Route::prefix('notifications')->group(function(){
-        Route::get('listing',[NotificationController::class,'getCustomerNotifications']);
-        Route::get('recent-notifications',[NotificationController::class,'getCustomerRecentNotifications']);
-        Route::get('details',[NotificationController::class,'getSingleCustomerNotification']);
+
+   
+
+
+    // Manage Home Routes
+    Route::controller(HomeController::class)->group(function () {
+        Route::get('/home', 'home');
+        Route::get('contentPages/{slug}', 'contentPages');
     });
 
-    Route::prefix('page')->group(function () {
-        Route::get('details', [PagesController::class, 'pageDetails']);
+
+    // Manage Help desk Routes
+    Route::controller(HelpDeskController::class)->group(function () {
+        Route::prefix('helpdesk')->group(function () {
+            Route::get('/', 'list');
+            Route::post('add', 'add');
+            Route::match(['get', 'post'], 'response/{id}', 'response');
+            Route::get('changestatus/{id}', 'changeStatus');
+            Route::get('/subscription-ticket', 'subscriptionTicket');
+        });
     });
 
-    Route::prefix('subscription')->group(function (){
-        Route::get('/', [SubscriptionController::class, 'getAllSubscription']);
-        Route::post('purchase', [SubscriptionController::class, 'purchaseSubscription']);
-        Route::get('user-purchase-subscription', [SubscriptionController::class, 'userPurchaseSubscription']);
+
+  
+
+    Route::controller(ChatController::class)->group(function () {
+        Route::prefix('chatroom')->group(function () { 
+            Route::post('save', 'create'); 
+            Route::post('add-user','addUserToRoom');
+            Route::post('send-message', 'saveMessage');
+  
+        });
     });
 
-     Route::prefix('faq')->group(function (){
-        Route::get('/', [FaqController::class, 'getAllSubscription']);
-       
-    });
 
+    
+
+    
+});
+
+
+
+Route::controller(SendNotificationController::class)->group(function () {
+    Route::get('send-notification', 'sendNotifications');
 });
