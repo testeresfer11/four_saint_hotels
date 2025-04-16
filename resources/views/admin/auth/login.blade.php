@@ -1,138 +1,79 @@
-@extends('admin.layouts.master')
-@section('title', 'Dahsboard')
+@extends('admin.auth.layout')
+@section('title','Log in')
 @section('content')
-<div class="container-fluid page-body-wrapper full-page-wrapper">
-    <div class="row w-100 m-0">
-        <div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
-            <div class="img-box">
-                <img src="{{asset('images/fram-2.png')}}" alt="" class="img-fluid img-2">
-                <img src="{{asset('images/fram-1.png')}}" alt="" class="img-fluid img-1">
-                <img src="{{asset('images/circle-2.png')}}" alt="" class="img-fluid img-3">
-                <img src="{{asset('images/bg-circle.png')}}" alt="" class="img-fluid img-5">
-                <img src="{{asset('images/circle-1.png')}}" alt="" class="img-fluid img-4">
-            </div>
-            
-        <div class="card col-lg-6 login-form bg-white mx-auto">
-            <div class="card-body ">
-                <div class="text-center">
-                    <img src="{{asset('images/logo.png')}}" alt="" class="img-fluid logo">
-                </div>
-                <h3 class="card-title text-center mb-3">Login</h3>
-                <p class="card-sub-title text-center">Enter your Email and password details </p>
-                <form action="{{route('login')}}" method="post" id="admin_login">
-                    @csrf
-                    <div class="form-group">
-                        <label class="title-label">Email *</label>
-                        <input type="email" name="email" id="email" class="form-control p_input @error('email') is-invalid @enderror">
-                        <span class="mdi mdi-email-outline eye-icon absolute"></span>
-                        @error('email')
-                            <div class="invalid-feedback">{{$message}}</div>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label class="title-label">Password *</label>
-                        <input type="password" id="password" name="password" class="form-control p_input @error('password') is-invalid @enderror">
-                        <span class="mdi mdi-eye-off-outline eye-icon absolute" id="togglePassword"></span>
-                        @error('password')
-                            <div class="invalid-feedback">
-                                {{$message}}
-                            </div>
-                        @enderror
-                    </div>
-                    <div class="form-group d-flex align-items-center justify-content-between">
-                        <div class="form-check">
-                            <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input" name="remember" id="remember"> Remember me <i class="input-helper"></i></label>
-                        </div>
-                        <a href="{{route('admin-forgot-password')}}" class="forgot-pass">Forgot password</a>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary btn-block enter-btn login-btn">Login</button>
-                    </div>
-                </form>
-            </div>
+<div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
+  <div class="card col-lg-4 mx-auto">
+    <div class="card-body px-5 py-5">
+      <h3 class="card-title text-left mb-3">{{ __('Login') }}</h3>
+        {{-- <x-alert /> --}}
+      <form action="{{ route('login') }}" method="POST" id="loginForm">
+          @csrf
+          <div class="form-group">
+              <label for="email">{{ __('Email Address') }} *</label>
+              <input type="email" class="form-control  @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" autocomplete="email" autofocus>
+
+              @error('email')
+                  <span class="invalid-feedback" role="alert">
+                      <strong>{{ $message }}</strong>
+                  </span>
+              @enderror
+          </div>
+
+          <div class="form-group">
+            <label for="password">{{ __('Password') }} *</label>
+            <input name="password" id="password" type="password" class="form-control @error('password') is-invalid @enderror" autocomplete="current-password">
+            <span class="togglePassword eye-icon" data-toggle="password">
+                <i class="fa fa-eye-slash"></i>
+            </span>
+            @error('password')
+                <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+            @enderror
+          </div>   
+
+        <div class="form-group d-flex align-items-center justify-content-between">
+          <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="remember" id="remember"  {{ old('remember') ? 'checked' : ''}}> Remember me </label>
+            <label class="form-check-label">
+          </div>
+          <a href="{{route('forget-password')}}" class="forgot-pass">{{ __('Forgot Your Password?') }}</a>
         </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary btn-block enter-btn">{{ __('Login') }}</button>
         </div>
+        
+      </form>
     </div>
+  </div>
 </div>
 @endsection
-
 @section('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
-
-<script>
-$("#admin_login").validate({
-  rules: {
-    email: {
-      required: true,
-    },
-    password: {
-      required: true,
-    },
-  },
-  messages: {
-    email: {
-      required: "Email is required.",
-    },
-    password: {
-      required: "Password is required.",
-    }
-  }
-});
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const togglePassword = document.querySelector('#togglePassword');
-        const passwordField = document.querySelector('#password');
-        const eyeIcon = document.querySelector('#eyeIcon');
-
-        togglePassword.addEventListener('click', function () {
-            // Toggle the type attribute
-            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordField.setAttribute('type', type);
-            if (type === 'text') {
-                $('#togglePassword')
-                .removeClass('mdi-eye-off-outline')
-                .addClass('mdi-eye-outline');
-            } else {
-                $('#togglePassword')
-                .removeClass('mdi-eye-outline')
-                .addClass('mdi-eye-off-outline');
-            }
+    <script>
+       $('#loginForm').validate({
+          rules: {
+            email: {
+              required: true,
+              email: true
+            },
+            password: {
+              required: true,
+              minlength: 8
+            },
+          },
+          messages: {
+            email: {
+              required: 'Please enter Email Address.',
+              email: 'Please enter a valid Email Address.',
+            },
+            password: {
+              required: 'Please enter Password.',
+              minlength: 'Password must be at least 8 characters long.',
+            },
+          },
+          submitHandler: function (form) {
+            form.submit();
+          }
         });
-    });
-</script>
-
-<script>
-    @if(session('success'))
-        toastr.success("{{ session('success') }}");
-    @endif
-    @if(session('error'))
-        toastr.error("{{ session('error') }}");
-    @endif
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const toggleIcons = document.querySelectorAll(".toggle-password");
-
-        toggleIcons.forEach(icon => {
-            icon.addEventListener("click", function () {
-                const targetId = this.getAttribute("data-target");
-                const input = document.getElementById(targetId);
-
-                if (!input) return;
-
-                const isPassword = input.getAttribute("type") === "password";
-                input.setAttribute("type", isPassword ? "text" : "password");
-
-                // Toggle icon classes
-                this.classList.toggle("mdi-eye-outline", !isPassword);
-                this.classList.toggle("mdi-eye-off-outline", isPassword);
-            });
-        });
-    });
-</script>
+    </script>
 @endsection
