@@ -114,12 +114,9 @@
               </div>
               <div class="form-group">
                 <label for="two_factor_auth">Two-Factor Authentication</label>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="two_factor_auth" name="two_factor_enabled" {{ $user->two_factor_enabled ? 'checked' : '' }}>
-                    <label class="form-check-label" for="two_factor_auth">
-                        {{ $user->two_factor_enabled ==1 ? 'Enabled' : 'Disabled' }}
-                    </label>
-                </div>
+                <div class="toggle-user dark-toggle">
+                        <input type="checkbox" name="two_factor_enabled" data-id="{{$user->id}}" class="switch" @if ($user->two_factor_enabled == 1) checked @endif data-value="{{$user->two_factor_enabled}}">
+                        </div> 
             </div>
 
               <button type="submit" class="btn btn-primary mr-2">Update</button>
