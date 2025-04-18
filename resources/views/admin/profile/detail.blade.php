@@ -112,6 +112,16 @@
                     </div>
                 </div>
               </div>
+              <div class="form-group">
+                <label for="two_factor_auth">Two-Factor Authentication</label>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="two_factor_auth" name="two_factor_enabled" {{ $user->two_factor_enabled ? 'checked' : '' }}>
+                    <label class="form-check-label" for="two_factor_auth">
+                        {{ $user->two_factor_enabled ==1 ? 'Enabled' : 'Disabled' }}
+                    </label>
+                </div>
+            </div>
+
               <button type="submit" class="btn btn-primary mr-2">Update</button>
               {{-- <button class="btn btn-dark">Cancel</button> --}}
             </form>
@@ -125,6 +135,15 @@
 <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ09dtOd8YHF_ZCbfbaaMHJKiOr26noY8&libraries=places" ></script>
  --><script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/js/intlTelInput.min.js"></script>
 <script>
+    $('#two_factor_auth').on('change', function () {
+    const label = $(this).next('label');
+    if ($(this).is(':checked')) {
+        label.text('Enabled');
+    } else {
+        label.text('Disabled');
+    }
+});
+
     document.addEventListener('DOMContentLoaded', function () {
         const input = document.querySelector("#phone");
         const countryShortCode = document.querySelector("input[name='country_short_code']").value;

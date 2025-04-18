@@ -7,7 +7,7 @@ use App\Models\{User,UserDetail};
 use App\Traits\SendResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, DB, Hash,Validator};
+use Illuminate\Support\Facades\{Auth, DB, Hash,Validator,Mail};
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
@@ -19,49 +19,74 @@ class AuthController extends Controller
      * createdDate  : 19-06-2024
      * purpose      : logged in form submit user
     */
-    public function login(Request $request){
-        try{
-            if($request->isMethod('get')){
-                if(auth()->check()){
-                    if(getRoleNameById(authId()) == config('constants.ROLES.ADMIN')){
-                        return redirect()->route('admin.dashboard');
-                    }
+   public function login(Request $request){
+    try {
+        if ($request->isMethod('get')) {
+            if (auth()->check()) {
+                if (getRoleNameById(authId()) == config('constants.ROLES.ADMIN')) {
+                    return redirect()->route('admin.dashboard');
                 }
-                return view('admin.auth.login');
-            }else{
-                $validator = Validator::make($request->all(), [
-                    'email'     => ['required','email',
-                                 Rule::exists('users', 'email')->where(function ($query) {
-                                     $query->where('status',1);
-                                 })],
-                     'password'  => 'required|min:8'
-                 ]);
-                 if ($validator->fails()) {
-                    return redirect()->back()->with('error',$validator->errors()->first());
-                 }
+            }
+            return view('admin.auth.login');
+        } else {
+            $validator = Validator::make($request->all(), [
+                'email' => ['required', 'email',
+                    Rule::exists('users', 'email')->where(function ($query) {
+                        $query->where('status', 1);
+                    })],
+                'password' => 'required|min:8'
+            ]);
 
-                $user = User::where('email', strtolower($request->email))->first();
-    
-                if (!$user->is_email_verified)
-                    return redirect()->back()->with("error", 'Email not verified!');
-    
-                $role = getRoleNameById($user->id);
-    
-                if($role == "user")
-                    return redirect()->back()->with( "error", 'Invalid role! You are not a ' . $role);
-    
-                $credentials = $request->only('email', 'password');
-                $remember = $request->has('remember');
-                if (Auth::attempt($credentials, $remember)) {
-                    return redirect()->route('admin.dashboard')->with('success','Login Successfully!');
-                }
-                return redirect()->back()->with("error",'Invalid credentials');
+            if ($validator->fails()) {
+                return redirect()->back()->with('error', $validator->errors()->first());
             }
 
-        }catch(\Exception $e){
-            return redirect()->back()->with("error", $e->getMessage());
+            $user = User::where('email', strtolower($request->email))->first();
+
+            if (!$user->is_email_verified)
+                return redirect()->back()->with("error", 'Email not verified!');
+
+            $role = getRoleNameById($user->id);
+
+            if ($role == "user")
+                return redirect()->back()->with("error", 'Invalid role! You are not a ' . $role);
+
+            $credentials = $request->only('email', 'password');
+            $remember = $request->has('remember');
+
+            if (Auth::attempt($credentials, $remember)) {
+                $user = auth()->user();
+
+                if ($user->two_factor_enabled) {
+                    // Logout and trigger 2FA
+                    Auth::logout();
+
+                    $otp = rand(100000, 999999);
+
+                    $user->update([
+                        'two_factor_code' => $otp,
+                        'two_factor_expires_at' => now()->addMinutes(10)
+                    ]);
+
+                    // Send OTP via email
+                    Mail::to('preeti@yopmail.com')->send(new \App\Mail\AdminTwoFactorCode($otp));
+
+                    session(['2fa_user_id' => $user->id]);
+
+                    return redirect()->route('admin.2fa.verify')->with('message', 'OTP sent to your email.');
+                }
+
+                return redirect()->route('admin.dashboard')->with('success', 'Login Successfully!');
+            }
+
+            return redirect()->back()->with("error", 'Invalid credentials');
         }
+
+    } catch (\Exception $e) {
+        return redirect()->back()->with("error", $e->getMessage());
     }
+}
+
     /**End method login**/
 
     /**
@@ -299,4 +324,36 @@ class AuthController extends Controller
         }
     }
     /**End method logout**/
+
+    public function show2faForm()
+{
+    return view('admin.auth.2fa');
+}
+
+public function verify2fa(Request $request)
+{
+    $request->validate(['code' => 'required']);
+
+    $user = User::find(session('2fa_user_id'));
+
+    if (
+        !$user || 
+        $user->two_factor_code !== $request->code || 
+        \Carbon\Carbon::parse($user->two_factor_expires_at)->isPast()
+    ) {
+        return back()->withErrors(['code' => 'Invalid or expired OTP']);
+    }
+
+    $user->update([
+        'two_factor_code' => null,
+        'two_factor_expires_at' => null,
+    ]);
+
+    Auth::login($user);
+
+    session()->forget('2fa_user_id');
+
+    return redirect()->route('admin.dashboard')->with('success', '2FA verified successfully!');
+}
+
 }

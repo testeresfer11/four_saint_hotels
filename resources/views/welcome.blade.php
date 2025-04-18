@@ -15,7 +15,7 @@
           </div>
           <div class="col-12 col-md-6">
             <div class="home-right-img">
-                <img src="{{asset('images/banner.png')}}" class="home-banenr w-100 " alt="banner" />
+                <="{{asset('images/banner.png')}}" class="home-banenr w-100 " alt="banner" />
             </div>
           </div>
 

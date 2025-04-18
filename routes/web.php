@@ -64,6 +64,9 @@ Route::controller(AuthController::class)->group(function () {
     Route::match(['get', 'post'], 'register', 'register')->name('register');
     Route::match(['get', 'post'], 'forget-password', 'forgetPassword')->name('forget-password');
     Route::match(['get', 'post'], 'reset-password/{token}', 'resetPassword')->name('reset-password');
+    Route::get('admin/2fa-verify','show2faForm')->name('admin.2fa.verify');
+ Route::post('admin/2fa-verify', 'verify2fa')->name('admin.2fa.verify.post');
+
 });
 // Auth::routes();
 
