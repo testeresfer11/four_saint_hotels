@@ -38,7 +38,10 @@ class User extends Authenticatable
         'day_count',
         'is_notified',
         'scratched_date',
-        'default'
+        'default',
+        'two_factor_expires_at',
+        'two_factor_code',
+        'two_factor_enabled',
     ];
 
     /**
