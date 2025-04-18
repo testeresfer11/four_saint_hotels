@@ -190,7 +190,6 @@ class AuthController extends Controller
                 $user = User::with('userDetail')->find(authId());
                 return view("admin.profile.detail", compact('user'));
             } elseif ($request->isMethod('post')) {
-
                 $validator = Validator::make($request->all(), [
                     'first_name'    => 'required|string|max:255',
                     'last_name'     => 'required|string|max:255',
@@ -213,6 +212,7 @@ class AuthController extends Controller
                 User::where('id', authId())->update([
                     'first_name' => $request->first_name,
                     'last_name'  => $request->last_name,
+                    'two_factor_enabled'=>$request->has('two_factor_enabled') 
                 ]);
 
                 // Handle image upload
