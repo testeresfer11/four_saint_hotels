@@ -48,7 +48,7 @@ class sendNotification extends Command
                 continue;
             }else{
                 if(deviceTokenById($order->user_id) != null){
-                    $this->sendPushNotification(deviceTokenById($order->user_id) , "Its your Aldine E time","you can scratch (because 24 hours have passed since the last scratch): It's your Aldine E time! ".$order->order_id,'Aldine E_day',$order->user_id,$order->toArray());
+                    $this->sendPushNotification(deviceTokenById($order->user_id) , "Its your Four Saints Hotel time","you can scratch (because 24 hours have passed since the last scratch): It's your Four Saints Hotel time! ".$order->order_id,'Four Saints Hotel_day',$order->user_id,$order->toArray());
                     
                     $order->is_notified = 1;
                     $order->save();

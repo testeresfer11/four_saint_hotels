@@ -45,7 +45,7 @@ class BannerController extends Controller
                 $rules = [
                     'title'         => 'required|string|max:255',
                     'image'         => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                    'type'          => 'required|in:default,subscription,contact-Aldine E'
+                    'type'          => 'required|in:default,subscription,contact-Four Saints Hotel'
                 ];
                 
                 $validator = Validator::make($request->all(), $rules);
@@ -94,7 +94,7 @@ class BannerController extends Controller
                 
                 $rules = [
                     'title'         => 'required|string|max:255',
-                    'type'          => 'required|in:default,subscription,contact-Aldine E',
+                    'type'          => 'required|in:default,subscription,contact-Four Saints Hotel',
                     'image'         => 'file|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 ];
                 $validator = Validator::make($request->all(), $rules);

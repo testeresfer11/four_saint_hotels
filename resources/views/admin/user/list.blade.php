@@ -33,7 +33,6 @@
                   <th> Profile </th>
                   <th> Name </th>
                   <th> Email </th>
-                  <th> Plan Type </th>
                   <th> Status </th>
                   <th> Action </th>
                 </tr>
@@ -47,13 +46,7 @@
                     </td>
                     <td> {{$user->full_name}} </td>
                     <td>{{$user->email}}</td>
-                    <td>
-                      @if($user->plan_type == "premium")
-                        <label class="badge badge-success">{{ucfirst($user->plan_type)}}</label>
-                      @else
-                        <label class="badge badge-danger">{{ucfirst($user->plan_type)}}</label>
-                      @endif
-                    </td>
+                    
                     
                     <td> <div class="toggle-user dark-toggle">
                       <input type="checkbox" name="is_active" data-id="{{$user->id}}" class="switch" @if ($user->status == 1) checked @endif data-value="{{$user->status}}">

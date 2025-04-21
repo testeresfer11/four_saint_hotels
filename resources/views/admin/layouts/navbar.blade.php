@@ -82,6 +82,14 @@
             <span class="menu-title">Transactions</span>
         </a>
       </li>
+      <li class="nav-item menu-items {{ request()->routeIs('admin.vouchers.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{route('admin.vouchers.list')}}">
+            <span class="menu-icon">
+                <i class="mdi mdi-gift"></i>
+            </span>
+            <span class="menu-title">Vouchers</span>
+        </a>
+      </li>
 
       
       <!-- Notification Management Link -->
@@ -91,6 +99,23 @@
                 <i class="mdi mdi-bell"></i>
             </span>
             <span class="menu-title">Notifications</span>
+        </a>
+      </li>
+         <li class="nav-item menu-items {{ request()->routeIs('admin.newsletter.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.newsletter.index') }}">
+            <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+            </span>
+            <span class="menu-title">Newsletter Subscribers</span>
+        </a>
+      </li>
+      
+      <li class="nav-item menu-items {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.announcements.index') }}">
+            <span class="menu-icon">
+                <i class="mdi mdi-contacts"></i>
+            </span>
+            <span class="menu-title">Announcements</span>
         </a>
       </li>
       

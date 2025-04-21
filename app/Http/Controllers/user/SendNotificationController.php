@@ -31,7 +31,7 @@ class SendNotificationController extends Controller
                 continue;
             }else{
                 if(deviceTokenById($order->user_id) != null){
-                    $this->sendPushNotification(deviceTokenById($order->user_id) , "Its your Aldine E time","Your daily dose of positivity is waiting to be revealed to you 🎉 ".$order->order_id,'Aldine E_day',$order->user_id,$order->toArray());
+                    $this->sendPushNotification(deviceTokenById($order->user_id) , "Its your Four Saints Hotel time","Your daily dose of positivity is waiting to be revealed to you 🎉 ".$order->order_id,'Four Saints Hotel_day',$order->user_id,$order->toArray());
                     
                     $order->is_notified = 1;
                     $order->save();
@@ -46,7 +46,7 @@ class SendNotificationController extends Controller
         //         continue;
         //     if($user->day_count == 7 && $user->is_notified == 0 && $user->scratched_date != date('Y-m-d')){
         //         if(deviceTokenById($user->id) != null){
-        //             $this->sendPushNotification(deviceTokenById($user->id) , "Congratulations🎉."," Its your 7th scratch day.🎉 ",'7th_Aldine E_day',$user->id,$user->toArray());
+        //             $this->sendPushNotification(deviceTokenById($user->id) , "Congratulations🎉."," Its your 7th scratch day.🎉 ",'7th_Four Saints Hotel_day',$user->id,$user->toArray());
                     
         //             $user->is_notified = 1;
         //             $user->save();

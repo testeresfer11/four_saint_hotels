@@ -41,7 +41,7 @@
                         <select class="js-example-basic-single select2-hidden-accessible  form-control @error('type') is-invalid @enderror" name="type" style="width:100%" data-select2-id="1" tabindex="-1" aria-hidden="true" id="card_type">
                             <option value="default">Default</option>
                             <option value="subscription">Subscription</option>
-                            <option value="contact-Aldine E">Contact Aldine E</option>
+                            <option value="contact-Four Saints Hotel">Contact Four Saints Hotel</option>
                         </select>
                         @error('type')
                             <span class="invalid-feedback" role="alert">

@@ -37,7 +37,7 @@ class ConfigSettingTableSeeder extends Seeder
         ConfigSetting::updateOrCreate([
             'type' => 'smtp',
             'key' => 'from_name'],
-            ['value' => 'Aldine E'
+            ['value' => 'Four Saints Hotel'
         ]);
         ConfigSetting::updateOrCreate([
             'type' => 'smtp',

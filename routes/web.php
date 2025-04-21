@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Controllers\admin\{AuthController, CategoryController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, BannerController, CardController, ManageFAQController, QuestionController, QuestionnaireManagementController, ContentPageController, NotificationController, OrderController, PlanManagementController, ScratchedCardController,LanguageController,ContactController};
-use App\Http\Controllers\admin\PreQuestionController;
+use App\Http\Controllers\admin\{AuthController, CategoryController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, BannerController, CardController, ManageFAQController, QuestionController, QuestionnaireManagementController, ContentPageController, NotificationController, OrderController, PlanManagementController, ScratchedCardController, LanguageController, ContactController, AnnouncementController};
+use App\Http\Controllers\admin\{PreQuestionController,GiftVoucherController};
 use Illuminate\Support\Facades\Route;
-use App\Models\{ContentPage,ManagefAQ};
+use App\Models\{ContentPage, ManagefAQ};
+use App\Http\Controllers\NewsletterSubscriberController;
+
 
 // Route::get('/', function () {
 //     $page = ContentPage::where('slug', 'about-us')->firstOrFail();
@@ -46,6 +48,7 @@ Route::get('/faq/search', function (\Illuminate\Http\Request $request) {
     return view('home.faq', compact('faqs', 'page'));
 })->name('faq.search');
 */
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -64,9 +67,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::match(['get', 'post'], 'register', 'register')->name('register');
     Route::match(['get', 'post'], 'forget-password', 'forgetPassword')->name('forget-password');
     Route::match(['get', 'post'], 'reset-password/{token}', 'resetPassword')->name('reset-password');
-    Route::get('admin/2fa-verify','show2faForm')->name('admin.2fa.verify');
- Route::post('admin/2fa-verify', 'verify2fa')->name('admin.2fa.verify.post');
-
+    Route::get('admin/2fa-verify', 'show2faForm')->name('admin.2fa.verify');
+    Route::post('admin/2fa-verify', 'verify2fa')->name('admin.2fa.verify.post');
 });
 // Auth::routes();
 
@@ -118,7 +120,6 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('list}', 'getList')->name('list');
                 Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
                 Route::get('delete/{id}', 'delete')->name('delete');
-
             });
         });
 
@@ -139,7 +140,7 @@ Route::group(['prefix' => 'admin'], function () {
 
 
 
-        
+
         // Manage Config setting routes
         Route::group(['prefix' => 'config-setting'], function () {
             Route::name('config-setting.')->controller(ConfigSettingController::class)->group(function () {
@@ -167,8 +168,8 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('changeStatus', 'changeStatus')->name('changeStatus');
             });
         });
-        
-         
+
+
 
         //Manage notification routes
         Route::group(['prefix' => 'notification'], function () {
@@ -179,14 +180,44 @@ Route::group(['prefix' => 'admin'], function () {
             });
         });
 
-
-         // Manage transactions routes
-         Route::group(['prefix' =>'transaction'],function () {
-            Route::name('transaction.')->controller(TransactionController::class)->group(function () {
-                Route::get('list','getList')->name('list');
-                Route::get('view/{id}','view')->name('view');
+        //Manage newsletter routes
+        Route::group(['prefix' => 'newsletter'], function () {
+            Route::name('newsletter.')->controller(NewsletterSubscriberController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('delete/{id}', 'delete')->name('delete');
+                Route::get('changeStatus', 'changeStatus')->name('changeStatus');
             });
+        });
+        //Manage announcements routes
+        Route::group(['prefix' => 'announcements'], function () {
+            Route::name('announcements.')->controller(AnnouncementController::class)->group(function () {
+                Route::get('create', 'create')->name('create');
+                Route::get('index', 'index')->name('index');
+                Route::post('send', 'send')->name('send');
+                Route::get('delete/{id}', 'delete')->name('delete');
+                Route::get('changeStatus', 'changeStatus')->name('changeStatus');
+            });
+        });
 
+        Route::group(['prefix' => 'vouchers'], function () {
+            Route::name('vouchers.')->controller(GiftVoucherController::class)->group(function () {
+                Route::get('/', 'getList')->name('list');
+                Route::match(['get', 'post'], 'add', 'add')->name('add');
+                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'delete')->name('delete');
+                Route::get('changeStatus', 'changeStatus')->name('changeStatus');
+            });
+        });
+
+        
+
+
+        // Manage transactions routes
+        Route::group(['prefix' => 'transaction'], function () {
+            Route::name('transaction.')->controller(TransactionController::class)->group(function () {
+                Route::get('list', 'getList')->name('list');
+                Route::get('view/{id}', 'view')->name('view');
+            });
         });
     });
 });
