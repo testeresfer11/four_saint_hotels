@@ -18,7 +18,7 @@ class AuthController extends Controller
     
     /**
      * functionName : register
-     * createdDate  : 03-04-2025
+     * createdDate  : 12-04-2025
      * purpose      : Register the user
     */
     public function register(Request $request){
@@ -30,6 +30,9 @@ class AuthController extends Controller
                 'email'                 => 'required|unique:users,email|email:rfc,dns',
                 'password'              => 'required|confirmed|min:8',
                 'password_confirmation' => 'required',
+                'gender'                => 'in:Male,Female,Other',
+                'device_token'          => 'required',
+                'device_type'           => 'required|in:android,ios',
                 
             ]);
             if ($validator->fails()) {
@@ -43,14 +46,19 @@ class AuthController extends Controller
                         "email"         => $request->email,
                         "password"      => Hash::make($request->password),
                         "role_id"       => $role->id,
-                        
+                        "device_token"  => $request->device_token,
+                        "device_type"   => $request->device_type
                     ]);
 
             //$token = $user->createToken('auth_token')->plainTextToken;
             
             if($user){
 
-               
+                $preference = NotificationPreference::get();
+                foreach($preference as $pre){
+                    NotificationPreferencePermission::create(['notification_preference_id' => $pre->id,'user_id' => $user->id]);
+                }
+                
                 do{
                     $otp  = rand(1000,9999);
                 }while( OtpManagement::where('otp',$otp)->count());
@@ -66,7 +74,17 @@ class AuthController extends Controller
                     $this->mailSend($emailData);
                 }
 
-              
+                UserDetail::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'phone_number'       => $request->phone_number,
+                        'country_code'       => $request->country_code,
+                        'country_short_code' => $request->country_short_code,
+                        'address'            => $request->address ?? null,
+                        'zip_code'           => $request->zip_code ?? null,
+                    ]
+                );
+
                 User::find(getAdmimId())->notify(new UserNotification($user->full_name));
 
                 return $this->apiResponse('success',200,'User '.config('constants.SUCCESS.VERIFY_SEND'),['email' => $user->email]);
@@ -79,7 +97,7 @@ class AuthController extends Controller
 
     /**
      * functionName : verifyOtp
-     * createdDate  : 03-04-2025
+     * createdDate  : 12-04-2025
      * purpose      : To verify the email via otp
     */
     public function verifyOtp(Request $request){
@@ -127,7 +145,14 @@ class AuthController extends Controller
                     'first_name'        => $user->first_name,
                     'last_name'         => $user->last_name,
                     'email'             => $user->email,
-                    'is_verified'       => $user->is_email_verified
+                    'is_verified'       => $user->is_email_verified,
+                    'gender'            => ($user->userDetail && $user->userDetail->gender) ? $user->userDetail->gender : null,
+                    'phone_number'      => ($user->userDetail && $user->userDetail->phone_number) ? $user->userDetail->phone_number : null,
+                    'address'           => ($user->userDetail && $user->userDetail->address) ? $user->userDetail->address : null,
+                    'zip_code'          => ($user->userDetail && $user->userDetail->zip_code) ? $user->userDetail->zip_code : null,
+                    'country_code'      => ($user->userDetail && $user->userDetail->country_code) ? $user->userDetail->country_code : null,
+                    'dob'               => ($user->userDetail && $user->userDetail->dob) ? $user->userDetail->dob : null,
+                    'country_short_code'=> ($user->userDetail && $user->userDetail->country_short_code) ? $user->userDetail->country_short_code : null,
                     
                 ];
 
@@ -143,7 +168,7 @@ class AuthController extends Controller
     
     /**
      * functionName : login
-     * createdDate  : 03-04-2025
+     * createdDate  : 12-04-2025
      * purpose      : login the user
     */
     public function login(Request $request){
@@ -151,7 +176,8 @@ class AuthController extends Controller
             $validate = Validator::make($request->all(),[
                         'email'         => 'required|email:rfc,dns|exists:users,email',
                         'password'      => 'required|min:8',
-                       
+                        'device_token'  => 'required',
+                        'device_type'   => 'required|in:android,ios'
                     ],[
                         'email.exists' => 'The entered email is invalid.'
                     ]);
@@ -186,7 +212,8 @@ class AuthController extends Controller
             }
             
             $user                 = $request->user();
-          
+            $user->device_token   = $request->device_token;
+            $user->device_type    = $request->device_type;
             $user->save();
              
             $data = [
@@ -197,7 +224,13 @@ class AuthController extends Controller
                 'last_name'         => $user->last_name,
                 'email'             => $user->email,
                 'is_verified'       => $user->is_email_verified,
-                
+                'phone_number'      => ($user->userDetail && $user->userDetail->phone_number) ? $user->userDetail->phone_number : null,
+                'address'           => ($user->userDetail && $user->userDetail->address) ? $user->userDetail->address : null,
+                'zip_code'          => ($user->userDetail && $user->userDetail->zip_code) ? $user->userDetail->zip_code : null,
+                'country_code'      => ($user->userDetail && $user->userDetail->country_code) ? $user->userDetail->country_code : null,
+                'gender'            => ($user->userDetail && $user->userDetail->gender) ? $user->userDetail->gender : null,
+                'dob'               => ($user->userDetail && $user->userDetail->dob) ? $user->userDetail->dob : null,
+                'country_short_code'=> ($user->userDetail && $user->userDetail->country_short_code) ? $user->userDetail->country_short_code : null,
             ];
 
             return $this->apiResponse('success',200,config('constants.SUCCESS.LOGIN'),$data);
@@ -209,7 +242,7 @@ class AuthController extends Controller
 
     /**
      * functionName : forgetPassword
-     * createdDate  : 03-04-2025
+     * createdDate  : 12-04-2025
      * purpose      : send the email for the forget password
     */
     public function forgetPassword(Request $request){
@@ -240,7 +273,7 @@ class AuthController extends Controller
 
     /**
      * functionName : setNewPassword
-     * createdDate  : 03-04-2025
+     * createdDate  : 12-04-2025
      * purpose      : change the password
     */
     public function setNewPassword(Request $request){
@@ -265,7 +298,7 @@ class AuthController extends Controller
     
     /**
      * functionName : logOut
-     * createdDate  : 03-04-2025
+     * createdDate  : 12-04-2025
      * purpose      : Logout the login user
     */
     public function logOut(Request $request){
@@ -286,95 +319,71 @@ class AuthController extends Controller
 
     /**
      * functionName : profile
-     * createdDate  : 03-04-2025
+     * createdDate  : 12-04-2025
      * purpose      : get and update the logged in user profile
     */
-    public function profile(Request $request){
-        try {
-            $user = Auth::user();
-            if (!$user) {
-                return $this->apiResponse('error', 404, 'Profile ' . config('constants.ERROR.NOT_FOUND'));
-            }
+    public function profile(Request $request)
+    {
+        try{
+            if($request->isMethod('get')){
+                $user = Auth::user();
+                if(!$user)
+                    return $this->apiResponse('error',404,'Profile' .config('constants.ERROR.NOT_FOUND'));
 
-            if ($request->isMethod('get')) {
-                $data = new UserResource($user);
-                return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.FETCH_DONE'), $data);
-            }
-
-            if ($request->isMethod('post')) {
+                $data =  new UserResource($user);
+                return $this->apiResponse('success',200,'Profile '.config('constants.SUCCESS.FETCH_DONE'),$data);
+            }elseif( $request->isMethod('post') ){
                 $validator = Validator::make($request->all(), [
-                    'first_name'        => 'required|string|max:255',
-                    'last_name'         => 'required|string|max:255',
-                    'gender'            => 'nullable|in:male,female,other',
-                    'birthday'          => 'nullable|date',
-                    'country'           => 'nullable|string|max:255',
-                    'bio'               => 'nullable|string',
-                    'profile_pic'       => 'nullable|image|max:2048',
-
-                    // From user_details table
-                    'language'          => 'nullable|string|max:255',
-                    'school_name'       => 'nullable|string|max:255',
-                    'education_level'   => 'nullable|string|max:255',
-                    'academic_year'     => 'nullable|digits:4|integer',
-                    'graduating_year'   => 'nullable|digits:4|integer',
-                    'program'           => 'nullable|string|max:255',
-                    'major'             => 'nullable|string|max:255',
-                    'minor'             => 'nullable|string|max:255',
+                    'first_name'    => 'required|string|max:255',
+                    'last_name'     => 'required|string|max:255',
+                    'profile'       => 'image|max:2048',
+                    'gender'        => 'in:Male,Female,Other'
                 ]);
 
                 if ($validator->fails()) {
-                    return $this->apiResponse('error', 422, $validator->errors()->first());
+                    return $this->apiResponse('error',422,$validator->errors()->first());
                 }
 
-                // Upload profile picture if exists
-                $ImgName = $user->profile_pic ?? '';
-                if ($request->hasFile('profile_pic')) {
-                    deleteFile($ImgName, 'images/');
-                    $ImgName = uploadFile($request->file('profile_pic'), 'images/');
-                }
-
-                // Update users table
-                $user->update([
-                    'first_name'    => $request->first_name,
-                    'last_name'     => $request->last_name,
-                    'gender'        => $request->gender,
-                    'birthday'      => $request->birthday,
-                    'country'       => $request->country,
-                    'bio'           => $request->bio,
-                    'profile_pic'   => $ImgName,
+                User::where('id' , authId())->update([
+                    'first_name'        => $request->first_name,
+                    'last_name'         => $request->last_name,
                 ]);
 
-                // Update or create user_details table
-                UserDetail::updateOrCreate(
-                    ['user_id' => $user->id],
-                    [
-                        'language'          => $request->language,
-                        'school_name'       => $request->school_name,
-                        'education_level'   => $request->education_level,
-                        'academic_year'     => $request->academic_year,
-                        'graduating_year'   => $request->graduating_year,
-                        'program'           => $request->program,
-                        'major'             => $request->major,
-                        'minor'             => $request->minor,
-                    ]
-                );
+                $user = User::find(authId());
 
-                $data = new UserResource($user->fresh());
+                $ImgName = $user->userDetail ? $user->userDetail->profile : '';
 
-                return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.UPDATE_DONE'), $data);
+                if ($request->hasFile('profile')) {
+                    deleteFile($ImgName,'images/');
+                    $ImgName = uploadFile($request->file('profile'),'images/');
+
+                }
+
+                UserDetail::updateOrCreate(['user_id' => authId()],[
+                    'phone_number'      => $request->phone_number ? $request->phone_number : '',
+                    'address'           => $request->address ? $request->address : '',
+                    'zip_code'          => $request->zip_code ? $request->zip_code :'',
+                    'country_code'      => $request->country_code ? $request->country_code :'',
+                    'dob'                => $request->dob ? $request->dob : '',
+                    'country_short_code'=> $request->country_short_code ? $request->country_short_code :'',
+                    'profile'           => $ImgName,
+                    'gender'            => $request->gender ? $request->gender : '',
+                ]);
+                
+                
+                $data =  new UserResource(User::find(authId()));
+
+                return $this->apiResponse('success',200,'Profile '.config('constants.SUCCESS.UPDATE_DONE'),$data);
             }
-
-            return $this->apiResponse('error', 405, 'Method Not Allowed');
-        } catch (\Exception $e) {
-            return $this->apiResponse('error', 400, $e->getMessage());
+        }catch(\Exception $e){
+            return $this->apiResponse('error',400,$e->getMessage());
         }
     }
-
     /*end method profile */
 
     /**
      * functionName : changePassword
-     * createdDate  : 03-04-2025
+     * createdDate  : 12-04-2025
      * purpose      : change new password
     */
     public function changePassword(Request $request){
@@ -408,7 +417,7 @@ class AuthController extends Controller
 
     /**
      * functionName : sendOtp
-     * createdDate  : 03-04-2025
+     * createdDate  : 12-04-2025
      * purpose      : send otp email
     */
     public function sendOtp($email){
@@ -438,7 +447,7 @@ class AuthController extends Controller
 
     /**
      * functionName : accountDelete
-     * createdDate  : 03-04-2025
+     * createdDate  : 12-04-2025
      * purpose      : User account deleted
     */
     public function accountDelete(){
@@ -456,7 +465,5 @@ class AuthController extends Controller
     /**End method changePassword**/
     
 
-   
 
-     
 }
