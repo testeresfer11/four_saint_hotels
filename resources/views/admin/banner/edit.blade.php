@@ -40,7 +40,7 @@
                         <select class="js-example-basic-single select2-hidden-accessible  form-control @error('type') is-invalid @enderror" name="type" style="width:100%" data-select2-id="1" tabindex="-1" aria-hidden="true" id="card_type">
                             <option value="default" {{$banner->type == 'default' ? 'selected' : ''}}>Default</option>
                             <option value="subscription" {{$banner->type == 'subscription' ? 'selected' : ''}}>Subscription</option>
-                            <option value="contact-Aldine E" {{$banner->type == 'contact-Aldine E' ? 'selected' : ''}}>Contact Aldine E</option>
+                            <option value="contact-Four Saints Hotel" {{$banner->type == 'contact-Four Saints Hotel' ? 'selected' : ''}}>Contact Four Saints Hotel</option>
                         </select>
                         @error('type')
                             <span class="invalid-feedback" role="alert">

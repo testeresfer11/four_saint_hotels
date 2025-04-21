@@ -62,7 +62,7 @@ class ContactController extends Controller
                         config('app.name'), // or hardcode your company name
                         $contact->message,
                         $request->reply,
-                        date('Y')
+                        date(format: 'Y')
                     ];
     
                     $emailBody = str_replace($stringToReplace, $stringReplaceWith, $template->template);

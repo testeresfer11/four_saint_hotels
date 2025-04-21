@@ -145,7 +145,7 @@
         <div class="col-lg-6 grid-margin stretch-card">
             <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Cards chart</h4>
+                <h4 class="card-title">Booking chart</h4>
                 <canvas id="pieChart" style="height:250px"></canvas>
             </div>
             </div>
@@ -189,10 +189,11 @@
 
     // These labels appear in the legend and in the tooltips when hovering different arcs
     labels: [
-      'Image',
-      'Video',
-      'Audio',
-      'Text'
+      "Option",
+      'Confirmed',
+      'CheckedIn',
+      'Onboard',
+      'CheckedOut'
     ]
   };
   var doughnutPieOptions = {

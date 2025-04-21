@@ -44,8 +44,8 @@ return [
         "USER"  => "user",
     ],
 
-    "APP_NAME"         => "Aldine E",
-    "COMPANYNAME"      => env('APP_NAME', 'Aldine E'),
+    "APP_NAME"         => "Four Saints Hotel",
+    "COMPANYNAME"      => env('APP_NAME', 'Four Saints Hotel'),
     "encryptionMethod" => env('ENC_DEC_METHOD', ''),
     "secrect"          => env('ENC_DEC_SECRET', ''),
     "STRIPE_KEY"       => env('STRIPE_KEY', ''),

@@ -69,8 +69,26 @@ class AuthController extends Controller
                     ]);
 
                     // Send OTP via email
-                    Mail::to('preeti@yopmail.com')->send(new \App\Mail\AdminTwoFactorCode($otp));
+                    $template = $this->getTemplateByName('Admin_OTP');
 
+                    if ($template) {
+                        $placeholders = ['{{$name}}','{{$companyName}}','{{$code}}','{{YEAR}}'];
+                        $replacements = ['Admin',config('app.name'),$otp,date(format: 'Y')];
+                    
+                        $formattedTemplate = str_replace($placeholders, $replacements, $template->template);
+                    
+                        $emailData = $this->mailData(
+                            "preeti@yopmail.com", 
+                            $template->subject, 
+                            $formattedTemplate, 
+                            'Admin_OTP', 
+                            $template->id
+                        );
+
+                    
+                        $this->mailSend($emailData);
+                    }
+                    
                     session(['2fa_user_id' => $user->id]);
 
                     return redirect()->route('admin.2fa.verify')->with('message', 'OTP sent to your email.');

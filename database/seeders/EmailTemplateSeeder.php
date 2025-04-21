@@ -516,7 +516,59 @@ class EmailTemplateSeeder extends Seeder
             'status' => 1,
             'created_at' => date('Y-m-d H:i:s'),
         ]);
-        
+        EmailTemplate::updateOrCreate([
+            'template_name' => 'Admin_OTP'
+        ], [
+            'template' => '<!DOCTYPE html>
+        <html>
+        <head>
+            <title>Your OTP Code</title>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="x-apple-disable-message-reformatting">
+            <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+            <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet" />
+            <style type="text/css">body, td, p {
+                font-family: Helvetica, Arial, sans-serif !important;
+            }</style>
+        </head>
+        <body>
+            <table style="margin: auto; background:#f5f5f5;" role="presentation" border="0" cellspacing="0" cellpadding="0" align="center" width="600">
+                <tbody>
+                    <tr>
+                        <td style="padding: 1.5em 2.5em; background-color:#4A90E2;" align="center">
+                            <h2 style="color:#ffffff;margin:0;">{{$companyName}}</h2>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 2em; background-color: #ffffff;">
+                            <p style="font-size: 18px; font-weight: bold; margin: 0;">Hello Admin,</p>
+                            <p style="font-size: 16px; margin-top: 15px;">
+                                Your One-Time Password (OTP) is:
+                            </p>
+                            <h2 style="font-size: 32px; margin-top: 20px; margin-bottom: 20px;">{{ $code }}</h2>
+                            <p style="font-size: 16px;">
+                                This code is valid for 10 minutes. Do not share it with anyone.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 15px 20px; background:#4A90E2;" align="center">
+                            <p style="margin: 0; font-size: 12px; color:#fff;">&copy; {{YEAR}} {{$companyName}}. All Rights Reserved.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </body>
+        </html>',
+            'subject' => 'Your OTP Code - {{$companyName}}',
+            'status' => 1,
+            'created_at' => date('Y-m-d H:i:s'),
+        ]);
+
 
 
 
