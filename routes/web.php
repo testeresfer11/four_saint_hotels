@@ -1,53 +1,12 @@
 <?php
 
-use App\Http\Controllers\admin\{AuthController, CategoryController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, BannerController, CardController, ManageFAQController, QuestionController, QuestionnaireManagementController, ContentPageController, NotificationController, OrderController, PlanManagementController, ScratchedCardController, LanguageController, ContactController, AnnouncementController};
-use App\Http\Controllers\admin\{PreQuestionController,GiftVoucherController};
+use App\Http\Controllers\admin\{AuthController, CategoryController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController};
+use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController};
 use Illuminate\Support\Facades\Route;
 use App\Models\{ContentPage, ManagefAQ};
 use App\Http\Controllers\NewsletterSubscriberController;
 
 
-// Route::get('/', function () {
-//     $page = ContentPage::where('slug', 'about-us')->firstOrFail();
-//     $faqs = ManagefAQ::all();
-//     return view('welcome', ['page' => $page,'faqs'=>$faqs]);
-// });
-
-
-/*Route::get('/about-us', function () {
-    $page = ContentPage::where('slug', 'about-us')->firstOrFail();
-    $faqs = ManagefAQ::all();
-    return view('home.about-us', ['page' => $page,'faqs'=>$faqs]);
-});
-
-Route::get('/news-letter', function () {
-    return view('home.news-letter');
-});
-
-
-Route::get('/faq', function () {
- 
-    $faqs = ManagefAQ::all();
-    return view('home.faq', ['faqs'=>$faqs]);
-});
-
-
-Route::get('/contact-us', function () {
-   
-    return view('home.contact-us');
-});
-
-
-Route::get('/faq/search', function (\Illuminate\Http\Request $request) {
-    $query = $request->input('search');
-    $faqs = \App\Models\ManagefAQ::where('question', 'like', "%{$query}%")
-        ->orWhere('answer', 'like', "%{$query}%")
-        ->get();
-
-    $page = \App\Models\ContentPage::where('slug', 'about-us')->firstOrFail();
-    return view('home.faq', compact('faqs', 'page'));
-})->name('faq.search');
-*/
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -97,9 +56,7 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('restore/{id}', 'restore')->name('restore');
             });
 
-            Route::name('user.response.')->controller(QuestionController::class)->group(function () {
-                Route::get('list/{user_id}/{id?}', 'responseList')->name('list');
-            });
+            
         });
 
 
@@ -114,6 +71,8 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::post('generate-payment-link', 'generatePaymentLink')->name('generatePaymentLink');
             });
         });
+
+        // Manage help contact routes
 
         Route::group(['prefix' => 'contact'], function () {
             Route::name('contact.')->controller(ContactController::class)->group(function () {
@@ -199,6 +158,7 @@ Route::group(['prefix' => 'admin'], function () {
             });
         });
 
+         // Manage help vouchers routes
         Route::group(['prefix' => 'vouchers'], function () {
             Route::name('vouchers.')->controller(GiftVoucherController::class)->group(function () {
                 Route::get('/', 'getList')->name('list');
@@ -209,9 +169,19 @@ Route::group(['prefix' => 'admin'], function () {
             });
         });
 
+        // Manage feedback routes
+
+        Route::group(['prefix' => 'feedback'], function () {
+            Route::name('feedback.')->controller(FeedbackController::class)->group(function () {
+                Route::get('/', 'index')->name('list'); 
+                Route::get('changeStatus','changeStatus')->name('changeStatus');
+                Route::get('delete/{id}', 'delete')->name('delete');
+                Route::get('view/{id}', 'show')->name('view');
+
+
+            });
+        });
         
-
-
         // Manage transactions routes
         Route::group(['prefix' => 'transaction'], function () {
             Route::name('transaction.')->controller(TransactionController::class)->group(function () {

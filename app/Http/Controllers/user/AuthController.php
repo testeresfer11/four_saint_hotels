@@ -30,10 +30,7 @@ class AuthController extends Controller
                 'email'                 => 'required|unique:users,email|email:rfc,dns',
                 'password'              => 'required|confirmed|min:8',
                 'password_confirmation' => 'required',
-                'gender'                => 'in:Male,Female,Other',
-                'device_token'          => 'required',
-                'device_type'           => 'required|in:android,ios',
-                
+              
             ]);
             if ($validator->fails()) {
                 return $this->apiResponse('error',422,$validator->errors()->first());
@@ -46,18 +43,12 @@ class AuthController extends Controller
                         "email"         => $request->email,
                         "password"      => Hash::make($request->password),
                         "role_id"       => $role->id,
-                        "device_token"  => $request->device_token,
-                        "device_type"   => $request->device_type
+                       
                     ]);
 
             //$token = $user->createToken('auth_token')->plainTextToken;
             
             if($user){
-
-                $preference = NotificationPreference::get();
-                foreach($preference as $pre){
-                    NotificationPreferencePermission::create(['notification_preference_id' => $pre->id,'user_id' => $user->id]);
-                }
                 
                 do{
                     $otp  = rand(1000,9999);
@@ -80,8 +71,7 @@ class AuthController extends Controller
                         'phone_number'       => $request->phone_number,
                         'country_code'       => $request->country_code,
                         'country_short_code' => $request->country_short_code,
-                        'address'            => $request->address ?? null,
-                        'zip_code'           => $request->zip_code ?? null,
+                       
                     ]
                 );
 

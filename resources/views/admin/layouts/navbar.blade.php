@@ -118,6 +118,14 @@
             <span class="menu-title">Announcements</span>
         </a>
       </li>
+      <li class="nav-item menu-items {{ request()->routeIs('admin.feedback.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{route('admin.feedback.list')}}">
+            <span class="menu-icon">
+                <i class="mdi mdi-comment-text"></i>
+            </span>
+            <span class="menu-title">Feedbacks</span>
+        </a>
+      </li>
       
       <!-- Content Pages Link -->
       <li class="nav-item menu-items {{ request()->routeIs('admin.contentPages.*') ? 'active' : '' }}">
