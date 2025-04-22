@@ -96,68 +96,6 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between mt-5 pb-3">
-          <h4 class="user-title ">Customized Boards</h4>
-          @if($user->categoriesOrder()->count() > 4)
-            <a href="{{route('admin.order.list',['user_id' => $user->id])}}"><button type="button" class="btn default-btn btn-md">
-              <span class="menu-icon">View All</span></button></a>
-            @endif
-        </div>
 
-        <div class="row scratch-rw">
-          @forelse ($user->categoriesOrder()->latest()->take(4)->get() as $data)
-            <div class="col-12 col-md-3">
-              <a href="{{route('admin.order.view',['id' => $data->id])}}">
-                <div class="scratch-card text-center first">
-                  <h6> 
-                    <span class="semi-bold qury">Order Id : {{$data->uuid}}</span> <br>
-                    <span class="semi-bold qury">Transaction Id :{{$data->paymentDetail ? $data->paymentDetail->payment_id : 'N/A'}}</span> <br>
-                    <span class="semi-bold qury">Transaction Date : {{ convertDate($data->created_at,'d M,Y') }}</span> <br>
-                    <span class="semi-bold qury">Scratched  / Total Cards : {{ $data->orderCard()->where('is_scratched',1)->count() .'/'. $data->orderCard()->count()}}</span> 
-                  </h6>
-                  <h3>${{$data->paymentDetail ? $data->paymentDetail->amount : 'N/A'}}.00</h3>
-                </div>
-              </a>
-            </div>
-          @empty
-            <div class="col-12 col-md-12">
-              <div class="text-center">
-                No customized board purchased 
-              </div>
-            </div>
-          @endforelse
-        </div>
-
-        <div class="d-flex justify-content-between mt-5 pb-3">
-          <h4 class="user-title">Personalized Boards</h4>
-          @if($user->personalizedOrder()->count() > 4)
-            <a href="{{route('admin.order.list',['user_id' => $user->id])}}"><button type="button" class="btn default-btn btn-md">
-              <span class="menu-icon">View All</span></button></a>
-            @endif
-        </div>
-
-        <div class="row personal-rw">
-          @forelse ($user->personalizedOrder()->latest()->take(4)->get() as $data)
-          <div class="col-12 col-md-3">
-            <a href="{{route('admin.order.view',['id' => $data->id])}}">
-              <div class="personal-card text-center first">
-                <h6> 
-                  <span class="semi-bold qury">Order Id : {{$data->uuid}}</span> <br>
-                  <span class="semi-bold qury">Transaction Id :{{$data->paymentDetail ? $data->paymentDetail->payment_id : 'N/A'}}</span> <br>
-                  <span class="semi-bold qury">Transaction Date : {{ convertDate($data->created_at,'d M,Y') }}</span> <br>
-                  <span class="semi-bold qury">Scratched  / Total Cards : {{ $data->orderCard()->where('is_scratched',1)->count() .'/'. $data->orderCard()->count()}}</span> 
-                </h6>
-                <h3>${{$data->paymentDetail ? $data->paymentDetail->amount : 'N/A'}}.00</h3>
-              </div>
-            </a>
-            </div>
-          @empty
-            <div class="col-12 col-md-12">
-              <div class="text-center">
-                No personalized board purchased 
-              </div>
-            </div>
-          @endforelse
-        </div>
     </div>
 @endsection

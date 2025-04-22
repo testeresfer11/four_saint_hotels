@@ -115,7 +115,7 @@ class HomeController extends Controller
             else
                 $data = ManagefAQ::where('status',1)->select('id','question','answer')->get();
 
-            return $this->apiResponse('success',200,'Content detail '.config('constants.SUCCESS.FETCH_DONE'),$data);
+            return $this->apiResponse( 'success',200,'Content detail '.config('constants.SUCCESS.FETCH_DONE'),$data);
         }catch(\Exception $e){
             return $this->apiResponse('error',400,$e->getMessage());
         }

@@ -27,13 +27,7 @@
                             <p class="mb-0">{{$user->phone_code}}{{$user->phone_number}}</p>
                         </div>
                     </div>
-<!--                 
-                    <div class="col-md-6">
-                        <div class="four-user-block py-2 my-2 bggray border-0">
-                            <h5>Gender</h5>
-                            <p class="mb-0">{{$user->gender}}</p>
-                        </div>
-                    </div> -->
+
 
                     <div class="col-md-6">
                         <div class="four-user-block py-2 my-2  bggray border-0">

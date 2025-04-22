@@ -85,10 +85,6 @@ class User extends Authenticatable
         return $this->HasMany(QuestionResponse::class,'user_id','id');
     }
 
-    public function categoriesOrder(): HasMany
-    {
-        return $this->HasMany(Order::class,'user_id','id')->where('board_type','customized')->whereNotNull('payment_id');
-    }
 
     public function personalizedOrder(): HasMany
     {

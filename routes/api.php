@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\user\{AuthController, CategoryController, HelpDeskController, HomeController, SendNotificationController};
+use App\Http\Controllers\user\{AuthController, CategoryController, HelpDeskController, HomeController, SendNotificationController,NotificationController};
 
-use App\Http\Controllers\Api\{SubjectController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController};
+use App\Http\Controllers\Api\{SubjectController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController,ReviewController};
 
 use App\Models\NotificationPreference;
 use Illuminate\Http\Request;
@@ -26,20 +26,39 @@ Route::middleware(['auth:sanctum', 'user'])->group(function () {
         Route::post('change-password', 'changePassword');
         Route::match(['get', 'post'], 'profile', 'Profile');
         Route::get('account/delete', 'accountDelete');
-        Route::post('subscribe', 'subscribe');
-        Route::post('change/theme', 'changeTheme');
+      
     });
 
-
-   
-
-
-    // Manage Home Routes
     Route::controller(HomeController::class)->group(function () {
         Route::get('/home', 'home');
         Route::get('contentPages/{slug}', 'contentPages');
     });
 
+
+   
+    Route::group(['prefix' =>'notification'],function () {
+        Route::name('notification.')->controller(NotificationController::class)->group(function () {
+            Route::get('/','getList')->name('list');
+            Route::get('read/{id}','notificationRead')->name('read');
+            Route::get('delete/{id}','delete')->name('delete');
+        });
+    });
+
+     // Manage Reviews Routes
+
+    Route::prefix('feedback')->controller(FeedbackController::class)->group(function () {
+        Route::get('/{id}', 'index'); 
+        Route::get('get-feedback-by-user', 'getUserFeedback');            
+        Route::post('/add', 'store');          
+        Route::post('/edit/{id}', 'update');   
+        Route::get('/delete/{id}', 'destroy'); 
+        
+    });
+
+     Route::controller(HomeController::class)->group(function () {
+        Route::get('/home', 'home');
+        Route::get('contentPages/{slug}', 'contentPages');
+    });
 
     // Manage Help desk Routes
     Route::controller(HelpDeskController::class)->group(function () {
@@ -53,25 +72,8 @@ Route::middleware(['auth:sanctum', 'user'])->group(function () {
     });
 
 
-  
-
-    Route::controller(ChatController::class)->group(function () {
-        Route::prefix('chatroom')->group(function () { 
-            Route::post('save', 'create'); 
-            Route::post('add-user','addUserToRoom');
-            Route::post('send-message', 'saveMessage');
-  
-        });
-    });
-
-
-    
-
     
 });
 
 
 
-Route::controller(SendNotificationController::class)->group(function () {
-    Route::get('send-notification', 'sendNotifications');
-});
