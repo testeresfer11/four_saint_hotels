@@ -20,7 +20,7 @@ return new class extends Migration
                 $table->string('phone_number')->nullable();
                 $table->text('address')->nullable();
                 $table->string('profile_picture')->nullable();
-                $table->enum('status', ['active', 'inactive', 'banned'])->default('active');
+                $table->tinyInteger('status')->default(1);
                 $table->timestamps();
             });
         

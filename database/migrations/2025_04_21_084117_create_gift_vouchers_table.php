@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('amount', 8, 2);
             $table->date('expiry_date');
             $table->text('description');
-            $table->enum('status', ['active', 'redeemed', 'expired', 'revoked'])->default('active');
+            $table->tinyInteger('status')->default(1);
             $table->foreignId('created_by_user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
