@@ -22,8 +22,10 @@
               <div class="admin-filters">
                 <x-filter />
               </div>
+              @can('announcements-create')
               <a href="{{route('admin.announcements.create')}}"><button type="button" class="btn default-btn btn-md">
                 <span class="menu-icon">+ Add Annoucement</span></button></a>
+                @endcan
           </div>
           <div class="table-responsive">
             <table class="table table-striped">
@@ -36,6 +38,7 @@
                   <th> Action </th>
                 </tr>
               </thead>
+                @can('announcements-index')
               <tbody>
                 @forelse ($announcement as $key => $data)
                   <tr data-id="{{$data->id}}">
@@ -44,17 +47,20 @@
                     <td> {{ Str::limit(strip_tags($data->message), 50, '...') }} </td>
 
 
-                   
+                   @can('announcements-change-status') 
                       <td> 
                         <div class="toggle-user dark-toggle">
                         <input type="checkbox" name="status" data-id="{{$data->id}}" class="switch" @if ($data->status == 1) checked @endif data-value="{{$data->status}}">
                         </div> 
                     </td>
+                    @endcan
+                    @can('announcements-delete') 
                       <td> 
                       <span class="menu-icon">
                         <a href="#" title="Delete" class="text-danger deleteCategory" data-id="{{$data->id}}"><i class="mdi mdi-delete"></i></a>
                       </span> 
                     </td>
+                     @endcan
                   </tr>
                 @empty
                     <tr>
@@ -63,6 +69,7 @@
     
                 @endforelse
               </tbody>
+              @endcan
             </table>
           </div>
           <div class="custom_pagination">

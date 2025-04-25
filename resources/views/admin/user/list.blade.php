@@ -22,9 +22,10 @@
               <div class="admin-filters">
                 <x-filter />
               </div>
-
+               @can('user-add')
               <a href="{{route('admin.user.add')}}"><button type="button" class="btn default-btn btn-md">
                 <span class="menu-icon">+ Add User</span></button></a>
+              @endcan
           </div>
           <div class="table-responsive">
             <table class="table table-striped">
@@ -37,6 +38,7 @@
                   <th> Action </th>
                 </tr>
               </thead>
+               @can('user-list')
               <tbody>
                 @forelse ($users as $user)
                   <tr data-id="{{$user->id}}">
@@ -53,16 +55,21 @@
 
                     </div> </td>
                     <td> 
-                     
+                   @can('user-view')
                       <span class="menu-icon">
                         <a href="{{route('admin.user.view',['id' => $user->id])}}" title="View" class="text-primary"><i class="mdi mdi-eye"></i></a>
                       </span>&nbsp;&nbsp;&nbsp;
+                      @endcan
+                      @can('user-edit')
                       <span class="menu-icon">
                         <a href="{{route('admin.user.edit',['id' => $user->id])}}" title="Edit" class="text-success"><i class="mdi mdi-pencil"></i></a>
                       </span>&nbsp;&nbsp;
+                      @endcan
+                       @can('user-delete')
                       <span class="menu-icon">
                         <a href="#" title="Delete" class="text-danger deleteUser" data-id="{{$user->id}}"><i class="mdi mdi-delete"></i></a>
                       </span> 
+                      @endcan
                     </td>
                   </tr>
                 @empty
@@ -71,6 +78,7 @@
                     </tr>
                 @endforelse
               </tbody>
+              @endcan
             </table>
           </div>
             <div class="custom_pagination">

@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Middleware\Customer;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,10 +12,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes,Notifiable,HasApiTokens;
+    use HasFactory, Notifiable, SoftDeletes,Notifiable,HasApiTokens,HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -70,10 +72,11 @@ class User extends Authenticatable
     {
         return ucwords("{$this->first_name} {$this->last_name}");
     }
-    public function role(): BelongsTo
-    {
-        return $this->BelongsTo(Role::class);
+    public function role() {
+        return $this->belongsTo(Role::class);
     }
+    
+   
 
     public function userDetail(): HasOne
     {

@@ -34,5 +34,10 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'sabee' => [
+        'api_key' => env('SABEE_API_KEY'),
+        'api_version' => env('SABEE_API_VERSION'),
+        'api_url' => env('SABEE_API_URL'),
+    ],
 
 ];

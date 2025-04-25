@@ -7,11 +7,17 @@ use Illuminate\Http\Request;
 use App\Models\Feedback;
 use App\Traits\SendResponseTrait;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\{Auth, Hash,Validator};
+use Illuminate\Support\Facades\{Auth, Hash, Validator};
 
 class ReviewController extends Controller
 {
     use SendResponseTrait;
+
+    /**
+     * functionName : index
+     * createdDate  : 22-04-2025
+     * purpose      : Get the list of review for particular hotel
+     */
 
     public function index($id)
     {
@@ -19,29 +25,37 @@ class ReviewController extends Controller
             $feedbacks = Feedback::where('hotel_id', $id)->latest()->get();
             $averageRating = Feedback::where('hotel_id', $id)->avg('rating');
 
-            return $this->apiResponse('success',200,'Feedback ' . config('constants.SUCCESS.FETCH_DONE'),['average_rating' => round($averageRating, 2),'feedbacks' => $feedbacks]);
+            return $this->apiResponse('success', 200, 'Feedback ' . config('constants.SUCCESS.FETCH_DONE'), ['average_rating' => round($averageRating, 2), 'feedbacks' => $feedbacks]);
         } catch (\Exception $e) {
             return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
+    /**End method index**/
 
-
+    /**
+     * functionName : getUserFeedback
+     * createdDate  : 22-04-2025
+     * purpose      : Get the list of review for given by particular user
+     */
     public function getUserFeedback()
     {
         try {
             $feedbacks = Feedback::where('user_id', Auth::id())->latest()->get();
 
-            return $this->apiResponse('success',200,'Feedback ' . config('constants.SUCCESS.FETCH_DONE'),$feedbacks);
+            return $this->apiResponse('success', 200, 'Feedback ' . config('constants.SUCCESS.FETCH_DONE'), $feedbacks);
         } catch (\Exception $e) {
             return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
 
+    /**End method getUserFeedback**/
 
 
-
-
-
+    /**
+     * functionName : store
+     * createdDate  : 22-04-2025
+     * purpose      : add review
+     */
     public function store(Request $request)
     {
         try {
@@ -66,6 +80,15 @@ class ReviewController extends Controller
             return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
+
+    /**End method store**/
+
+
+    /**
+     * functionName : update
+     * createdDate  : 22-04-2025
+     * purpose      : update review
+     */
 
     public function update(Request $request, $id)
     {
@@ -93,6 +116,14 @@ class ReviewController extends Controller
         }
     }
 
+    /**End method update**/
+
+
+    /**
+     * functionName : destroy
+     * createdDate  : 22-04-2025
+     * purpose      : delete review
+     */
 
     public function destroy($id)
     {
@@ -115,4 +146,5 @@ class ReviewController extends Controller
             return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
+    /**End method update**/
 }

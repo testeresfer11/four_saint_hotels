@@ -15,11 +15,11 @@ class RoleTableSeeder extends Seeder
     {
         Role::updateOrCreate(
             ["name"=> config('constants.ROLES.ADMIN')], 
-            ["name"=> config('constants.ROLES.ADMIN')]
+            ["name"=> config('constants.ROLES.ADMIN'),"guard_name" => "web"]
         );
         Role::updateOrCreate(
             ["name"=> config('constants.ROLES.USER')], 
-            ["name"=> config('constants.ROLES.USER')]
+            ["name"=> config('constants.ROLES.USER'),"guard_name" => "web"]
         );
     }
 }

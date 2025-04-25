@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\admin\{AuthController, CategoryController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController};
-use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController};
+use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController};
 use Illuminate\Support\Facades\Route;
 use App\Models\{ContentPage, ManagefAQ};
 use App\Http\Controllers\NewsletterSubscriberController;
-
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 
 Route::get('/', function () {
@@ -26,6 +27,10 @@ Route::controller(AuthController::class)->group(function () {
     Route::match(['get', 'post'], 'register', 'register')->name('register');
     Route::match(['get', 'post'], 'forget-password', 'forgetPassword')->name('forget-password');
     Route::match(['get', 'post'], 'reset-password/{token}', 'resetPassword')->name('reset-password');
+    Route::match(['get', 'post'], 'verify-otp', 'verifyOtp')->name('verify');
+    Route::get('resend','resend')->name('resend');
+
+
     Route::get('admin/2fa-verify', 'show2faForm')->name('admin.2fa.verify');
     Route::post('admin/2fa-verify', 'verify2fa')->name('admin.2fa.verify.post');
 });
@@ -59,6 +64,18 @@ Route::group(['prefix' => 'admin'], function () {
             
         });
 
+       
+            /**Manage Role routes */
+            Route::group(['prefix' =>'role'],function () {
+                Route::name('role.')->controller(RoleController::class)->group(function () {
+                    Route::get('/','getList')->name('list');
+                    Route::match(['get','post'],'add','add')->name('add');
+                    Route::match(['get','post'],'edit/{id}','edit')->name('edit');
+                    Route::get('delete/{id}','delete')->name('delete');
+                    Route::get('changeStatus','changeStatus')->name('changeStatus');
+                });
+            });
+
 
 
         // Manage help desk routes
@@ -81,6 +98,9 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('delete/{id}', 'delete')->name('delete');
             });
         });
+
+
+
 
 
 
@@ -193,6 +213,20 @@ Route::group(['prefix' => 'admin'], function () {
 });
 
 
+
+Route::get('/test-email', function () {
+    try {
+        Mail::raw('This is a test email.', function ($message) {
+            $message->to('recipi@yopmail.com')
+                    ->subject('Test Email');
+        });
+
+        return 'Test email sent.';
+    } catch (\Exception $e) {
+        Log::error('Email sending failed: ' . $e->getMessage());
+        return 'Email sending failed. Check logs for details.';
+    }
+});
 
 
 
