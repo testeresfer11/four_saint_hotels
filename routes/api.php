@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\user\{AuthController, CategoryController, HelpDeskController, HomeController, SendNotificationController,NotificationController};
 
-use App\Http\Controllers\Api\{SubjectController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController,ReviewController};
+use App\Http\Controllers\Api\{SubjectController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController,ReviewController,SabeeHotelController,SabeeServiceController};
 
 use App\Models\NotificationPreference;
 use Illuminate\Http\Request;
@@ -19,6 +19,12 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('forget-password', 'forgetPassword');
     Route::post('set-new-password', 'setNewPassword');
 });
+Route::controller(SabeeHotelController::class)->group(function () {
+        Route::get('/sabee/hotels/fetch','fetchAndStore');
+    });
+Route::controller(SabeeServiceController::class)->group(function () {
+        Route::get('/sabee/service/fetch','fetchAndStore');
+    });
 
 Route::middleware(['auth:sanctum', 'user'])->group(function () {
     Route::controller(AuthController::class)->group(function () {
@@ -59,6 +65,7 @@ Route::middleware(['auth:sanctum', 'user'])->group(function () {
         Route::get('/home', 'home');
         Route::get('contentPages/{slug}', 'contentPages');
     });
+     
 
     // Manage Help desk Routes
     Route::controller(HelpDeskController::class)->group(function () {

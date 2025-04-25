@@ -43,15 +43,18 @@
                   <th> Action </th>
                 </tr>
               </thead>
+              @can('user-trashed-list')
               <tbody>
                 @forelse ($users as $user)
                   <tr data-id="{{$user->id}}">
                     <td> {{$user->full_name}} </td>
                     <td>{{$user->email}}</td>
                     <td> 
+                      @can('user-restore')
                       <span class="menu-icon">
                         <a href="#" title="Restore" class="text-success restoreUser" data-id="{{$user->id}}"><i class="mdi mdi-backup-restore"></i></a>
                       </span> 
+                      @endcan
                     </td>
                   </tr>
                 @empty
@@ -60,6 +63,7 @@
                     </tr>
                 @endforelse
               </tbody>
+              @endcan
             </table>
           </div>
             <div class="custom_pagination">

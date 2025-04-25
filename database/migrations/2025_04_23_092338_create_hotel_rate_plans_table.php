@@ -11,12 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('hotel_rate_plans', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('guard_name');
+            $table->unsignedBigInteger('hotel_id');
+            $table->unsignedBigInteger('rateplan_id');
+            $table->string('rateplan_name');
             $table->timestamps();
+        
+            $table->foreign('hotel_id')->references('hotel_id')->on('hotels')->onDelete('cascade');
         });
+        
     }
 
     /**
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('hotel_rate_plans');
     }
 };
