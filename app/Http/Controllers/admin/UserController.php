@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{User,UserDetail};
+use App\Models\{User,UserDetail,Role};
 use App\Notifications\UserNotification;
 use App\Traits\SendResponseTrait;
 use Illuminate\Http\Request;
@@ -73,15 +73,18 @@ class UserController extends Controller
     public function add(Request $request){
         try{
             if($request->isMethod('get')){
-                return view("admin.user.add");
+                $roles = Role::whereNotIn('name',[config('constants.ROLES.ADMIN'),config('constants.ROLES.USER')])->paginate(10);
+                return view("admin.user.add",compact("roles"));
             }elseif( $request->isMethod('post') ){
                 $validator = Validator::make($request->all(), [
                     'first_name'    => 'required|string|max:255',
                     'last_name'     => 'required|string|max:255',
                     'email'         => 'required|unique:users,email|email:rfc,dns',
-                    'profile'       => 'image|max:2048',
+                    'profile'       => 'image|max:5048',
                     'gender'        => 'required|in:Male,Female,Other',
-                    'password'      => 'min:6'
+                    'password'      => 'min:6',
+                    'role_id'       => 'nullable|exists:roles,id', // <- New line for role
+
                 ]);
                 
                 if ($validator->fails()) {
@@ -92,8 +95,10 @@ class UserController extends Controller
                 }else{
                     $password = generateRandomString();
                 }
+                $roleId = $request->role_id ?? 2; // If not selected, default to 2
+
                 $user = User::Create([
-                    'role_id'           => 2,
+                    'role_id'           => $roleId,
                     'first_name'        => $request->first_name,
                     'last_name'         => $request->last_name,
                     'email'             => $request->email,
@@ -102,7 +107,8 @@ class UserController extends Controller
                     'email_verified_at' => date('Y-m-d H:i:s')
                 ]);
 
-                $ImgName = User::find(authId())->userDetail->profile;
+
+                $ImgName = User::find(authId())->userDetail->profile ?? null;
                 if ($request->hasFile('profile')) {
                     $ImgName = uploadFile($request->file('profile'),'images/');
                 }
@@ -119,7 +125,12 @@ class UserController extends Controller
                     'dob'                => $request->dob ? $request->dob :'',
                 ]);
 
-
+                if($request->filled('role_id')) {
+                    $role = Role::find($request->role_id);
+                    if ($role) {
+                        $user->assignRole($role->name);
+                    }
+                }
                 $template = $this->getTemplateByName('Account_detail');
                 if( $template ) { 
                     $stringToReplace    = ['{{$name}}','{{$password}}','{{$email}}'];
