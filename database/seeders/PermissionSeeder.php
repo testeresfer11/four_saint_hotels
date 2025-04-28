@@ -29,6 +29,13 @@ class PermissionSeeder extends Seeder
             ['name' => 'user-trashed-list', 'group_name' => 'user', 'guard_name' => 'web'],
             ['name' => 'user-restore', 'group_name' => 'user', 'guard_name' => 'web'],
 
+              // staff Management
+            ['name' => 'staff-list', 'group_name' => 'staff', 'guard_name' => 'web'],
+            ['name' => 'staff-add', 'group_name' => 'staff', 'guard_name' => 'web'],
+            ['name' => 'staff-edit', 'group_name' => 'staff', 'guard_name' => 'web'],
+            ['name' => 'staff-delete', 'group_name' => 'staff', 'guard_name' => 'web'],
+            ['name' => 'staff-view', 'group_name' => 'staff', 'guard_name' => 'web'],
+
             // Role Management
             ['name' => 'role-list', 'group_name' => 'role', 'guard_name' => 'web'],
             ['name' => 'role-add', 'group_name' => 'role', 'guard_name' => 'web'],
@@ -104,6 +111,9 @@ class PermissionSeeder extends Seeder
             // Transaction Management
             ['name' => 'transaction-list', 'group_name' => 'transaction', 'guard_name' => 'web'],
             ['name' => 'transaction-view', 'group_name' => 'transaction', 'guard_name' => 'web'],
+              // Content Page Management
+          
+
         ];
 
         foreach ($permissions as $permission) {

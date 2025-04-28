@@ -17,10 +17,11 @@ class Admin
     public function handle(Request $request, Closure $next): Response
     {
         
-        if (getRoleNameById(authId()) != config('constants.ROLES.ADMIN')) {
+       if (in_array(getRoleNameById(authId()),[config('constants.ROLES.USER')])) {
             Auth::logout();
             return redirect()->route('login')->with("error",config('constants.ERROR.AUTHORIZATION'));
         }
+        return $next($request);
         
         return $next($request);
     }

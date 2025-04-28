@@ -17,7 +17,7 @@ class RoleController extends Controller
    */
    public function getList(Request $request){
        try{
-           $roles = Role::whereNotIn('name',[config('constants.ROLES.ADMIN'),config('constants.ROLES.CUSTOMER'),config('constants.ROLES.DRIVER')])->paginate(10);
+           $roles = Role::whereNotIn('name',[config('constants.ROLES.ADMIN'),config('constants.ROLES.USER')])->paginate(10);
            return view("admin.role.list",compact("roles"));
        }catch(\Exception $e){
            return redirect()->back()->with("error", $e->getMessage());

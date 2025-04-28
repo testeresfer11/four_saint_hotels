@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\admin\{AuthController, CategoryController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController};
+use App\Http\Controllers\admin\{AuthController, CategoryController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController};
 use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController};
 use Illuminate\Support\Facades\Route;
 use App\Models\{ContentPage, ManagefAQ};
@@ -71,6 +71,18 @@ Route::group(['prefix' => 'admin'], function () {
                     Route::get('/','getList')->name('list');
                     Route::match(['get','post'],'add','add')->name('add');
                     Route::match(['get','post'],'edit/{id}','edit')->name('edit');
+                    Route::get('delete/{id}','delete')->name('delete');
+                    Route::get('changeStatus','changeStatus')->name('changeStatus');
+                });
+            });
+
+            // Manage Staff routes
+            Route::group(['prefix' =>'staff'],function () {
+                Route::name('staff.')->controller(StaffController::class)->group(function () {
+                    Route::get('list','getList')->name('list');
+                    Route::match(['get', 'post'],'add','add')->name('add');
+                    Route::get('view/{id}','view')->name('view');
+                    Route::match(['get', 'post'],'edit/{id}','edit')->name('edit');
                     Route::get('delete/{id}','delete')->name('delete');
                     Route::get('changeStatus','changeStatus')->name('changeStatus');
                 });
