@@ -52,4 +52,36 @@ class SabeeServiceController extends Controller
             );
         }
     }
+
+    public function submitService(Request $request)
+    {
+        $request->validate([
+            'hotel_id' => 'required|integer',
+            'reference_id' => 'required|string',
+            'reservation_code' => 'required|string',
+            'services' => 'required|array',
+            'services.*.service_id' => 'required|integer',
+            'services.*.name' => 'required|string',
+            'services.*.quantities' => 'nullable|array',
+            'services.*.quantities.*.value' => 'required_with:services.*.quantities|integer',
+            'services.*.quantities.*.date' => 'required_with:services.*.quantities|date',
+        ]);
+
+        try {
+            $payload = $request->only(['hotel_id', 'reference_id', 'reservation_code', 'services']);
+            $response = $this->serviceList->submitService($payload);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Service submitted successfully',
+                'data' => $response
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 }

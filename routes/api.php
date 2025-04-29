@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\user\{AuthController, CategoryController, HelpDeskController, HomeController, SendNotificationController,NotificationController};
 
-use App\Http\Controllers\Api\{SubjectController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController,ReviewController,SabeeHotelController,SabeeServiceController};
+use App\Http\Controllers\Api\{SubjectController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController,ReviewController,SabeeHotelController,SabeeServiceController,BookingController};
 
 use App\Models\NotificationPreference;
 use Illuminate\Http\Request;
@@ -19,11 +19,24 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('forget-password', 'forgetPassword');
     Route::post('set-new-password', 'setNewPassword');
 });
+
 Route::controller(SabeeHotelController::class)->group(function () {
         Route::get('/sabee/hotels/fetch','fetchAndStore');
     });
+
 Route::controller(SabeeServiceController::class)->group(function () {
         Route::get('/sabee/service/fetch','fetchAndStore');
+        Route::post('/sabee/submit-service','submitService');
+
+    });
+
+Route::controller(BookingController::class)->group(function () {
+        Route::get('/bookings','getBookings')->name('admin.booking.get');  
+        Route::post('/booking/create','create')->name('admin.booking.create');
+        Route::post('/booking/update','update')->name('admin.booking.update');
+        Route::post('/booking/cancel','cancel')->name('admin.booking.cancel');
+  
+
     });
 
 Route::middleware(['auth:sanctum', 'user'])->group(function () {

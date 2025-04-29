@@ -26,6 +26,7 @@ class SabeeServiceListService
         }
 
         $services = $response->json('data.services');
+        
         if ($services) {
             foreach ($services as $serviceData) {
                 // Upsert service in local database
@@ -57,8 +58,23 @@ class SabeeServiceListService
         }else{
             return [];
         }
-
-
         
+    }
+
+
+
+    public function submitService(array $payload)
+    {
+        $response = Http::withHeaders([
+            'api_key' => config('services.sabee.api_key'),
+            'api_version' => config('services.sabee.api_version'),
+            'Content-Type' => 'application/json',
+        ])->post(config('services.sabee.api_url') . '/service/submit', $payload);
+
+        if (!$response->successful()) {
+            throw new \Exception('Failed to submit service: ' . $response->body());
+        }
+
+        return $response->json();
     }
 }
