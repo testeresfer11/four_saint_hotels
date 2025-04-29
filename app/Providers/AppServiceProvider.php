@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Hotel;
+use Illuminate\Support\Facades\View;
+
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+           View::composer('admin.*', function ($view) {
+            $view->with('hotels', Hotel::select('id', 'name')->get());
+        });
     }
 }
