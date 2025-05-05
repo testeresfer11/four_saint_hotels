@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\admin\{AuthController, CategoryController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController};
+use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController};
 use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController};
 use Illuminate\Support\Facades\Route;
 use App\Models\{ContentPage, ManagefAQ};
@@ -112,24 +112,15 @@ Route::group(['prefix' => 'admin'], function () {
         });
 
 
-
-
-
-
-
-
-        // Manage category routes
-        Route::group(['prefix' => 'category'], function () {
-            Route::name('category.')->controller(CategoryController::class)->group(function () {
+        // Manage booking routes
+        Route::group(['prefix' => 'booking'], function () {
+            Route::name('booking.')->controller(BookingController::class)->group(function () {
                 Route::get('list', 'getList')->name('list');
                 Route::match(['get', 'post'], 'add', 'add')->name('add');
                 Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
-                Route::get('delete/{id}', 'delete')->name('delete');
-                Route::get('changeStatus', 'changeStatus')->name('changeStatus');
+                Route::get('view/{id}','view')->name('view');
             });
         });
-
-
 
 
         // Manage Config setting routes
@@ -217,6 +208,14 @@ Route::group(['prefix' => 'admin'], function () {
         // Manage transactions routes
         Route::group(['prefix' => 'transaction'], function () {
             Route::name('transaction.')->controller(TransactionController::class)->group(function () {
+                Route::get('list', 'getList')->name('list');
+                Route::get('view/{id}', 'view')->name('view');
+            });
+        });
+
+         // Manage service routes
+        Route::group(['prefix' => 'service'], function () {
+            Route::name('service.')->controller(ServiceController::class)->group(function () {
                 Route::get('list', 'getList')->name('list');
                 Route::get('view/{id}', 'view')->name('view');
             });

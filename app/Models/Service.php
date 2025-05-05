@@ -32,6 +32,7 @@ class Service extends Model
         'apply_city_tax',
         'currency',
         'available_rateplans',
+        'service_fee',
     ];
 
     /**
@@ -44,6 +45,7 @@ class Service extends Model
         'compulsory' => 'boolean',
         'apply_city_tax' => 'boolean',
         'available_rateplans' => 'array',
+        'service_fee' => 'array', 
     ];
 
     /**

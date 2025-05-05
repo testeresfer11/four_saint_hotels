@@ -18,16 +18,16 @@ class BookingController extends Controller
 
 
     /**
- * Fetch the list of bookings from SabeeApp for a given hotel and date range.
- *
- * This method retrieves bookings for a specified hotel between the given start and end dates.
- * It also supports optional parameters to extend the list with additional details, services,
- * and guest details.
- *
- * @param  \Illuminate\Http\Request  $request
- * @return \Illuminate\Http\JsonResponse
- * @throws \Exception If the SabeeBookingService fails to fetch bookings
- */
+     * Fetch the list of bookings from SabeeApp for a given hotel and date range.
+     *
+     * This method retrieves bookings for a specified hotel between the given start and end dates.
+     * It also supports optional parameters to extend the list with additional details, services,
+     * and guest details.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception If the SabeeBookingService fails to fetch bookings
+     */
 
     public function getBookings(Request $request)
     {
@@ -43,7 +43,12 @@ class BookingController extends Controller
         try {
             // Fetch bookings using SabeeBookingService
             $bookings = $this->sabeeBookingService->fetchBookings(
-                $hotel_id, $start_date, $end_date, $extended_list, $services, $guest_details
+                $hotel_id,
+                $start_date,
+                $end_date,
+                $extended_list,
+                $services,
+                $guest_details
             );
             return $bookings;
 
@@ -61,7 +66,7 @@ class BookingController extends Controller
     }
 
 
-        /**
+    /**
      * Create bookings in SabeeApp for a given hotel .
      *
      * This method creates bookings for a specified hotel .
@@ -71,16 +76,17 @@ class BookingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception If the SabeeBookingService fails to create bookings
-        */
+     */
 
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $validated = $request->validate([
             'hotel_id' => 'required|integer',
             'customer.first_name' => 'required|string',
             'customer.last_name' => 'required|string',
             'customer.email' => 'required|email',
             'customer.phone_number' => 'required|string',
-            'customer.country_code'=>'required|string', 
+            'customer.country_code' => 'required|string',
             'rooms' => 'required|array|min:1',
             'rooms.*.room_id' => 'required|integer',
             'rooms.*.checkin_date' => 'required|date',
@@ -129,7 +135,6 @@ class BookingController extends Controller
                 'message' => 'Booking created successfully.',
                 'data' => $response,
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -141,7 +146,7 @@ class BookingController extends Controller
 
 
 
-         /**
+    /**
      * update bookings in SabeeApp for a given hotel .
      *
      * This method update bookings for a specified hotel .
@@ -151,10 +156,11 @@ class BookingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception If the SabeeBookingService fails to update bookings
-        */
+     */
 
-    public function update(Request $request){
-       $validated = $request->validate([
+    public function update(Request $request)
+    {
+        $validated = $request->validate([
             'hotel_id' => 'required|integer',
             'reference_id' => 'required|string',
             'status' => 'required|string|in:Confirmed,Cancelled,Pending', // Based on expected status values
@@ -162,7 +168,7 @@ class BookingController extends Controller
             'customer.last_name' => 'required|string',
             'customer.email' => 'required|email',
             'customer.phone_number' => 'required|string',
-            'customer.country_code'=>'required|string', 
+            'customer.country_code' => 'required|string',
             'customer.customer_id' => 'nullable|integer',
             'customer.cc_name' => 'nullable|string',
             'customer.cc_number' => 'nullable|string',
@@ -214,7 +220,7 @@ class BookingController extends Controller
 
         try {
             // Build payload directly from validated input
-           $payload = [
+            $payload = [
                 'hotel_id' => $validated['hotel_id'],
                 'reference_id' => $validated['reference_id'],
                 'status' => $validated['status'],
@@ -250,7 +256,6 @@ class BookingController extends Controller
                 'message' => 'Booking updated successfully.',
                 'data' => $response,
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -261,7 +266,7 @@ class BookingController extends Controller
 
 
 
-     /**
+    /**
      * cancel bookings in SabeeApp for a given hotel .
      *
      * This method cancel bookings for a specified hotel .
@@ -269,9 +274,10 @@ class BookingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception If the SabeeBookingService fails to cancel bookings
-    */
-    public function cancel(Request $request){
-       $validated = $request->validate([
+     */
+    public function cancel(Request $request)
+    {
+        $validated = $request->validate([
             'hotel_id' => 'required|integer',
             'reservation_code' => 'required|string',
         ]);
@@ -279,10 +285,10 @@ class BookingController extends Controller
 
         try {
             // Build payload directly from validated input
-           $payload = [
+            $payload = [
                 'hotel_id' => $validated['hotel_id'],
                 'reservation_code' => $validated['reservation_code'],
-                
+
             ];
 
             $response = $this->sabeeBookingService->cancelBooking($payload);
@@ -292,7 +298,6 @@ class BookingController extends Controller
                 'message' => 'Booking cancel successfully.',
                 'data' => $response,
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -300,5 +305,4 @@ class BookingController extends Controller
             ], 400);
         }
     }
-
 }

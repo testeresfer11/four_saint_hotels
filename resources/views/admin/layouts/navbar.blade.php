@@ -128,6 +128,29 @@
         </li>
         @endcanany
 
+         <!-- Vouchers -->
+        {{-- @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])--}}
+        <li class="nav-item menu-items {{ request()->routeIs('admin.booking.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.booking.list') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-gift"></i>
+                </span>
+                <span class="menu-title">Booking Mangemanet</span>
+            </a>
+        </li>
+       {{-- @endcanany--}}
+        <!-- Vouchers -->
+        {{-- @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])--}}
+        <li class="nav-item menu-items {{ request()->routeIs('admin.service.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.service.list') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-gift"></i>
+                </span>
+                <span class="menu-title">Service Mangemanet</span>
+            </a>
+        </li>
+       {{-- @endcanany--}}
+
         <!-- Notifications -->
         @canany(['notification-list', 'notification-read', 'notification-delete'])
         <li class="nav-item menu-items {{ request()->routeIs('admin.notification.*') ? 'active' : '' }}">
