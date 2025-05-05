@@ -24,6 +24,9 @@ Route::controller(SabeeHotelController::class)->group(function () {
         Route::get('/sabee/hotels/fetch','fetchAndStore');
     });
 
+
+;
+
 Route::controller(SabeeServiceController::class)->group(function () {
         Route::get('/sabee/service/fetch','fetchAndStore');
         Route::post('/sabee/submit-service','submitService');
