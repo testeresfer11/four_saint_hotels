@@ -12,18 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('hotel_room_types', function (Blueprint $table) {
-            $table->unsignedBigInteger('hotel_room_id')->primary(); // custom PK
+            $table->id();
             $table->unsignedBigInteger('hotel_id');
-            $table->unsignedBigInteger('room_id')->unique();
+            $table->unsignedBigInteger('room_type_id')->unique(); // from API
             $table->string('room_name');
             $table->string('property_type');
             $table->integer('max_occupancy');
             $table->integer('number_of_rooms');
             $table->timestamp('create_date_time')->nullable();
             $table->timestamps();
-        
+
             $table->foreign('hotel_id')->references('hotel_id')->on('hotels')->onDelete('cascade');
         });
+
         
     }
 

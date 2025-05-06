@@ -127,6 +127,17 @@
             </a>
         </li>
         @endcanany
+        <!-- Hotel -->
+        {{-- @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])--}}
+        <li class="nav-item menu-items {{ request()->routeIs('admin.hotel.*') ? 'active' : '' }}">
+            <a class="nav-link" href="#">
+                <span class="menu-icon">
+                    <i class="mdi mdi-gift"></i>
+                </span>
+                <span class="menu-title">Hotel Mangemanet</span>
+            </a>
+        </li>
+       {{-- @endcanany--}}
 
          <!-- Vouchers -->
         {{-- @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])--}}

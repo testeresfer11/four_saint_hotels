@@ -11,15 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hotel_rate_plans', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('hotel_id');
-            $table->unsignedBigInteger('rateplan_id');
-            $table->string('rateplan_name');
-            $table->timestamps();
-        
-            $table->foreign('hotel_id')->references('hotel_id')->on('hotels')->onDelete('cascade');
-        });
+       Schema::create('hotel_rate_plans', function (Blueprint $table) {
+        $table->id();
+        $table->unsignedBigInteger('hotel_id');
+        $table->unsignedBigInteger('rateplan_id')->unique(); // from API
+        $table->string('rateplan_name');
+        $table->boolean('linked_to_master')->default(false);
+        $table->unsignedBigInteger('linked_to_rateplan_id')->nullable();
+        $table->string('price_model')->nullable();
+        $table->boolean('dynamic_pricing')->default(false);
+        $table->timestamps();
+
+        $table->foreign('hotel_id')->references('hotel_id')->on('hotels')->onDelete('cascade');
+    });
+
         
     }
 
