@@ -6,11 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class HotelRatePlan extends Model
 {
-    protected $fillable = [
-        'hotel_id',
-        'rateplan_id',
-        'rateplan_name',
-    ];
+    protected $guarded = [];
 
     public function hotel()
     {

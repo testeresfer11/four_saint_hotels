@@ -2,14 +2,9 @@
 
 namespace App\Services\API;
 
-use Spatie\Permission\Models\Role;
-use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service,};
-
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use App\Models\{Hotel, HotelRoomType, HotelRatePlan, HotelRatePlanRoomType};
 use Illuminate\Support\Facades\Http;
-
+use Carbon\Carbon;
 
 class SabeeHotelService
 {
@@ -23,7 +18,7 @@ class SabeeHotelService
         if (!$response->successful()) {
             throw new \Exception('Failed to fetch hotel inventory: ' . $response->body());
         }
-        dd($response);
+
         return $response->json('data.hotels');
     }
 
@@ -48,10 +43,10 @@ class SabeeHotelService
                 ]
             );
 
-           // $roomList = $this->fetchHotelInventory($hotel['hotel_id']);
+            // Fetch and save room types
+            $roomTypes = $this->fetchRoomTypesByHotelId($hotel['hotel_id']);
 
-            foreach ($roomList['room_types'] as $roomType) {
-                // Save room type
+            foreach ($roomTypes as $roomType) {
                 $roomTypeModel = HotelRoomType::updateOrCreate(
                     ['room_id' => $roomType['room_type_id']],
                     [
@@ -64,17 +59,69 @@ class SabeeHotelService
                     ]
                 );
 
-
-
-                foreach ($hotel['rateplans'] as $plan) {
-                    HotelRatePlan::updateOrCreate(
-                        ['rateplan_id' => $plan['rateplan_id'], 'hotel_id' => $hotel['hotel_id']],
-                        ['rateplan_name' => $plan['rateplan_name']]
+                // Save individual rooms inside the room type
+                foreach ($roomType['rooms'] as $room) {
+                    \App\Models\HotelRoom::updateOrCreate(
+                        ['room_id' => $room['room_id']],
+                        [
+                            'room_type_id' => $roomType['room_type_id'],
+                            'hotel_id' => $hotel['hotel_id'],
+                            'room_name' => $room['room_name'],
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]
                     );
                 }
             }
 
-            return $hotels;
+            // Save rate plans if available
+            if (isset($hotel['rateplans'])) {
+                foreach ($hotel['rateplans'] as $plan) {
+                    $ratePlanModel = HotelRatePlan::updateOrCreate(
+                        ['rateplan_id' => $plan['rateplan_id'], 'hotel_id' => $hotel['hotel_id']],
+                        [
+                            'rateplan_name'         => $plan['rateplan_name'],
+                            'linked_to_master'      => $plan['linked_to_master'],
+                            'linked_to_rateplan_id' => $plan['linked_to_rateplan_id'],
+                            'price_model'           => $plan['price_model'],
+                            'dynamic_pricing'       => $plan['dynamic_pricing'],
+                        ]
+                    );
+
+                    // Save associated room types if they exist
+                    if (!empty($plan['room_types'])) {
+                        foreach ($plan['room_types'] as $roomTypeRelation) {
+                            HotelRatePlanRoomType::updateOrCreate(
+                                [
+                                    'rateplan_id' => $plan['rateplan_id'],
+                                    'room_type_id' => $roomTypeRelation['room_type_id'],
+                                ],
+                                [
+                                    'default_occupancy' => $roomTypeRelation['price_relation'][0]['default_occupancy'] ?? null
+                                ]
+                            );
+                        }
+                    }
+                }
+            }
         }
+
+        return $hotels;
+    }
+
+    public function fetchRoomTypesByHotelId($hotelId)
+    {
+        $response = Http::withHeaders([
+            'api_key' => config('services.sabee.api_key'),
+            'api_version' => config('services.sabee.api_version'),
+        ])->get(config('services.sabee.api_url') . "/roomtype/list", [
+            'hotel_id' => $hotelId
+        ]);
+
+        if (!$response->successful()) {
+            throw new \Exception('Failed to fetch room types: ' . $response->body());
+        }
+
+        return $response->json('data.room_types');
     }
 }

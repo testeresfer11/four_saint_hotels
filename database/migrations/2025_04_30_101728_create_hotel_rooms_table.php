@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('hotel_rooms', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('hotel_room_id');
+            $table->unsignedBigInteger('room_id')->unique(); // from API
+            $table->unsignedBigInteger('hotel_id');
+            $table->unsignedBigInteger('room_type_id'); // FK to room type
             $table->string('room_name');
             $table->timestamps();
 
-            $table->foreign('hotel_room_id')
-                  ->references('hotel_room_id')
-                  ->on('hotel_room_types')
-                  ->onDelete('cascade');
+            $table->foreign('hotel_id')->references('hotel_id')->on('hotels')->onDelete('cascade');
+            $table->foreign('room_type_id')->references('room_type_id')->on('hotel_room_types')->onDelete('cascade');
         });
+
     }
 
     /**
