@@ -25,8 +25,8 @@ class AuthController extends Controller
         try{
             
             $validator = Validator::make($request->all(), [
-                'first_name'            => 'required|max:255',
-                'last_name'             => 'required|max:255',
+                'full_name'            => 'required|max:255',
+               
                 'email'                 => 'required|unique:users,email|email:rfc,dns',
                 'password'              => 'required|confirmed|min:8',
                 'password_confirmation' => 'required',
@@ -38,8 +38,7 @@ class AuthController extends Controller
       
             $role = Role::where('name' , config('constants.ROLES.USER'))->first();
             $user =  User::create([
-                        "first_name"    => $request->first_name,
-                        "last_name"     => $request->last_name,
+                        "full_name"    => $request->full_name,
                         "email"         => $request->email,
                         "password"      => Hash::make($request->password),
                         "role_id"       => $role->id,
@@ -132,8 +131,7 @@ class AuthController extends Controller
                     'access_token'      => $user->createToken('AuthToken')->plainTextToken,
                     'id'                => $user->id,
                     'full_name'         => $user->full_name,
-                    'first_name'        => $user->first_name,
-                    'last_name'         => $user->last_name,
+                    
                     'email'             => $user->email,
                     'is_verified'       => $user->is_email_verified,
                     'gender'            => ($user->userDetail && $user->userDetail->gender) ? $user->userDetail->gender : null,
@@ -210,8 +208,7 @@ class AuthController extends Controller
                 'access_token'      => $user->createToken('AuthToken')->plainTextToken,
                 'id'                => $user->id,
                 'full_name'         => $user->full_name,
-                'first_name'        => $user->first_name,
-                'last_name'         => $user->last_name,
+               
                 'email'             => $user->email,
                 'is_verified'       => $user->is_email_verified,
                 'phone_number'      => ($user->userDetail && $user->userDetail->phone_number) ? $user->userDetail->phone_number : null,
@@ -324,8 +321,8 @@ class AuthController extends Controller
                 return $this->apiResponse('success',200,'Profile '.config('constants.SUCCESS.FETCH_DONE'),$data);
             }elseif( $request->isMethod('post') ){
                 $validator = Validator::make($request->all(), [
-                    'first_name'    => 'required|string|max:255',
-                    'last_name'     => 'required|string|max:255',
+                    'full_name'    => 'required|string|max:255',
+                   
                     'profile'       => 'image|max:2048',
                     'gender'        => 'in:Male,Female,Other'
                 ]);
@@ -335,8 +332,8 @@ class AuthController extends Controller
                 }
 
                 User::where('id' , authId())->update([
-                    'first_name'        => $request->first_name,
-                    'last_name'         => $request->last_name,
+                    'full_name'        => $request->first_name,
+                    
                 ]);
 
                 $user = User::find(authId());
