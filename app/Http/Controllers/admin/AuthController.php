@@ -10,16 +10,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB, Hash, Validator, Mail, Session};
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+use App\Services\API\SabeeHotelService;
+
 
 class AuthController extends Controller
 {
     use SendResponseTrait;
+    protected $sabeeHotelService;
+
+     public function __construct(sabeeHotelService $sabeeHotelService)
+    {
+        $this->sabeeHotelService = $sabeeHotelService;
+    }
+
     /**
      * functionName : login
      * createdDate  : 19-06-2024
      * purpose      : logged in form submit user
      */
-    public function login(Request $request)
+    public function login(Request $request,SabeeHotelService $sabeeHotelService)
     {
         try {
             if ($request->isMethod('get')) {
@@ -41,12 +50,17 @@ class AuthController extends Controller
                     'password' => 'required|min:8'
                 ]);
 
+
+
                 if ($validator->fails()) {
                     return redirect()->back()->with('error', $validator->errors()->first());
                 }
 
                 $user = User::where('email', strtolower($request->email))->first();
 
+                 //$hotels = $sabeeHotelService->fetchAndStoreHotels();
+
+                
                 if (!$user->is_email_verified)
                     return redirect()->back()->with("error", 'Email not verified!');
 
@@ -97,13 +111,14 @@ class AuthController extends Controller
 
                         return redirect()->route('verify')->with('message', 'OTP sent to your email.');
                     }
-
+                       
                     return redirect()->route('admin.dashboard')->with('success', 'Login Successfully!');
                 }
 
                 return redirect()->back()->with("error", 'Invalid credentials');
             }
         } catch (\Exception $e) {
+          
             return redirect()->back()->with("error", $e->getMessage());
         }
     }

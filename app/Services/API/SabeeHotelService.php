@@ -25,7 +25,7 @@ class SabeeHotelService
     public function fetchAndStoreHotels()
     {
         $hotels = $this->fetchHotelInventory();
-
+      
         foreach ($hotels as $hotel) {
             $hotelModel = Hotel::updateOrCreate(
                 ['hotel_id' => $hotel['hotel_id']],
