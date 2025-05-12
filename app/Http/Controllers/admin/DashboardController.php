@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Payment, Role, User};
+use App\Models\{Payment, Role, User,Booking,BookingGuest};
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,24 +15,51 @@ class DashboardController extends Controller
      * createdDate  : 29-05-2024
      * purpose      : Get the dashboard detail for the admin
      */
-    public function index(){
+ public function index()
+{
+    $role = Role::where('name', config('constants.ROLES.USER'))->first();
+    $user = User::whereNull('deleted_at')->where('role_id', $role->id);
 
-        $role = Role::where('name' , config('constants.ROLES.USER'))->first();
-        $user = User::whereNull('deleted_at')
-                ->where('role_id',$role->id);
-       
-       
-        $months = [];
-        
+    $hotelId = session('selected_hotel_id'); // may be null
 
-        $responseData =[
-            'total_registered_user'         => $user->clone()->count(),
-            'total_active_user'             => $user->clone()->where('status',1)->count(),
-            'months'                        => json_encode($months),
-          
+    // Bookings count
+    $totalBookings = Booking::when($hotelId, function ($query) use ($hotelId) {
+        return $query->where('hotel_id', $hotelId);
+    })->count();
 
-        ];
-        return view("admin.dashboard",compact('responseData'));
-    }
+    // Guests count
+    $totalGuests = BookingGuest::when($hotelId, function ($query) use ($hotelId) {
+        return $query->where('hotel_id', $hotelId);
+    })->count();
+
+    $responseData = [
+        'total_registered_user' => $user->clone()->count(),
+        'total_active_user'     => $user->clone()->where('status', 1)->count(),
+        'total_bookings'        => $totalBookings,
+        'total_guests'          => $totalGuests,
+        'months'                => json_encode([]),
+    ];
+
+    return view("admin.dashboard", compact('responseData'));
+}
+
     /**End method index**/
+
+
+   // HotelController.php
+public function selectHotel(Request $request)
+{
+    $hotelId = $request->input('hotel_id');
+
+    if ($hotelId) {
+        session(['selected_hotel_id' => $hotelId]);
+    } else {
+        session()->forget('selected_hotel_id');
+    }
+
+    return redirect()->back();
+}
+
+
+
 }
