@@ -130,47 +130,126 @@
         </div>
     </div>
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-7 grid-margin">
+        <h5 class="mb-3 page-title">Pending Payments</h5>
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
+              <th scope="col">User Name</th>
+              <th scope="col">email</th>
+              <th scope="col">amount</th>
+              <th scope="col">Due Date</th>
+              <th scope="col">Status</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
+              <td scope="row">Henry</td>
+              <td>example12@gmail.com</td>
+              <td>$100</td>
+              <td>25 May 2025</td>
+              <td><span class="status pnd-status">Pending</span></td>
+              <td><i class="fa-solid fa-ellipsis"></i></td>
             </tr>
             <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
+              <td scope="row">Henry</td>
+              <td>example12@gmail.com</td>
+              <td>$100</td>
+              <td>25 May 2025</td>
+              <td><span class="status pnd-status">Pending</span></td>
+              <td><i class="fa-solid fa-ellipsis"></i></td>
             </tr>
             <tr>
-              <th scope="row">3</th>
-              <td>Larry</td>
-              <td>the Bird</td>
-              <td>@twitter</td>
+              <td scope="row">Henry</td>
+              <td>example12@gmail.com</td>
+              <td>$100</td>
+              <td>25 May 2025</td>
+              <td><span class="status pnd-status">Pending</span></td>
+              <td><i class="fa-solid fa-ellipsis"></i></td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="col-md-4">
-
-      </div>
+      <div class="col-md-5 grid-margin">
+        <h5 class="mb-3 page-title">Pending Payments</h5>
+        <div class="container text-center mt-5" style="width: 300px;">
+          <canvas id="chartjs-doughnut"></canvas>
+          <div id="chartCenterText">Bookings</div>
+        </div>
     </div>
+</div>
+<div class="row">
+  <div class="col-12 grid-margin">
+    <h5 class="mb-3 page-title">Recent Bookings</h5>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">User Name</th>
+          <th scope="col">email</th>
+          <th scope="col">amount</th>
+          <th scope="col">Due Date</th>
+          <th scope="col">Status</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td scope="row">Henry</td>
+          <td>example12@gmail.com</td>
+          <td>$100</td>
+          <td>25 May 2025</td>
+          <td><span class="status pnd-status">Pending</span></td>
+          <td><i class="fa-solid fa-ellipsis"></i></td>
+        </tr>
+        <tr>
+          <td scope="row">Henry</td>
+          <td>example12@gmail.com</td>
+          <td>$100</td>
+          <td>25 May 2025</td>
+          <td><span class="status paid-status">Paid</span></td>
+          <td><i class="fa-solid fa-ellipsis"></i></td>
+        </tr>
+        <tr>
+          <td scope="row">Henry</td>
+          <td>example12@gmail.com</td>
+          <td>$100</td>
+          <td>25 May 2025</td>
+          <td><span class="status pnd-status">Pending</span></td>
+          <td><i class="fa-solid fa-ellipsis"></i></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 @endsection
 @section('scripts')
 <script src="{{asset('admin/js/dashboard.js')}}"></script>
+<script src="https://unpkg.com/@adminkit/core@latest/dist/js/app.js"></script>
 <script src="{{asset('admin/js/chart.js')}}"></script>
+<script>
+  new Chart(document.getElementById("chartjs-doughnut"), {
+  type: "doughnut",
+  data: {
+    labels: ["Social", "Search Engines", "Direct", "Other"],
+    datasets: [{
+      data: [260, 125, 54, 146],
+      backgroundColor: [
+        window.theme.primary,
+        window.theme.success,
+        window.theme.warning,
+        "#dee2e6"
+      ],
+      borderColor: "transparent"
+    }]
+  },
+  options: {
+    maintainAspectRatio: false,
+    cutoutPercentage: 65,
+  }
+});
+</script>
+
 <script>
       
   var doughnutPieData = {
