@@ -86,7 +86,7 @@
        <li class="nav-item menu-items {{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? 'active' : '' }}">
         <a class="nav-link {{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? '' : 'collapsed' }}" data-toggle="collapse" href="#service1" aria-expanded="{{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? 'true' : 'false' }}" aria-controls="service1">
             <span class="menu-icon">
-                <i class="mdi mdi-settings"></i>
+                <i class="fa-solid fa-users"></i>
             </span>
             <span class="menu-title">User Management</span>
             <i class="menu-arrow"></i>
@@ -132,7 +132,7 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.hotel.*') ? 'active' : '' }}">
             <a class="nav-link" href="#">
                 <span class="menu-icon">
-                    <i class="mdi mdi-gift"></i>
+                    <i class="fa-solid fa-hotel"></i>
                 </span>
                 <span class="menu-title">Hotel Mangemanet</span>
             </a>
@@ -144,7 +144,7 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.booking.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.booking.list') }}">
                 <span class="menu-icon">
-                    <i class="mdi mdi-gift"></i>
+                    <i class="fa-solid fa-calendar-week"></i>
                 </span>
                 <span class="menu-title">Booking Mangemanet</span>
             </a>
@@ -155,7 +155,7 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.service.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.service.list') }}">
                 <span class="menu-icon">
-                    <i class="mdi mdi-gift"></i>
+                    <i class="fa-solid fa-wrench"></i>
                 </span>
                 <span class="menu-title">Service Mangemanet</span>
             </a>
@@ -179,7 +179,7 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.newsletter.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.newsletter.index') }}">
                 <span class="menu-icon">
-                    <i class="mdi mdi-contacts"></i>
+                    <i class="fa-solid fa-envelope-open-text"></i>
                 </span>
                 <span class="menu-title">Newsletter Subscribers</span>
             </a>
@@ -191,7 +191,7 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.announcements.index') }}">
                 <span class="menu-icon">
-                    <i class="mdi mdi-contacts"></i>
+                    <i class="fa-solid fa-bullhorn"></i>
                 </span>
                 <span class="menu-title">Announcements</span>
             </a>

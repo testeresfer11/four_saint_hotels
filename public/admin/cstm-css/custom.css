@@ -484,10 +484,55 @@ color: green;
 }
 
 .form-control[readonly]{
-background-color: #666;
+  background-color: #e9e9e9;
+  color: #838383 !important;
+}
+.dropdown-menu.show{
+  position: absolute;
+  background: #b46326;
+  display: inline-block;
+  min-width: 100%;
+  max-width: 100%;
+  top: 23px;
+  padding: 5px;
+  border-radius: 16px !important;
+}
+.dropdown-menu.show select{
+  display: block;
+  width: 100%;
+  background: #b46326;
+  border: none;
+  color: #fff;
+}
+span.status{
+  padding: 5px 9px;
+  border-radius: 16px;
+  font-size: 13px;
+  display: block;
+  width: 68px;
+  text-align: center;
+}
+span.pnd-status {
+  background: #FFEAC8;
+  border: 1px solid #FFB237;
+}
+.paid-status{
+  background: #E9FFEA;
+  border: 1px solid #00AC0B;
 }
 
-
+#chartCenterText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  font-size: 20px;
+  pointer-events: none;
+}
+.container {
+  position: relative;
+}
 label.error {
 color: #dc3545;
 position: relative;

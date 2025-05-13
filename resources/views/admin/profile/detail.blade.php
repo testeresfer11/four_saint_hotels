@@ -118,9 +118,10 @@
                         <input type="checkbox" name="two_factor_enabled" data-id="{{$user->id}}" class="switch" @if ($user->two_factor_enabled == 1) checked @endif data-value="{{$user->two_factor_enabled}}">
                         </div> 
             </div>
-
+            <div class="text-end">
               <button type="submit" class="btn btn-primary mr-2">Update</button>
               {{-- <button class="btn btn-dark">Cancel</button> --}}
+            </div>
             </form>
           </div>
         </div>

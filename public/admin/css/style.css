@@ -19195,8 +19195,8 @@ body.avgrund-active {
     /* my css start*/
     .eye-icon {
       position: absolute;
-      top: 52px;
-      right: 20px;
+      top: 19px;
+      right: 26px;
       transform: translateY(-50%);
       cursor: pointer;
       color: #424242;
