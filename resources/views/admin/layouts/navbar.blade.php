@@ -9,8 +9,8 @@
         </a>
     </div>
 
-    <ul class="nav">
-        <li class="nav-item profile">
+    <ul class="nav ml-3">
+        {{-- <li class="nav-item profile">
             <div class="profile-desc">
                 <a href="{{ route('admin.profile') }}">
                     <div class="profile-pic">
@@ -24,14 +24,14 @@
                     </div>
                 </a>
             </div>
-        </li>
+        </li> --}}
 
         @canany(['dashboard-view'])
         <!-- Dashboard Link -->
         <li class="nav-item menu-items {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.dashboard') }}">
                 <span class="menu-icon">
-                    <i class="mdi mdi-speedometer"></i>
+                    <i class="fa-solid fa-table-cells-large"></i>
                 </span>
                 <span class="menu-title">Dashboard</span>
             </a>

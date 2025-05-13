@@ -15,17 +15,20 @@
 <div class="row">
   <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
-      <div class="card-body">
-        <div class="d-flex justify-content-between">
-          <h4 class="card-title">Vouchers Management</h4>
+      <div class="card-body p-0">
+        <div class="d-flex justify-content-between flex-column flex-md-row px-3 py-3 align-items-md-center align-items-start">
+          <h4 class="card-title m-0">Vouchers Management</h4>
+          <div class="d-flex align-items-center justify-content-between">
             <div class="admin-filters">
               <x-filter />
             </div>
             <a href="{{route('admin.vouchers.add')}}">
-              <button type="button" class="btn default-btn btn-md">
-                <span class="menu-icon">+ Add Vouchers</span>
+              <button type="button" class="btn btn-primary btn-md">
+                <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
+                <span class="menu-text"> Add Vouchers</span>
               </button>
             </a>
+          </div>
         </div>
         <div class="table-responsive">
           <table class="table table-striped">

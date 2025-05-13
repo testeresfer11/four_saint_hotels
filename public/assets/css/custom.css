@@ -19,6 +19,9 @@ body{
 .form-group{
     position: relative;
 }
+.auth.login-bg{
+    height: 100vh;
+}
 .form-control{
     background-color: #fff;
     border: 1px solid #E9EDF2;

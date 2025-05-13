@@ -15,14 +15,14 @@
 <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <h4 class="card-title">Booking Management</h4>
+        <div class="card-body p-0">
+          <div class="d-flex px-3 py-3 justify-content-between align-items-center">
+            <h4 class="card-title m-0">Booking Management</h4>
             
               <div class="admin-filters">
              <form id="filter">
-                    <div class="row align-items-center justify-content-end mb-3">
-                        <div class="col-4 d-flex gap-2">
+                    <div class="row align-items-center justify-content-end">
+                        <div class="col-6 d-flex gap-2">
                             <input type="text" class="form-control"  placeholder="Search" name="search_keyword" value="{{request()->filled('search_keyword') ? request()->search_keyword : ''}}">            
                         </div>
                         <div class="col-3">
@@ -34,7 +34,7 @@
 
                             </select>
                         </div>
-                        <div class="col-5">
+                        <div class="col-3">
                             <button type="submit" class="btn btn-primary">Filter</button>
                             @if(request()->filled('search_keyword') || request()->filled('status') || request()->filled('category_id'))
                                 <button class="btn btn-danger" id="clear_filter">Clear Filter</button>

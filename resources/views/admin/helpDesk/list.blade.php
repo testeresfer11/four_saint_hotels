@@ -29,8 +29,8 @@
               <div class="btn-group">
               
               <a href="{{route('admin.helpDesk.list',['type' => 'open'])}}">
-                <button type="button" class="btn ticket btn-default {{ $type == "open" ? "active" : ''}}">{{$openCount  ?? 0}} Open</button></a>
-              <a href="{{route('admin.helpDesk.list',['type' => 'close'])}}"><button type="button" class="btn ticket btn-default {{ $type == "close" ? "active" : ''}}">{{$closeCount ?? 0}} Closed</button></a>
+                <button type="button" class="btn ticket btn-default mx-2 {{ $type == "open" ? "active" : ''}}">{{$openCount  ?? 0}} Open</button></a>
+              <a href="{{route('admin.helpDesk.list',['type' => 'close'])}}"><button type="button" class="btn ticket btn-default mx-2 {{ $type == "close" ? "active" : ''}}">{{$closeCount ?? 0}} Closed</button></a>
             </div>
               
             <div class="padding"></div>

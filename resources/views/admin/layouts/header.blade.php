@@ -9,7 +9,7 @@
     <ul class="navbar-nav navbar-nav-right">
 
       <!-- Hotel Dropdown (Corrected Position) -->
-      <li class="nav-item dropdown">
+      <li class="nav-item dropdown hotel_status">
         <a class="nav-link dropdown-toggle" href="#" id="hotelDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
           Select Hotel
         </a>
@@ -25,9 +25,10 @@
       @endphp
 
       <!-- Notifications -->
-      <li class="nav-item dropdown border-left">
-        <a class="nav-link count-indicator dropdown-toggle read-notification" id="notificationDropdown" href="#" data-toggle="dropdown">
+      <li class="nav-item dropdown">
+        <a class="nav-link count-indicator dropdown-toggle notifi read-notification" id="notificationDropdown" href="#" data-toggle="dropdown">
           <i class="mdi mdi-bell"></i>
+          <span class="noti-count">2</span>
           @if ($notification_count)
             <span class="count bg-danger"></span>
           @endif
@@ -56,27 +57,27 @@
         <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
           <div class="navbar-profile">
             <img class="img-xs rounded-circle" src="{{ userImageById(authId()) }}" alt="User profile picture">
-            <p class="mb-0 d-none d-sm-block navbar-profile-name">{{ UserNameById(authId()) }}</p>
+            <p class="mb-0 d-none d-sm-block navbar-profile-name text-capitalize">{{ UserNameById(authId()) }}</p>
             <i class="mdi mdi-menu-down d-none d-sm-block"></i>
           </div>
         </a>
-        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
-          <div class="dropdown-divider"></div>
+        <div class="dropdown-menu dropdown-menu-right navbar-dropdown profile-dropdown preview-list" aria-labelledby="profileDropdown">
+          {{-- <div class="dropdown-divider"></div> --}}
           <a class="dropdown-item preview-item" href="{{ route('admin.profile') }}">
             <div class="preview-thumbnail">
               <div class="preview-icon bg-dark rounded-circle">
-                <i class="mdi mdi-account text-success"></i>
+                <i class="mdi mdi-account"></i>
               </div>
             </div>
             <div class="preview-item-content">
               <p class="preview-subject mb-1">Profile</p>
             </div>
           </a>
-          <div class="dropdown-divider"></div>
+          {{-- <div class="dropdown-divider"></div> --}}
           <a class="dropdown-item preview-item" href="{{ route('admin.logout') }}">
             <div class="preview-thumbnail">
               <div class="preview-icon bg-dark rounded-circle">
-                <i class="mdi mdi-logout text-danger"></i>
+                <i class="mdi mdi-logout"></i>
               </div>
             </div>
             <div class="preview-item-content">
