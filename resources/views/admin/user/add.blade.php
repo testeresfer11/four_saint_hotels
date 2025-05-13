@@ -21,9 +21,9 @@
       <div class="col-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Add User</h4>
+            <h4 class="card-title ">Add User</h4>
              
-            <form class="forms-sample" id="add-user" action="{{route('admin.user.add')}}" method="POST" enctype="multipart/form-data">
+            <form class="forms-sample add-form" id="add-user" action="{{route('admin.user.add')}}" method="POST" enctype="multipart/form-data">
               @csrf
               <div class="form-group">
                 <div class="row">
@@ -62,7 +62,7 @@
                     <div class="col-6">
                         <label for="exampleInputGender">Gender</label>
                         <select name="gender" id="exampleInputGender" class="form-control  @error('gender') is-invalid @enderror" >
-                            <option value="">Select Gender</option>
+                            <option value="" disabled selected hidden>Select Gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                             <option value="Other">Other</option>
@@ -143,9 +143,10 @@
                 </div>
               </div>
               
-
+<div class="text-end">
               <button type="submit" class="btn btn-primary mr-2">Add</button>
               {{-- <button class="btn btn-dark">Cancel</button> --}}
+            </div>
             </form>
           </div>
         </div>

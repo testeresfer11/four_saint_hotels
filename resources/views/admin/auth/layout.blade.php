@@ -16,20 +16,22 @@
 
     <link rel="stylesheet" href="{{asset('admin/css/style.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">    
     <!-- End layout styles -->
 
     <link rel="shortcut icon" href="{{asset('admin/images/app-logo.jpg')}}" />
   </head>
   <body>
-    <div class="container-scroller">
-      <div class="container-fluid page-body-wrapper full-page-wrapper">
-        <div class="row w-100 m-0">
+    <div class="container-fluid">
+      {{-- <div class="container-fluid page-body-wrapper full-page-wrapper"> --}}
+        
           @yield('content')
           <!-- content-wrapper ends -->
-        </div>
+        
         <!-- row ends -->
-      </div>
+      {{-- </div> --}}
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
