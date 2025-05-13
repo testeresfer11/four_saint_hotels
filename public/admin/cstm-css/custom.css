@@ -487,7 +487,7 @@ color: green;
   background-color: #e9e9e9;
   color: #838383 !important;
 }
-.dropdown-menu.show{
+.hotel_status .dropdown-menu.show{
   position: absolute;
   background: #b46326;
   display: inline-block;
@@ -497,7 +497,7 @@ color: green;
   padding: 5px;
   border-radius: 16px !important;
 }
-.dropdown-menu.show select{
+.hotel_status .dropdown-menu.show select{
   display: block;
   width: 100%;
   background: #b46326;
@@ -1169,7 +1169,7 @@ background: transparent;
 }
 
 .select_country_code .iti--inline-dropdown .iti__dropdown-content {
-background: #191c24;
+background: #ffffff;
 }
 
 .select_country_code  .iti__search-input {
