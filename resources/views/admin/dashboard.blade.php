@@ -35,27 +35,27 @@
                 </a>
             </div>
         </div>
-        <div class="col-xl-4 col-sm-6 grid-margin stretch-card">
-        <div class="card">
-            <a href="{{route('admin.user.list',['status' => 1])}}">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-9">
+       <div class="col-xl-4 col-sm-6 grid-margin stretch-card">
+    <div class="card">
+        <a href="{{route('admin.booking.list')}}">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-9">
                         <div class="d-flex align-items-center align-self-start">
-                            <h3 class="mb-0">{{$responseData['total_active_user'] ?? 0}}</h3>
+                            <h3 class="mb-0">{{$responseData['total_bookings'] ?? 0}}</h3>
                         </div>
-                        </div>
-                        <div class="col-3">
+                    </div>
+                    <div class="col-3">
                         <div class="icon icon-box-success">
                             <span class="mdi mdi-arrow-top-right icon-item"></span>
                         </div>
-                        </div>
                     </div>
-                    <h6 class="text-muted font-weight-normal">Total Active Users</h6>
                 </div>
-            </a>
-        </div>
-        </div>
+                <h6 class="text-muted font-weight-normal">Total Bookings</h6>
+            </div>
+        </a>
+    </div>
+</div>
         <div class="col-xl-4 col-sm-6 grid-margin stretch-card">
         <div class="card">
                 <a href="#">
@@ -63,7 +63,7 @@
                         <div class="row">
                             <div class="col-9">
                             <div class="d-flex align-items-center align-self-start">
-                                <h3 class="mb-0">${{$responseData['total_registered_user'] ?? 0}}</h3>
+                                <h3 class="mb-0">${{$responseData['total_guests'] ?? 0}}</h3>
                             </div>
                             </div>
                             <div class="col-3">
@@ -72,7 +72,7 @@
                             </div>
                             </div>
                         </div>
-                        <h6 class="text-muted font-weight-normal">Total Revenue Earned</h6>
+                        <h6 class="text-muted font-weight-normal">Total Guests
                     </div>
                 </a>
             </div>

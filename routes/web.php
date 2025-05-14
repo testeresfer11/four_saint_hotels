@@ -39,6 +39,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::group(['prefix' => 'admin'], function () {
     Route::middleware(['auth', 'admin'])->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::post('/hotel/select', [DashboardController::class, 'selectHotel'])->name('hotel.select');
 
         // Manage auth routes
         Route::controller(AuthController::class)->group(function () {
