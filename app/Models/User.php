@@ -23,11 +23,10 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $appends = ['full_name'];
+  
     protected $fillable = [
         'role_id',
-        'first_name',
-        'last_name',
+        'full_name',
         'email',
         'device_token',
         'device_type',
@@ -68,10 +67,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function getFullNameAttribute()
+   /* public function getFullNameAttribute()
     {
         return ucwords("{$this->first_name} {$this->last_name}");
-    }
+    }*/
     public function role() {
         return $this->belongsTo(Role::class);
     }

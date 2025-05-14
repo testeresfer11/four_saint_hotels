@@ -14,9 +14,20 @@
           Select Hotel
         </a>
         <div class="dropdown-menu" aria-labelledby="hotelDropdown">
-          @foreach($hotels as $hotel)
-            <a class="dropdown-item" href="#">{{ $hotel->name }}</a>
-          @endforeach
+        <form method="POST" action="{{ route('admin.hotel.select') }}">
+            @csrf
+            <select name="hotel_id" onchange="this.form.submit()">
+                <option value="">All Hotels</option>
+                @foreach($hotels as $hotel)
+                    <option value="{{ $hotel->id }}" @selected(session('selected_hotel_id') == $hotel->id)>
+                      {{ $hotel->name }}
+                  </option>
+
+                @endforeach
+            </select>
+        </form>
+
+
         </div>
       </li>
 
