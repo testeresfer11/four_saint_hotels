@@ -134,7 +134,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-gift"></i>
                 </span>
-                <span class="menu-title">Hotel Mangemanet</span>
+                <span class="menu-title">Hotel Management</span>
             </a>
         </li>
        {{-- @endcanany--}}
@@ -146,7 +146,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-gift"></i>
                 </span>
-                <span class="menu-title">Booking Mangemanet</span>
+                <span class="menu-title">Booking Management</span>
             </a>
         </li>
        {{-- @endcanany--}}
@@ -157,7 +157,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-gift"></i>
                 </span>
-                <span class="menu-title">Service Mangemanet</span>
+                <span class="menu-title">Service Management</span>
             </a>
         </li>
        {{-- @endcanany--}}

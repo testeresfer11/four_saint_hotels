@@ -22,6 +22,7 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::controller(SabeeHotelController::class)->group(function () {
         Route::get('/sabee/hotels/fetch','fetchAndStore');
+        Route::get('/sabee/hotels/detail','hotelDetail');
     });
 
 

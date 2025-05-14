@@ -8,25 +8,42 @@ use Carbon\Carbon;
 
 class SabeeHotelService
 {
+    /**
+     * Fetch hotel inventory from Sabee API.
+     *
+     * @return array
+     * @throws \Exception
+     */
     public function fetchHotelInventory()
     {
+        // Send GET request to Sabee hotel inventory endpoint
         $response = Http::withHeaders([
             'api_key' => config('services.sabee.api_key'),
             'api_version' => config('services.sabee.api_version'),
         ])->get(config('services.sabee.api_url') . '/hotel/inventory');
-
+           
+        // Throw exception if request fails
         if (!$response->successful()) {
             throw new \Exception('Failed to fetch hotel inventory: ' . $response->body());
         }
 
+        // Return hotel data array
         return $response->json('data.hotels');
     }
 
+    /**
+     * Fetch hotel inventory and save/update hotels, room types, and rate plans in DB.
+     *
+     * @return array
+     * @throws \Exception
+     */
     public function fetchAndStoreHotels()
     {
         $hotels = $this->fetchHotelInventory();
+       
 
         foreach ($hotels as $hotel) {
+            // Save or update hotel data
             $hotelModel = Hotel::updateOrCreate(
                 ['hotel_id' => $hotel['hotel_id']],
                 [
@@ -43,12 +60,13 @@ class SabeeHotelService
                 ]
             );
 
-            // Fetch and save room types
+            // Fetch and save room types by hotel ID
             $roomTypes = $this->fetchRoomTypesByHotelId($hotel['hotel_id']);
 
             foreach ($roomTypes as $roomType) {
+                // Save or update room type
                 $roomTypeModel = HotelRoomType::updateOrCreate(
-                    ['room_id' => $roomType['room_type_id']],
+                    ['room_type_id' => $roomType['room_type_id']],
                     [
                         'hotel_id' => $hotel['hotel_id'],
                         'room_name' => $roomType['room_type_name'],
@@ -59,7 +77,7 @@ class SabeeHotelService
                     ]
                 );
 
-                // Save individual rooms inside the room type
+                // Save individual rooms under this room type
                 foreach ($roomType['rooms'] as $room) {
                     \App\Models\HotelRoom::updateOrCreate(
                         ['room_id' => $room['room_id']],
@@ -77,18 +95,18 @@ class SabeeHotelService
             // Save rate plans if available
             if (isset($hotel['rateplans'])) {
                 foreach ($hotel['rateplans'] as $plan) {
+                    // Save or update rate plan
                     $ratePlanModel = HotelRatePlan::updateOrCreate(
                         ['rateplan_id' => $plan['rateplan_id'], 'hotel_id' => $hotel['hotel_id']],
                         [
                             'rateplan_name'         => $plan['rateplan_name'],
-                            'linked_to_master'      => $plan['linked_to_master'],
-                            'linked_to_rateplan_id' => $plan['linked_to_rateplan_id'],
-                            'price_model'           => $plan['price_model'],
-                            'dynamic_pricing'       => $plan['dynamic_pricing'],
+                           
+                            
+                        
                         ]
                     );
 
-                    // Save associated room types if they exist
+                    // Save related room types for rate plan
                     if (!empty($plan['room_types'])) {
                         foreach ($plan['room_types'] as $roomTypeRelation) {
                             HotelRatePlanRoomType::updateOrCreate(
@@ -109,8 +127,16 @@ class SabeeHotelService
         return $hotels;
     }
 
+    /**
+     * Fetch room types by hotel ID from Sabee API.
+     *
+     * @param int|string $hotelId
+     * @return array
+     * @throws \Exception
+     */
     public function fetchRoomTypesByHotelId($hotelId)
     {
+        // Send GET request to fetch room types
         $response = Http::withHeaders([
             'api_key' => config('services.sabee.api_key'),
             'api_version' => config('services.sabee.api_version'),
@@ -118,10 +144,36 @@ class SabeeHotelService
             'hotel_id' => $hotelId
         ]);
 
+        // Throw exception on failure
         if (!$response->successful()) {
             throw new \Exception('Failed to fetch room types: ' . $response->body());
         }
 
+        // Return room types array
         return $response->json('data.room_types');
+    }
+
+    /**
+     * Get hotel details from local database with relations (room types and rate plans).
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function hotelDetail($id)
+    {
+        $hotel = Hotel::with('roomTypes', 'ratePlans')->where('id', $id)->first();
+
+        if ($hotel) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Hotel details fetched successfully.',
+                'data' => $hotel
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hotel not found.',
+            ], 404);
+        }
     }
 }
