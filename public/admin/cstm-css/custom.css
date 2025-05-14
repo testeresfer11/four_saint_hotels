@@ -1293,6 +1293,7 @@ select.form-control:focus{
   display: none;
 }
 
+
 .table-responsive table tbody tr>td{
   padding-top: 11px !important;
   padding-bottom: 11px !important;

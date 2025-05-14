@@ -14,7 +14,7 @@
       <div class="carousel-item active bg-slide bg-slide-1">
         <div class="overlay"></div>
         <div class="carousel-caption  text-white">
-          <h3 class="pt-5 my-2">Find Hotels Anytime,<br> Anywhere</h3>
+          <h3 class="pt-4 my-2">Find Hotels Anytime,<br> Anywhere</h3>
           <p class="w-75 mx-auto">Lorem ipsum dolor sit amet consectetur. Lorem posuere at odio nullam pulvinar enim consequat at vitae. Elit ullamcorper ultrices magna malesuada erat.</p>
         </div>
       </div>
@@ -45,12 +45,12 @@
   </div>
   
 </div>
-  <div class="col-lg-6  px-5 py-5">
+  <div class="col-lg-6 bg-white px-5 py-5">
     {{-- <div class=" d-flex align-items-center"> --}}
     <div class="card-body login-form px-5 py-3">
       <div class="text-center">
       <img src="{{asset('admin/images/auth/new_logo.png')}}" class="img-fluid" alt="">
-      <h1 class="card-title heading-primary my-3">{{ __('Login') }}</h1>
+      <h1 class="heading-primary my-3">{{ __('Login') }}</h1>
       <p class="grey">Enter your email and password to access your account</p>
     </div>
         {{-- <x-alert /> --}}
@@ -69,10 +69,12 @@
 
           <div class="form-group mb-1 pt-2">
             <label for="password">{{ __('Password') }}</label>
+            <div class="form-input">
             <input name="password" id="password" type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Enter your password" autocomplete="current-password">
             <span class="togglePassword eye-icon" data-toggle="password">
                 <i class="fa fa-eye-slash"></i>
             </span>
+          </div>
             @error('password')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
