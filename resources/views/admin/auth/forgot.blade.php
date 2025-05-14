@@ -16,7 +16,7 @@
               <div class="text-center">
                 <img src="{{asset('images/logo.png')}}" alt="" class="img-fluid logo">
             </div>
-            <h3 class="card-title text-center mb-3">Forgot Password</h3>
+            <h3 class=" text-center mb-3">Forgot Password</h3>
             <p class="card-sub-title text-center">Enter your email account to reset Password </p>
             <form action="{{route('admin-forgot-password')}}" method="post" id="admin_forgot_password" class="px-3 ">
                 @csrf

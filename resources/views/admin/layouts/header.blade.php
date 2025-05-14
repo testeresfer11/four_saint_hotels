@@ -1,7 +1,7 @@
 <nav class="navbar p-0 fixed-top d-flex flex-row">
   <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
     <a class="navbar-brand brand-logo-mini" href="index.html">
-      <img src="{{ asset('admin/images/logo-mini.svg') }}" alt="logo" />
+      <img src="{{ asset('images/logo.jpg') }}" alt="logo" />
     </a>
   </div>
 

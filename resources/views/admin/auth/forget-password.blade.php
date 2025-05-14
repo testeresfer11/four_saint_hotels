@@ -45,11 +45,11 @@
     </div>
     
   </div>
-  <div class=" col-lg-6 px-5 py-5">
+  <div class=" col-lg-6 bg-white px-5 py-5">
     <div class="card-body login-form px-5 py-5">
       <div class="text-center">
         <img src="{{asset('admin/images/auth/new_logo.png')}}" class="img-fluid" alt="">
-        <h1 class="card-title heading-primary my-3">{{ __('Reset Password') }}</h1>
+        <h1 class=" heading-primary my-3">{{ __('Reset Password') }}</h1>
         <p class="grey">Don’t worry happens to all of us. enter your email below to recover your password</p>
       </div>
         {{-- <x-alert /> --}}
