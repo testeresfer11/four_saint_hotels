@@ -15,17 +15,21 @@
 <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <h4 class="card-title">User Management</h4>
-            
+        <div class="card-body p-0">
+          <div class="d-flex justify-content-between flex-column row-gap-3 flex-md-row px-3 py-3 align-items-md-center align-items-start">
+            <h4 class="card-title m-0">User Management</h4>
+            <div class="d-flex align-items-center justify-content-between">
               <div class="admin-filters">
                 <x-filter />
               </div>
                @can('user-add')
-              <a href="{{route('admin.user.add')}}"><button type="button" class="btn default-btn btn-md">
-                <span class="menu-icon">+ Add User</span></button></a>
+              <a href="{{route('admin.user.add')}}" class="add-btn">
+                <button type="button" class="btn btn-primary btn-md">
+                  <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
+                    <span class="menu-text"> Add User</span>
+                </button></a>
               @endcan
+            </div>
           </div>
           <div class="table-responsive">
             <table class="table table-striped">

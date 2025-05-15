@@ -15,9 +15,9 @@
 <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <h4 class="card-title">Feedback Management</h4>
+        <div class="card-body p-0">
+          <div class="d-flex justify-content-between flex-column flex-md-row px-3 row-gap-3 py-3 align-items-md-center align-items-start">
+            <h4 class="card-title m-0">Feedback Management</h4>
             
               <div class="admin-filters">
                 <x-filter />

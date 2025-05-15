@@ -15,9 +15,9 @@
 <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <h4 class="card-title">Notifications</h4>
+        <div class="card-body p-0">
+          <div class="d-flex px-3 py-3 justify-content-between">
+            <h4 class="card-title m-0">Notifications</h4>
             @if($notifications->count())
               <button type="button" class="btn btn-danger btn-md ClearAllNotification">
                 <span class="menu-icon"> Clear All</span>

@@ -6,6 +6,7 @@
         <h3 class="page-title">Services</h3>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
+                <li class="breadcrumb-item "><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Service List</li>
             </ol>
         </nav>
@@ -14,9 +15,10 @@
 
 @section('content')
     <div class="card">
-        <div class="card-body">
-            <h4 class="card-title">Services List</h4>
-
+        <div class="card-body p-0">
+            <div class="px-3 py-3">
+                <h4 class="card-title m-0">Services List</h4>
+            </div>
             @if (session('error'))
                 <div class="alert alert-danger">
                     {{ session('error') }}

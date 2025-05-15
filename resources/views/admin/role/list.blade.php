@@ -15,12 +15,13 @@
 <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <h4 class="card-title">Role Management</h4>
+        <div class="card-body p-0">
+          <div class="d-flex px-3 py-3 justify-content-between align-items-center">
+            <h4 class="card-title m-0">Role Management</h4>
 
-              <a href="{{route('admin.role.add')}}"><button type="button" class="btn default-btn btn-md">
-                <span class="menu-icon">+ Add Role</span></button></a>
+              <a href="{{route('admin.role.add')}}"><button type="button" class="btn btn-primary btn-md">
+                <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
+                <span class="menu-text"> Add Role</span></button></a>
           </div>
           <div class="table-responsive">
             <table class="table table-striped">

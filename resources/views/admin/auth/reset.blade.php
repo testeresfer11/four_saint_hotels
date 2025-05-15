@@ -16,7 +16,7 @@
                 <div class="text-center">
                     <img src="{{asset('images/logo.png')}}" alt="" class="img-fluid logo">
                 </div>
-            <h3 class="card-title text-center mb-3">Reset Password</h3>
+            <h3 class="text-center mb-3">Reset Password</h3>
             <p class="card-sub-title text-center">The Password must be different than before</p>
             <form action="{{route('admin-reset-password')}}" method="post" id="admin_reset_password">
                 @csrf
