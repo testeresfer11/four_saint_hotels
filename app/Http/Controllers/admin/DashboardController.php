@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Payment, Role, User,Booking,BookingGuest};
+use App\Models\{Payment, Role, User,Booking,BookingGuest,Hotel};
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -48,8 +48,8 @@ class DashboardController extends Controller
 public function selectHotel(Request $request)
 {
     $hotelId = $request->input('hotel_id');
-
-    if ($hotelId) {
+    $hotelId = Hotel::where('id',$hotelId)->first()->hotel_id;
+       if ($hotelId) {
         session(['selected_hotel_id' => $hotelId]);
     } else {
         session()->forget('selected_hotel_id');

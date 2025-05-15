@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\API\SabeeBookingService;
+use App\Traits\SendResponseTrait;
 
 
 class BookingController extends Controller
 {
+    use SendResponseTrait;
     protected $sabeeBookingService;
 
     public function __construct(SabeeBookingService $sabeeBookingService)
@@ -50,18 +52,10 @@ class BookingController extends Controller
                 $services,
                 $guest_details
             );
-            return $bookings;
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Bookings fetched successfully.',
-                'data' => $bookings,
-            ]);
+             return $this->apiResponse('success', 200, 'Bookings ' . config('constants.SUCCESS.FETCH_DONE'), ['bookings' => $bookings]);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 400);
+           return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
 

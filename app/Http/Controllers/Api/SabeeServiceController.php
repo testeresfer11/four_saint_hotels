@@ -28,15 +28,15 @@ class SabeeServiceController extends Controller
      */
     public function fetchAndStore(Request $request)
     {
-        $request->validate([
-            'hotel_id' => 'required|integer|exists:hotels,hotel_id',
-        ]);
+        
 
-        $hotelId = $request->input('hotel_id');
+        $hotel_id = session('selected_hotel_id', 8618);
+
+
 
         try {
             // This will fetch & upsert all services for the given hotel
-            $services = $this->serviceList->fetchAndSyncServiceInventory($hotelId);
+            $services = $this->serviceList->fetchAndSyncServiceInventory($hotel_id);
 
             return $this->apiResponse(
                 'success',
