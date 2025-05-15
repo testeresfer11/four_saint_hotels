@@ -31,9 +31,11 @@
           </div>
           <div class="form-group">
             <label>Message</label>
-            <textarea class="summernote" name="message" rows="5" class="form-control" required></textarea>
+            <textarea name="message" rows="5" class=" summernote form-control d-block" required></textarea>
           </div>
+          <div class="text-end">
           <button type="submit" class="btn btn-success">Send Announcement</button>
+        </div>
         </form>
       </div>
     </div>

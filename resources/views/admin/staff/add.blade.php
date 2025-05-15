@@ -154,8 +154,10 @@
                     </div>
                   </div>
             </fieldset>
+            <div class="text-end">
                 <button type="submit" class="btn btn-primary mr-2 mt-4">Add</button>
               {{-- <button class="btn btn-dark">Cancel</button> --}}
+            </div>
             </form>
           </div>
         </div>

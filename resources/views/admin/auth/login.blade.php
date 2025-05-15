@@ -1,16 +1,64 @@
 @extends('admin.auth.layout')
 @section('title','Log in')
 @section('content')
-<div class="content-wrapper full-page-wrapper d-flex align-items-center auth login-bg">
-  <div class="card col-lg-4 mx-auto">
-    <div class="card-body px-5 py-5">
-      <h3 class="card-title text-left mb-3">{{ __('Login') }}</h3>
+<div class="row">
+<div class="col-lg-6 auth login-bg p-0">
+  {{-- <img src="{{asset('admin/images/auth/new-login-bg.png')}}" class="img-fluid" alt=""> --}}
+  <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+      <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+      <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+      <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+      <div class="carousel-item active bg-slide bg-slide-1">
+        <div class="overlay"></div>
+        <div class="carousel-caption  text-white">
+          <h3 class="pt-4 my-2">Find Hotels Anytime,<br> Anywhere</h3>
+          <p class="w-75 mx-auto">Lorem ipsum dolor sit amet consectetur. Lorem posuere at odio nullam pulvinar enim consequat at vitae. Elit ullamcorper ultrices magna malesuada erat.</p>
+        </div>
+      </div>
+      <div class="carousel-item bg-slide bg-slide-2">
+        <div class="overlay"></div>
+        <div class="carousel-caption  text-white">
+          <h3 class="pt-5 my-2">Find Hotels Anytime,<br> Anywhere</h3>
+          <p class="w-75 mx-auto">Lorem ipsum dolor sit amet consectetur. Lorem posuere at odio nullam pulvinar enim consequat at vitae. Elit ullamcorper ultrices magna malesuada erat.</p>
+        </div>
+      </div>
+      <div class="carousel-item bg-slide bg-slide-3">
+        <div class="overlay"></div>
+        <div class="carousel-caption text-white">
+          <h3 class="pt-5 my-2">Find Hotels Anytime,<br> Anywhere</h3>
+          <p class="w-75 mx-auto">Lorem ipsum dolor sit amet consectetur. Lorem posuere at odio nullam pulvinar enim consequat at vitae. Elit ullamcorper ultrices magna malesuada erat.</p>
+        </div>
+      </div>
+    </div>
+  
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+  
+</div>
+  <div class="col-lg-6 bg-white px-5 py-5">
+    {{-- <div class=" d-flex align-items-center"> --}}
+    <div class="card-body login-form px-5 py-3">
+      <div class="text-center">
+      <img src="{{asset('admin/images/auth/new_logo.png')}}" class="img-fluid" alt="">
+      <h1 class="heading-primary my-3">{{ __('Login') }}</h1>
+      <p class="grey">Enter your email and password to access your account</p>
+    </div>
         {{-- <x-alert /> --}}
       <form action="{{ route('login') }}" method="POST" id="loginForm">
           @csrf
-          <div class="form-group">
-              <label for="email">{{ __('Email Address') }} *</label>
-              <input type="email" class="form-control  @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" autocomplete="email" autofocus>
+          <div class="form-group mb-1">
+              <label for="email">{{ __('Email') }}</label>
+              <input type="email" class="form-control  @error('email') is-invalid @enderror" placeholder="Enter your email" name="email" value="{{ old('email') }}" autocomplete="email" autofocus>
 
               @error('email')
                   <span class="invalid-feedback" role="alert">
@@ -19,12 +67,14 @@
               @enderror
           </div>
 
-          <div class="form-group">
-            <label for="password">{{ __('Password') }} *</label>
-            <input name="password" id="password" type="password" class="form-control @error('password') is-invalid @enderror" autocomplete="current-password">
+          <div class="form-group mb-1 pt-2">
+            <label for="password">{{ __('Password') }}</label>
+            <div class="form-input">
+            <input name="password" id="password" type="password" class="form-control @error('password') is-invalid @enderror" placeholder="Enter your password" autocomplete="current-password">
             <span class="togglePassword eye-icon" data-toggle="password">
                 <i class="fa fa-eye-slash"></i>
             </span>
+          </div>
             @error('password')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -33,18 +83,19 @@
           </div>   
 
         <div class="form-group d-flex align-items-center justify-content-between">
-          <div class="form-check">
-              <input type="checkbox" class="form-check-input" name="remember" id="remember"  {{ old('remember') ? 'checked' : ''}}> Remember me </label>
+          <div class="form-check my-1">
+              <input type="checkbox" class="form-check-input" name="remember" id="remember"  {{ old('remember') ? 'checked' : ''}}> <span class="grey"> Remember me </span></label>
             <label class="form-check-label">
           </div>
-          <a href="{{route('forget-password')}}" class="forgot-pass">{{ __('Forgot Your Password?') }}</a>
+          <a href="{{route('forget-password')}}" class="forgot-pass grey">{{ __('Forgot Your Password?') }}</a>
         </div>
         <div class="text-center">
-          <button type="submit" class="btn btn-primary btn-block enter-btn">{{ __('Login') }}</button>
+          <button type="submit" class="btn btn-primary btn-block enter-btn">{{ __('Sign In') }}</button>
         </div>
         
       </form>
     </div>
+  {{-- </div> --}}
   </div>
 </div>
 @endsection

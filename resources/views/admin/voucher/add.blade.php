@@ -16,7 +16,7 @@
 @section('content')
 <div>
   <div class="row justify-content-center">
-    <div class="col-5 grid-margin stretch-card">
+    <div class="col-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
           <h4 class="card-title">Add Vouchers</h4>
