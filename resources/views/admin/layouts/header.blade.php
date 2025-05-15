@@ -31,6 +31,7 @@
         </div>
       </li>
 
+
       @php
           $notification_count = auth()->user()->unreadNotifications()->count();
       @endphp

@@ -63,7 +63,7 @@ class SabeeHotelController extends Controller
      */
      
 
-    public function detail($id){
+    public function detail($id,$sabeeHotelService){
         try {
             $hotel = $sabeeHotelService->hotelDetail($id);
             return $this->apiResponse('success', 200, 'Hotel ' . config('constants.SUCCESS.FETCH_DONE'), ['hotel' => $hotel]);
@@ -79,18 +79,53 @@ class SabeeHotelController extends Controller
      * createdDate  : 12-05-2025
      * purpose      : Fetch hotels from the local database
      */
-    public function getHotels()
-    {
-        try {
-            $hotels = Hotel::with(['roomTypes', 'ratePlans'])->get(); // Eager load related models if needed
+ use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Hotel;
 
-            return $this->apiResponse('success', 200, 'Hotels fetched successfully', [
-                'hotels' => $hotels
-            ]);
-        } catch (\Exception $e) {
-            return $this->apiResponse('error', 400, $e->getMessage());
+public function getHotels(Request $request)
+{
+    try {
+        $query = Hotel::with(['roomTypes', 'ratePlans']);
+
+        // Filter by ID
+        if ($request->filled('id')) {
+            $query->where('id', $request->id);
         }
+
+        // Filter by name (partial match)
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        // Check if lat & long are provided
+        if ($request->filled('lat') && $request->filled('long')) {
+            $lat = $request->lat;
+            $lng = $request->long;
+
+            // Haversine Formula for distance calculation
+            $query->selectRaw(
+                '*, (
+                    6371 * acos(
+                        cos(radians(?)) * cos(radians(latitude)) *
+                        cos(radians(longitude) - radians(?)) +
+                        sin(radians(?)) * sin(radians(latitude))
+                    )
+                ) AS distance',
+                [$lat, $lng, $lat]
+            )->orderBy('distance');
+        }
+
+        $hotels = $query->get();
+
+        return $this->apiResponse('success', 200, 'Hotels fetched successfully', [
+            'hotels' => $hotels
+        ]);
+    } catch (\Exception $e) {
+        return $this->apiResponse('error', 400, $e->getMessage());
     }
+}
+
 
 
 
