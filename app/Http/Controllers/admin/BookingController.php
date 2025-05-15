@@ -41,12 +41,15 @@ class BookingController extends Controller
 
 public function getList(Request $request)
 {
-    // Fetch parameters from the request
-    $hotel_id = session('selected_hotel_id', null); // Get hotel_id from session or null
+    // Get hotel_id from session or null if not set
+    $hotel_id = session('selected_hotel_id', null);
+    // Default date range: from first day of previous month to today
     $start_date = $request->query('start_date', now()->subMonth()->startOfMonth()->toDateString());
     $end_date = $request->query('end_date', now()->toDateString());
+
+    // Get optional search and status filters from request query
     $search = $request->query('search_keyword');
-    $status = $request->query('status');  // Status filter
+    $status = $request->query('status');
 
     try {
         $bookingsQuery = Booking::with([
@@ -57,44 +60,42 @@ public function getList(Request $request)
         ])
         ->whereDate('checkin_date', '>=', $start_date)
         ->whereDate('checkout_date', '<=', $end_date)
+        ->when($hotel_id, fn($q) => $q->where('hotel_id', $hotel_id))
         ->when($search, function ($query) use ($search) {
             $query->where(function ($q) use ($search) {
                 $q->whereHas('customer', function ($q) use ($search) {
                     $q->where('first_name', 'like', "%$search%")
-                        ->orWhere('last_name', 'like', "%$search%")
-                        ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
-                        ->orWhere('email', 'like', "%$search%");
+                      ->orWhere('last_name', 'like', "%$search%")
+                      ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
+                      ->orWhere('email', 'like', "%$search%");
                 })
                 ->orWhere('room_type_name', 'like', "%$search%")
                 ->orWhere('reservation_code', 'like', "%$search%");
             });
         })
-        ->when($status, function ($query) use ($status) {
-            $query->where('status', $status);
-        });
+        ->when($status, fn($q) => $q->where('status', $status));
 
-        // Check if a hotel ID is set in the session
-        if ($hotel_id) {
-            $bookingsQuery->where('hotel_id', $hotel_id);
-        }
-
+        // Order by check-in date ascending
         $bookings = $bookingsQuery->orderBy('checkin_date', 'asc')
                                   ->paginate(10);
 
+      
+
+        // Return view with bookings and filter data
         return view('admin.booking.list', [
             'bookings' => $bookings,
             'start_date' => $start_date,
             'end_date' => $end_date,
             'search_keyword' => $search,
-            'status' => $status,  // Pass status filter to the view
-            'selected_hotel_id' => $hotel_id  // Pass selected hotel ID to the view
+            'status' => $status,
+            'selected_hotel_id' => $hotel_id,
         ]);
     } catch (\Exception $e) {
-        // Log the exception and show a generic error message
         Log::error('Error fetching bookings: ' . $e->getMessage());
         return redirect()->back()->with('error', 'Error fetching bookings. Please try again later.');
     }
 }
+
 
 
 
