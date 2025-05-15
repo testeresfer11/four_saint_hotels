@@ -15,9 +15,9 @@ Route::get('/', function () {
 
 
 
-Route::fallback(function () {
-    return redirect()->route('login');
-});
+// Route::fallback(function () {
+//     return redirect()->route('login');
+// });
 Route::get('/contentPage/{slug}', [App\Http\Controllers\admin\ContentPageController::class, 'contentPage'])->name('contentPage');
 Route::post('/contact-us', [App\Http\Controllers\admin\ContentPageController::class, 'storeContact'])->name('contact-us');
 
@@ -127,7 +127,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::group(['prefix' => 'hotel'], function () {
             Route::name('hotel.')->controller(HotelController::class)->group(function () {
                 Route::get('list', 'getList')->name('list');
-                Route::get('view/{id}','view')->name('view');
+                Route::get('view/{id}','detail')->name('view');
             });
         });
 

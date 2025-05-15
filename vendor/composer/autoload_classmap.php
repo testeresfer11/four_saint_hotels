@@ -104,6 +104,7 @@ return array(
     'App\\Models\\Payment' => $baseDir . '/app/Models/Payment.php',
     'App\\Models\\Permission' => $baseDir . '/app/Models/Permission.php',
     'App\\Models\\QueryResponse' => $baseDir . '/app/Models/QueryResponse.php',
+    'App\\Models\\Review' => $baseDir . '/app/Models/Review.php',
     'App\\Models\\Role' => $baseDir . '/app/Models/Role.php',
     'App\\Models\\Service' => $baseDir . '/app/Models/Service.php',
     'App\\Models\\ServiceBooking' => $baseDir . '/app/Models/ServiceBooking.php',

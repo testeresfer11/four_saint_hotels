@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
-@section('title', 'Users')
+@section('title', 'Booking')
 @section('breadcrum')
 <div class="page-header">
     <h3 class="page-title">Users</h3>
     <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item "><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Users</li>
+        <li class="breadcrumb-item active" aria-current="page">Booking</li>
     </ol>
     </nav>
 </div>
@@ -15,6 +15,12 @@
 <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
+        <div class="d-flex gap-2 align-items-center">
+                <button id="fetchBookingsBtn" class="btn btn-sm btn-primary">
+                    <span id="fetchBookingBtnText">Fetch Bookings</span>
+                    <span id="fetchBookingBtnLoader" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
+            </div>
         <div class="card-body p-0">
           <div class="d-flex justify-content-between flex-column flex-md-row px-3 row-gap-3 py-3 align-items-md-center align-items-start">
             <h4 class="card-title m-0">Booking Management</h4>

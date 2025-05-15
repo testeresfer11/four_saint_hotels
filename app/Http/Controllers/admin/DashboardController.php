@@ -20,7 +20,7 @@ class DashboardController extends Controller
     $role = Role::where('name', config('constants.ROLES.USER'))->first();
     $user = User::whereNull('deleted_at')->where('role_id', $role->id);
 
-    $hotelId = session('selected_hotel_id'); // may be null
+    $hotelId = session('selected_hotel_id') ?? 8618; // may be null
 
     // Bookings count
     $totalBookings = Booking::when($hotelId, function ($query) use ($hotelId) {
@@ -28,9 +28,7 @@ class DashboardController extends Controller
     })->count();
 
     // Guests count
-    $totalGuests = BookingGuest::when($hotelId, function ($query) use ($hotelId) {
-        return $query->where('hotel_id', $hotelId);
-    })->count();
+    $totalGuests = BookingGuest::count();
 
     $responseData = [
         'total_registered_user' => $user->clone()->count(),

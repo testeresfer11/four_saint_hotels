@@ -130,7 +130,7 @@
         <!-- Hotel -->
         {{-- @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])--}}
         <li class="nav-item menu-items {{ request()->routeIs('admin.hotel.*') ? 'active' : '' }}">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{{ route('admin.hotel.list') }}">
                 <span class="menu-icon">
                     <i class="fa-solid fa-hotel"></i>
                 </span>

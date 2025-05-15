@@ -4,8 +4,147 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service, HotelRoom};
+use App\Traits\SendResponseTrait;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\{Auth, Hash, Validator};
+use App\Services\API\SabeeHotelService;
+
 
 class HotelController extends Controller
 {
-    //
+    use SendResponseTrait;
+    protected $sabeeHotelService;
+
+    public function __construct(sabeeHotelService $sabeeHotelService)
+    {
+        $this->sabeeHotelService = $sabeeHotelService;
+    }
+    /**
+     * functionName : fetchAndStore
+     * createdDate  : 23-04-2025
+     * purpose      : Get hotel data from sabee and save in our db
+     * /**
+     * Retrieve and store the hotel from sabee app.
+     *
+     * This method accepts a request, processes it through the service layer, 
+     * and returns a JSON response containing the details of the requested page.
+     * It handles exceptions gracefully and returns an appropriate error message in case of failure.
+     * @return \Illuminate\Http\JsonResponse A JSON response containing the hotel listing or an error message.
+     *
+     * @throws \Exception If an error occurs during the retrieval of hotel listing, an exception is thrown 
+     * and an error response is returned to the client.
+     */
+
+
+    public function fetchAndStore(SabeeHotelService $sabeeHotelService)
+    {
+        try {
+            $hotels = $sabeeHotelService->fetchAndStoreHotels();
+            return $this->apiResponse('success', 200, 'Hotel ' . config('constants.SUCCESS.FETCH_DONE'), ['hotels' => $hotels]);
+        } catch (\Exception $e) {
+            return $this->apiResponse('error', 400, $e->getMessage());
+        }
+    }
+
+    /**
+     * functionName : detail
+     * createdDate  : 23-04-2025
+     * purpose      : Get hotel data from sabee and save in our db
+     * 
+     * retriveve hotel details from database.
+     *
+     * This method accepts a request, processes it through the service layer, 
+     * and returns a JSON response containing the details of the requested page.
+     * It handles exceptions gracefully and returns an appropriate error message in case of failure.
+     * @return \Illuminate\Http\JsonResponse A JSON response containing the hotel detail or an error message.
+     *
+     * @throws \Exception If an error occurs during the retrieval of hotel detail, an exception is thrown 
+     * and an error response is returned to the client.
+     */
+
+
+    public function detail($id, SabeeHotelService $sabeeHotelService)
+    {
+        try {
+            $response = $sabeeHotelService->hotelDetail($id);
+
+            // Extract the actual hotel data
+            $data = $response->getData(); // returns stdClass
+            if ($data->status === 'success') {
+                $hotel = $data->data;
+
+                return view('admin.hotel.view', [
+                    'hotel' => $hotel,
+                ]);
+            } else {
+                return redirect()->back()->with('error', $data->message ?? 'Hotel not found');
+            }
+        } catch (\Exception $e) {
+            return $this->apiResponse('error', 400, $e->getMessage());
+        }
+    }
+
+
+
+
+    /**
+     * functionName : getHotels
+     * createdDate  : 12-05-2025
+     * purpose      : Fetch hotels from the local database
+     */
+  public function getList()
+{
+    try {
+       $hotels = Hotel::select('*')->with(['roomTypes', 'ratePlans'])->get();
+
+        return view('admin.hotel.list', [
+            'data' => $hotels,
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Error fetching bookings: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Error fetching bookings. Please try again later.');
+    }
+}
+
+
+
+
+    public function getRoomsByHotel($hotelId)
+    {
+        try {
+            $hotel = Hotel::where('hotel_id', $hotelId)
+                ->with(['roomTypes.rooms']) // eager load room types and rooms
+                ->firstOrFail();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Rooms fetched successfully.',
+                'data' => $hotel->roomTypes
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error: ' . $e->getMessage()
+            ], 404);
+        }
+    }
+
+    public function getRoomDetails($roomId)
+    {
+        try {
+            $room = HotelRoom::with(['roomType.hotel'])->findOrFail($roomId);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Room details fetched successfully.',
+                'data' => $room
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error: ' . $e->getMessage()
+            ], 404);
+        }
+    }
 }
