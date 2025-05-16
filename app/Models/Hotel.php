@@ -29,4 +29,8 @@ class Hotel extends Model
     {
         return $this->hasMany(HotelRatePlan::class, 'hotel_id', 'hotel_id');
     }
+    public function hotelImages()
+    {
+        return $this->hasMany(HotelImage::class, 'hotel_id');
+    }
 }

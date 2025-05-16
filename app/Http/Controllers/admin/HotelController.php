@@ -4,11 +4,13 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service, HotelRoom};
+use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service, HotelRoom, HotelImage};
 use App\Traits\SendResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\{Auth, Hash, Validator};
 use App\Services\API\SabeeHotelService;
+use Illuminate\Support\Facades\Storage;
+
 
 
 class HotelController extends Controller
@@ -70,7 +72,8 @@ class HotelController extends Controller
             $response = $sabeeHotelService->hotelDetail($id);
 
             // Extract the actual hotel data
-            $data = $response->getData(); // returns stdClass
+            $data = $response->getData();
+
             if ($data->status === 'success') {
                 $hotel = $data->data;
 
@@ -93,19 +96,19 @@ class HotelController extends Controller
      * createdDate  : 12-05-2025
      * purpose      : Fetch hotels from the local database
      */
-  public function getList()
-{
-    try {
-       $hotels = Hotel::select('*')->with(['roomTypes', 'ratePlans'])->get();
+    public function getList()
+    {
+        try {
+            $hotels = Hotel::select('*')->with(['roomTypes', 'ratePlans', 'hotelImages'])->get();
 
-        return view('admin.hotel.list', [
-            'data' => $hotels,
-        ]);
-    } catch (\Exception $e) {
-        \Log::error('Error fetching bookings: ' . $e->getMessage());
-        return redirect()->back()->with('error', 'Error fetching bookings. Please try again later.');
+            return view('admin.hotel.list', [
+                'data' => $hotels,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching bookings: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error fetching bookings. Please try again later.');
+        }
     }
-}
 
 
 
@@ -146,5 +149,66 @@ class HotelController extends Controller
                 'message' => 'Error: ' . $e->getMessage()
             ], 404);
         }
+    }
+
+
+    public function uploadImages(Request $request)
+    {
+        try {
+            $request->validate([
+                'hotel_id' => 'required|exists:hotels,id',
+                'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('hotels/images', 'public');
+                $fullUrl = Storage::url($path);
+
+                HotelImage::create([
+                    'hotel_id' => $request->hotel_id,
+                    'image_path' => asset($fullUrl),
+                ]);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Images uploaded successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Image upload failed',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getHotelImages($id)
+    {
+        try {
+            $images = HotelImage::where('hotel_id', $id)->get(); // image_path contains full URL
+            return response()->json(['status' => true, 'images' => $images]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'message' => 'Error fetching images']);
+        }
+    }
+
+
+
+    public function deleteHotelImage($id)
+    {
+        $image = HotelImage::find($id);
+        if (!$image) {
+            return response()->json(['status' => false, 'message' => 'Image not found']);
+        }
+        $imageUrl = $image->image_url;
+        $path = parse_url($imageUrl, PHP_URL_PATH);
+        $relativePath = ltrim(str_replace('/storage/', '', $path), '/'); 
+        if (Storage::disk('public')->exists($relativePath)) {
+            Storage::disk('public')->delete($relativePath);
+        }
+        $image->delete();
+
+        return response()->json(['status' => true, 'message' => 'Image deleted successfully']);
     }
 }

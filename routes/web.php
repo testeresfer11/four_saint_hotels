@@ -128,6 +128,11 @@ Route::group(['prefix' => 'admin'], function () {
             Route::name('hotel.')->controller(HotelController::class)->group(function () {
                 Route::get('list', 'getList')->name('list');
                 Route::get('view/{id}','detail')->name('view');
+                Route::post('upload-images', [HotelController::class, 'uploadImages'])->name('upload.images');
+                Route::get('{hotelId}/images', [HotelController::class, 'getHotelImages']);
+                Route::delete('/image/delete/{id}', [HotelController::class, 'deleteHotelImage'])->name('image.delete');
+
+
             });
         });
 
