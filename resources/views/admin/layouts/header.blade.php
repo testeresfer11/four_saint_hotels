@@ -19,7 +19,7 @@
             <select name="hotel_id" onchange="this.form.submit()">
                 <option value="">All Hotels</option>
                 @foreach($hotels as $hotel)
-                    <option value="{{ $hotel->id }}" @selected(session('selected_hotel_id') == $hotel->id)>
+                    <option value="{{ $hotel->hotel_id }}" @selected(session('selected_hotel_id') == $hotel->hotel_id)>
                       {{ $hotel->name }}
                   </option>
 

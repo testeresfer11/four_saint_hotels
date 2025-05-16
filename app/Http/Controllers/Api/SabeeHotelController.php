@@ -63,7 +63,7 @@ class SabeeHotelController extends Controller
      */
      
 
-    public function detail($id,$sabeeHotelService){
+    public function detail($id,SabeeHotelService $sabeeHotelService){
         try {
             $hotel = $sabeeHotelService->hotelDetail($id);
             return $this->apiResponse('success', 200, 'Hotel ' . config('constants.SUCCESS.FETCH_DONE'), ['hotel' => $hotel]);
@@ -79,9 +79,7 @@ class SabeeHotelController extends Controller
      * createdDate  : 12-05-2025
      * purpose      : Fetch hotels from the local database
      */
- use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\Hotel;
+
 
 public function getHotels(Request $request)
 {

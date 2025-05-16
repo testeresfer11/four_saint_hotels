@@ -35,8 +35,14 @@ class BookingController extends Controller
     {
 
         // Retrieve query parameters
-        $hotel_id = $request->query('hotel_id');
+        $hotel_id = session('selected_hotel_id', 8618);
         $start_date = $request->query('start_date');
+
+        if ($start_date) {
+            $start_date = \Carbon\Carbon::parse($start_date)->startOfYear()->toDateString();
+        } else {
+            $start_date = now()->startOfYear()->toDateString(); // default to current year's start
+        }  
         $end_date = $request->query('end_date');
         $extended_list = $request->query('extended_list', 1); // Default to 1
         $services = $request->query('services', 1); // Default to 1
