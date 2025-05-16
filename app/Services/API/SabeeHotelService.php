@@ -21,6 +21,7 @@ class SabeeHotelService
             'api_key' => config('services.sabee.api_key'),
             'api_version' => config('services.sabee.api_version'),
         ])->get(config('services.sabee.api_url') . '/hotel/inventory');
+
            
         // Throw exception if request fails
         if (!$response->successful()) {

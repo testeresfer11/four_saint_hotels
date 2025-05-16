@@ -69,7 +69,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
      // Manage Reviews Routes
 
-    Route::prefix('feedback')->controller(FeedbackController::class)->group(function () {
+    Route::prefix('feedback')->controller(ReviewController::class)->group(function () {
         Route::get('/{id}', 'index'); 
         Route::get('get-feedback-by-user', 'getUserFeedback');            
         Route::post('/add', 'store');          
