@@ -28,23 +28,15 @@
               <div class="form-group">
                 <div class="row">
                     <div class="col-6">
-                        <label for="exampleInputFirstName">First Name</label>
-                        <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="First Name" name="first_name" value="{{$user->first_name ?? ''}}">
-                        @error('first_name')
+                        <label for="exampleInputFirstName">full Name</label>
+                        <input type="text" class="form-control @error('full_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="full name" name="full_name" value="{{$user->full_name ?? ''}}">
+                        @error('full_name')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
                     </div>
-                    <div class="col-6">
-                        <label for="exampleInputLastName">Last Name</label>
-                        <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="exampleInputLastName" placeholder="Last Name" name="last_name" value="{{$user->last_name ?? ''}}">
-                        @error('last_name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
+                   
                 </div>
               </div>
               <div class="form-group">
@@ -197,18 +189,13 @@
         e.preventDefault();
     }).validate({
         rules: {
-            first_name: {
+            full_name: {
                 required: true,
                 noSpace: true,
                 minlength: 3,
                 maxlength:25,
             },
-            last_name: {
-                required: true,
-                noSpace: true,
-                minlength: 3,
-                maxlength:25
-            },
+           
             email: {
                 required: true,
                 email: true

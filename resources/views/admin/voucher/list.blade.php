@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
-@section('title', 'Vouchers')
+@section('title', 'Coupans')
 @section('breadcrum')
 <div class="page-header">
-    <h3 class="page-title">Vouchers</h3>
+    <h3 class="page-title">Coupans</h3>
     <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item "><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Vouchers</li>
+        <li class="breadcrumb-item active" aria-current="page">Coupans</li>
     </ol>
     </nav>
 </div>
@@ -17,67 +17,46 @@
     <div class="card">
       <div class="card-body p-0">
         <div class="d-flex justify-content-between flex-column flex-md-row px-3 py-3 align-items-md-center align-items-start">
-          <h4 class="card-title m-0">Vouchers Management</h4>
+          <h4 class="card-title m-0">Coupans Management</h4>
           <div class="d-flex align-items-center justify-content-between">
             <div class="admin-filters">
               <x-filter />
             </div>
-            <a href="{{route('admin.vouchers.add')}}">
+            <a href="{{route('admin.vouchers.sync')}}">
               <button type="button" class="btn btn-primary btn-md">
                 <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
-                <span class="menu-text"> Add Vouchers</span>
+                <span class="menu-text">Get Coupan</span>
               </button>
             </a>
           </div>
         </div>
         <div class="table-responsive">
-          <table class="table table-striped">
+        <table class="table table-bordered">
             <thead>
-              <tr>
-                <th> Sr. No. </th>
-                <th> Title </th>
-                <th> Code </th>
-                <th> Expiry Date </th>
-                <th> Amount </th>
-                <th> Status </th>
-                <th> Action </th>
-              </tr>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Value</th>
+                    <th>Available</th>
+                    <th>Expiration Date</th>
+                </tr>
             </thead>
             <tbody>
-              @forelse ($vouchers as $key => $data)
-                <tr data-id="{{$data->id}}">
-                  <td>{{++$key}}</td>
-                  
-                  <td> {{$data->title}} </td>
-                  <td>{{ucfirst($data->voucher_code)}}</td>
-                  <td>{{$data->expiry_date}}</td>
-                  <td>{{$data->amount}}</td>
-                  <td> 
-                      <div class="toggle-user dark-toggle">
-                      <input type="checkbox" name="is_active" data-id="{{$data->id}}" class="switch" @if ($data->status == 1) checked @endif data-value="{{$data->status}}">
-                      </div> 
-                  </td>
-                  <td> 
-                    <span class="menu-icon">
-                      <a href="{{route('admin.vouchers.edit',['id' => $data->id])}}" title="Edit" class="text-success"><i class="mdi mdi-pencil"></i></a>
-                    </span>&nbsp;&nbsp;
-                    <span class="menu-icon">
-                      <a href="#" title="Delete" class="text-danger deleteBanner" data-id="{{$data->id}}"><i class="mdi mdi-delete"></i></a>
-                    </span> 
-                  </td>
-                </tr>
-              @empty
-                  <tr>
-                    <td colspan="6" class="no-record"> <center>No record found </center></td>
-                  </tr>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-  
-              @endforelse
+                @foreach($coupons as $coupon)
+                    <tr>
+                        <td>{{ $coupon->coupon_code }}</td>
+                        <td>{{ $coupon->coupon_name }}</td>
+                        <td>{{ $coupon->type }}</td>
+                        <td>{{ $coupon->value }}</td>
+                        <td>{{ $coupon->available }}</td>
+                        <td>{{ $coupon->expiration_date ?? 'N/A' }}</td>
+                    </tr>
+                @endforeach
             </tbody>
-          </table>
+        </table>
         </div>
-        <div class="custom_pagination">
-          {{ $vouchers->appends(request()->query())->links('pagination::bootstrap-4') }}
-        </div>
+        
       </div>
     </div>
   </div>

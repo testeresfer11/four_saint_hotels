@@ -196,15 +196,12 @@ Route::group(['prefix' => 'admin'], function () {
         });
 
          // Manage help vouchers routes
-        Route::group(['prefix' => 'vouchers'], function () {
-            Route::name('vouchers.')->controller(GiftVoucherController::class)->group(function () {
-                Route::get('/', 'getList')->name('list');
-                Route::match(['get', 'post'], 'add', 'add')->name('add');
-                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
-                Route::get('delete/{id}', 'delete')->name('delete');
-                Route::get('changeStatus', 'changeStatus')->name('changeStatus');
+            Route::group(['prefix' => 'vouchers'], function () {
+                Route::name('vouchers.')->controller(GiftVoucherController::class)->group(function () {
+                     Route::get('/', 'index')->name('index');
+                    Route::get('/sync','sync')->name('sync');
+                });
             });
-        });
 
         // Manage feedback routes
 
