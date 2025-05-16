@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Booking};
+use App\Models\{Booking,Hotel};
 use App\Services\API\SabeeBookingService;
 use App\Traits\SendResponseTrait;
 use Illuminate\Http\Request;
@@ -41,13 +41,21 @@ class BookingController extends Controller
 
 public function getList(Request $request)
 {
-    // Get hotel_id from session or null if not set
-    $hotel_id = session('selected_hotel_id', null);
-    // Default date range: from first day of previous month to today
-    $start_date = $request->query('start_date', now()->subMonth()->startOfMonth()->toDateString());
-    $end_date = $request->query('end_date', now()->toDateString());
+    // Get hotel_id from session or fallback to a default
+    $hotel_id = session('selected_hotel_id', 8618);
 
-    // Get optional search and status filters from request query
+    // Default date range
+        $start_date = $request->query('start_date');
+
+        if ($start_date) {
+            $start_date = \Carbon\Carbon::parse($start_date)->startOfYear()->toDateString();
+        } else {
+            $start_date = now()->startOfYear()->toDateString(); // default to current year's start
+        }  
+
+        $end_date = $request->query('end_date', now()->toDateString());
+        
+    // Filters
     $search = $request->query('search_keyword');
     $status = $request->query('status');
 
@@ -58,9 +66,17 @@ public function getList(Request $request)
             'bookingServices',
             'customer'
         ])
+        // Hotel ID filter
+        ->where('hotel_id', $hotel_id)
+
+        // Date range filter
         ->whereDate('checkin_date', '>=', $start_date)
         ->whereDate('checkout_date', '<=', $end_date)
-        ->when($hotel_id, fn($q) => $q->where('hotel_id', $hotel_id))
+
+        // Optional status filter
+        ->when($status, fn($q) => $q->where('status', $status))
+
+        // Optional search filter
         ->when($search, function ($query) use ($search) {
             $query->where(function ($q) use ($search) {
                 $q->whereHas('customer', function ($q) use ($search) {
@@ -72,16 +88,11 @@ public function getList(Request $request)
                 ->orWhere('room_type_name', 'like', "%$search%")
                 ->orWhere('reservation_code', 'like', "%$search%");
             });
-        })
-        ->when($status, fn($q) => $q->where('status', $status));
+        });
 
-        // Order by check-in date ascending
         $bookings = $bookingsQuery->orderBy('checkin_date', 'asc')
                                   ->paginate(10);
 
-      
-
-        // Return view with bookings and filter data
         return view('admin.booking.list', [
             'bookings' => $bookings,
             'start_date' => $start_date,
@@ -95,6 +106,7 @@ public function getList(Request $request)
         return redirect()->back()->with('error', 'Error fetching bookings. Please try again later.');
     }
 }
+
 
 
 

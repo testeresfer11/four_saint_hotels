@@ -47,8 +47,10 @@ class DashboardController extends Controller
    // HotelController.php
 public function selectHotel(Request $request)
 {
+
     $hotelId = $request->input('hotel_id');
-    $hotelId = Hotel::where('id',$hotelId)->first()->hotel_id;
+
+
        if ($hotelId) {
         session(['selected_hotel_id' => $hotelId]);
     } else {
