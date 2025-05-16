@@ -18,6 +18,7 @@ class Hotel extends Model
         'phone',
         'email',
         'currency',
+        'rate_per_night',
     ];
 
     public function roomTypes()

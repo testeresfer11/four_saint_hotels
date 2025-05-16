@@ -67,8 +67,6 @@
 
             <hr>
 
-
-
             <h5 class="mb-3">Booking Services</h5>
 
             @if($booking->bookingServices->count())
