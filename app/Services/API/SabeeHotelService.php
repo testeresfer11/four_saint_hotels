@@ -162,7 +162,7 @@ class SabeeHotelService
      */
     public function hotelDetail($id)
     {
-        $hotel = Hotel::with('roomTypes', 'ratePlans','hotelImages')->where('hotel_id', $id)->first();
+        $hotel = Hotel::with('roomTypes', 'ratePlans','hotelImages','feedbacks')->where('hotel_id', $id)->first();
 
         if ($hotel) {
             return response()->json([

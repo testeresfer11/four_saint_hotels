@@ -119,7 +119,7 @@
         <!-- Vouchers -->
         @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])
         <li class="nav-item menu-items {{ request()->routeIs('admin.vouchers.*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.vouchers.list') }}">
+            <a class="nav-link" href="{{ route('admin.vouchers.index') }}">
                 <span class="menu-icon">
                     <i class="mdi mdi-gift"></i>
                 </span>
