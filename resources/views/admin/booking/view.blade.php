@@ -1,15 +1,15 @@
 @extends('admin.layouts.app')
 @section('title', 'View Booking')
 @section('breadcrum')
-    <div class="page-header">
-        <h3 class="page-title">Bookings</h3>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.booking.list') }}">Bookings</a></li>
-                <li class="breadcrumb-item active" aria-current="page">View Booking</li>
-            </ol>
-        </nav>
-    </div>
+<div class="page-header">
+    <h3 class="page-title">Bookings</h3>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ route('admin.booking.list') }}">Bookings</a></li>
+            <li class="breadcrumb-item active" aria-current="page">View Booking</li>
+        </ol>
+    </nav>
+</div>
 @endsection
 
 @section('content')
@@ -59,54 +59,86 @@
 
             <hr>
 
-           @forelse($booking->booking_guests ?? [] as $guest)
-                <p>- {{ $guest->first_name }} {{ $guest->last_name }}</p>
+            @forelse($booking->booking_guests ?? [] as $guest)
+            <p>- {{ $guest->first_name }} {{ $guest->last_name }}</p>
             @empty
-                <p>No guests found.</p>
+            <p>No guests found.</p>
             @endforelse
 
             <hr>
 
-            <h5 class="mb-3">Pricing</h5>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>VAT</th>
-                            <th>City Tax</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php $totalAmount = 0; @endphp
-                        @forelse($booking->booking_prices ?? [] as $price)
-                            @php $totalAmount += (float) $price->amount; @endphp
-                            <tr>
-                                <td>{{ $price->date }}</td>
-                                <td>{{ number_format($price->amount, 2) }} {{ $booking->currency }}</td>
-                                <td>{{ $price->vat }}</td>
-                                <td>{{ $price->city_tax }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center">No pricing data available.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="3" class="text-end">Total Calculated:</th>
-                            <th>{{ number_format($totalAmount, 2) }} {{ $booking->currency }}</th>
-                        </tr>
-                        <tr>
-                            <th colspan="3" class="text-end">Total Paid:</th>
-                            <th>{{ number_format($booking->paid ?? 0, 2) }} {{ $booking->currency }}</th>
-                        </tr>
-                    </tfoot>
-                </table>
+
+
+            <h5 class="mb-3">Booking Services</h5>
+
+            @if($booking->bookingServices->count())
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Service Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Currency</th>
+                        <th>Description</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($booking->bookingServices as $service)
+                    <tr>
+                        <td>{{ $service->service_name ?? '-' }}</td>
+                        <td>{{ $service->quantity ?? 1 }}</td>
+                        <td>{{ number_format($service->price, 2) ?? '0.00' }}</td>
+                        <td>{{ $booking->currency }}</td>
+                        <td>{{ $service->description ?? '-' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($service->created_at)->format('d M Y H:i') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @else
+            <p>No services found for this booking.</p>
+            @endif
+
+
 
 
             <hr>
+
+            <h5 class="mb-3">Booking Payments</h5>
+
+            @if($booking->payments->count())
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Amount</th>
+                        <th>Currency</th>
+                        <th>Payment Type</th>
+                        <th>Payment Source</th>
+                        <th>Description</th>
+                        <th>Payment Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($booking->payments as $payment)
+                    <tr>
+                        <td>{{ $payment->customer_name ?? '-' }}</td>
+                        <td>{{ number_format($payment->amount, 2) }}</td>
+                        <td>{{ $payment->currency }}</td>
+                        <td>{{ $payment->payment_type }}</td>
+                        <td>{{ $payment->payment_status ?? '-' }}</td>
+                        <td>{{ $payment->description ?? '-' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y H:i') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @else
+            <p>No payments found for this booking.</p>
+            @endif
+
+
 
             <h5 class="mb-3">Comment</h5>
             <div class="p-3 border rounded">

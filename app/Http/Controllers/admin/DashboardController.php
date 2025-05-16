@@ -20,26 +20,34 @@ class DashboardController extends Controller
     $role = Role::where('name', config('constants.ROLES.USER'))->first();
     $user = User::whereNull('deleted_at')->where('role_id', $role->id);
 
-    $hotelId = session('selected_hotel_id') ?? 8618; // may be null
+    $hotelId = session('selected_hotel_id') ?? 8618;
 
-    // Bookings count
     $totalBookings = Booking::when($hotelId, function ($query) use ($hotelId) {
         return $query->where('hotel_id', $hotelId);
     })->count();
 
-    // Guests count
     $totalGuests = BookingGuest::count();
+
+    // Example earnings (you can update this logic based on your actual Transaction model)
+    $totalEarning = 200;
+
+    // Dummy data for chart (replace with actual monthly revenue/booking data)
+    $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    $monthlyEarnings = [500, 800, 600, 1200, 900, 700];
 
     $responseData = [
         'total_registered_user' => $user->clone()->count(),
         'total_active_user'     => $user->clone()->where('status', 1)->count(),
         'total_bookings'        => $totalBookings,
         'total_guests'          => $totalGuests,
-        'months'                => json_encode([]),
+        'total_earning'         => $totalEarning,
+        'months'                => json_encode($months),
+        'monthly_earnings'      => json_encode($monthlyEarnings),
     ];
 
     return view("admin.dashboard", compact('responseData'));
 }
+
 
     /**End method index**/
 

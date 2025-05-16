@@ -8,6 +8,7 @@ use App\Models\BookingGuest;
 use App\Models\BookingPrice;
 use App\Models\BookingService;
 use App\Models\BookingServicePrice;
+use App\Models\BookingPayment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use App\Models\Service;
@@ -81,6 +82,8 @@ class SabeeBookingService
                     'updated_at_api' => $reservation['modified_date_time'],
                 ]
             );
+            $this->fetchAndSavePaymentsForBooking($bookingModel, $reservation['reservation_code']);
+
 
             // Save customer details
             if (!empty($reservation['customer'])) {
@@ -284,4 +287,46 @@ class SabeeBookingService
 
         return $response->json();
     }
+
+    public function fetchAndSavePaymentsForBooking($bookingModel, $reservationCode)
+{
+    $response = Http::withHeaders([
+        'api_key' => config('services.sabee.api_key'),
+        'api_version' => config('services.sabee.api_version'),
+    ])->get(config('services.sabee.api_url') . '/payment/list', [
+        'hotel_id' => $bookingModel->hotel_id,
+        'reservation_code' => $reservationCode
+    ]);
+
+    if (!$response->successful()) {
+        \Log::warning("Payment fetch failed for reservation: $reservationCode");
+        return;
+    }
+
+    $payments = $response->json('data.payments');
+
+    if (empty($payments)) {
+        \Log::info("No payments found for reservation: $reservationCode");
+        return;
+    }
+
+    foreach ($payments as $payment) {
+        BookingPayment::updateOrCreate(
+            [
+                'booking_id' => $bookingModel->id,
+                'payment_type' => $payment['payment_method'], 
+                'amount' => $payment['price'],                
+                'payment_date' => $payment['payment_date_time'],
+            ],
+            [
+                'currency' => $payment['currency'],
+                'payment_status' => $payment['payment_source'] ?? null,
+                'description' => $payment['description'] ?? null,
+            ]
+        );
+    }
+}
+
+
+
 }
