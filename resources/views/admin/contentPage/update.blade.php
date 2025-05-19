@@ -42,9 +42,10 @@
                         </div>
                     </div>
                 </div>
-
-              <button type="submit" class="btn btn-primary mr-2">Update</button>
-              {{-- <button class="btn btn-dark">Cancel</button> --}}
+              <div class="text-end">
+                <button type="submit" class="btn btn-primary mr-2">Update</button>
+                {{-- <button class="btn btn-dark">Cancel</button> --}}
+              </div>
             </form>
           </div>
         </div>
