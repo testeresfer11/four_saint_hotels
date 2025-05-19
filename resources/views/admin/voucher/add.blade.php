@@ -60,7 +60,7 @@
               @enderror
             </div>
 
-            <div class="form-group">
+            <div class="form-group text-end">
               <button type="submit" class="btn btn-primary">Add</button>
             </div>
           </form>
