@@ -5,7 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Twilio\Rest\Client;
-use App\Models\User;
+use App\Models\{User,Conversation};
 use Illuminate\Support\Facades\Auth;
 
 class TwilioChatController extends Controller
