@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController};
-use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController,HotelController};
+use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController,HotelController,TwilioChatController};
 use Illuminate\Support\Facades\Route;
 use App\Models\{ContentPage, ManagefAQ};
 use App\Http\Controllers\NewsletterSubscriberController;
@@ -223,6 +223,20 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('view/{id}', 'view')->name('view');
             });
         });
+
+
+        Route::group(['prefix' => 'chat'], function () {
+            Route::name('chat.')->controller(TwilioChatController::class)->group(function () {
+              Route::get('/','index')->name('index');
+                Route::get('/{sid}/messages','getMessages')->name('messages');
+                Route::post('/{sid}/send','sendMessage')->name('send');
+                Route::get('conversations', [TwilioConversationController::class, 'listConversations']);
+
+            });
+        });
+
+
+            
 
          // Manage service routes
         Route::group(['prefix' => 'service'], function () {

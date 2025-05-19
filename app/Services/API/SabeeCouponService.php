@@ -9,14 +9,15 @@ class SabeeCouponService
 {
     
 
-  public function syncCoupons($hotelId)
-{
+  public function syncCoupons($hotelId){
+
     $response = Http::withHeaders([
         'api_key' => config('services.sabee.api_key'),
         'api_version' => config('services.sabee.api_version'),
     ])->get(config('services.sabee.api_url') . '/coupon/list', [
         'hotel_id' => $hotelId,
     ]);
+   
 
     if ($response->successful()) {
         $coupons = $response->json('data.coupons');

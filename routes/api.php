@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\user\{AuthController, CategoryController, HelpDeskController, HomeController, SendNotificationController,NotificationController};
 
-use App\Http\Controllers\Api\{SubjectController,FeedbackController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController,ReviewController,SabeeHotelController,SabeeServiceController,BookingController};
+use App\Http\Controllers\Api\{SubjectController,FeedbackController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController,ReviewController,SabeeHotelController,SabeeServiceController,BookingController,TwilioConversationController,TwilioVideoController};
 
 use App\Models\NotificationPreference;
 use Illuminate\Http\Request;
@@ -98,6 +98,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('hotels/{hotelId}/rooms', 'getRoomsByHotel');
         Route::get('rooms/{roomId}', 'getRoomDetails');
     });
+
+
+    Route::prefix('twilio/conversation')->controller(TwilioConversationController::class)->group(function () {
+        Route::get('create', 'createConversation');
+        Route::post('add-participant', 'addParticipant');
+        Route::post('send', 'sendMessage');
+        Route::get('messages/{sid}', 'fetchMessages');
+
+    
+    });
+
+
+    
 
 
 

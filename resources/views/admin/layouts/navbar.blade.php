@@ -233,6 +233,14 @@
                 </ul>
             </div>
         </li>
+         <li class="nav-item menu-items {{ request()->routeIs('admin.chat.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.chat.index') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-chat"></i>
+                </span>
+                <span class="menu-title">Chat</span>
+            </a>
+        </li>
 
         <!-- Helpdesk -->
         @can('helpdesk-list')
