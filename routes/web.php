@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController};
-use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController,HotelController};
+use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController,HotelController,TwilioChatController};
 use Illuminate\Support\Facades\Route;
 use App\Models\{ContentPage, ManagefAQ};
 use App\Http\Controllers\NewsletterSubscriberController;
@@ -15,9 +15,9 @@ Route::get('/', function () {
 
 
 
-Route::fallback(function () {
-    return redirect()->route('login');
-});
+// Route::fallback(function () {
+//     return redirect()->route('login');
+// });
 Route::get('/contentPage/{slug}', [App\Http\Controllers\admin\ContentPageController::class, 'contentPage'])->name('contentPage');
 Route::post('/contact-us', [App\Http\Controllers\admin\ContentPageController::class, 'storeContact'])->name('contact-us');
 
@@ -127,7 +127,12 @@ Route::group(['prefix' => 'admin'], function () {
         Route::group(['prefix' => 'hotel'], function () {
             Route::name('hotel.')->controller(HotelController::class)->group(function () {
                 Route::get('list', 'getList')->name('list');
-                Route::get('view/{id}','view')->name('view');
+                Route::get('view/{id}','detail')->name('view');
+                Route::post('upload-images', [HotelController::class, 'uploadImages'])->name('upload.images');
+                Route::get('{hotelId}/images', [HotelController::class, 'getHotelImages']);
+                Route::delete('/image/delete/{id}', [HotelController::class, 'deleteHotelImage'])->name('image.delete');
+
+
             });
         });
 
@@ -191,15 +196,12 @@ Route::group(['prefix' => 'admin'], function () {
         });
 
          // Manage help vouchers routes
-        Route::group(['prefix' => 'vouchers'], function () {
-            Route::name('vouchers.')->controller(GiftVoucherController::class)->group(function () {
-                Route::get('/', 'getList')->name('list');
-                Route::match(['get', 'post'], 'add', 'add')->name('add');
-                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
-                Route::get('delete/{id}', 'delete')->name('delete');
-                Route::get('changeStatus', 'changeStatus')->name('changeStatus');
+            Route::group(['prefix' => 'vouchers'], function () {
+                Route::name('vouchers.')->controller(GiftVoucherController::class)->group(function () {
+                     Route::get('/', 'index')->name('index');
+                    Route::get('/sync','sync')->name('sync');
+                });
             });
-        });
 
         // Manage feedback routes
 
@@ -221,6 +223,20 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('view/{id}', 'view')->name('view');
             });
         });
+
+
+        Route::group(['prefix' => 'chat'], function () {
+            Route::name('chat.')->controller(TwilioChatController::class)->group(function () {
+              Route::get('/','index')->name('index');
+                Route::get('/{sid}/messages','getMessages')->name('messages');
+                Route::post('/{sid}/send','sendMessage')->name('send');
+                Route::get('conversations', [TwilioConversationController::class, 'listConversations']);
+
+            });
+        });
+
+
+            
 
          // Manage service routes
         Route::group(['prefix' => 'service'], function () {

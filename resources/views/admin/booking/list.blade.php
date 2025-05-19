@@ -1,20 +1,27 @@
 @extends('admin.layouts.app')
-@section('title', 'Users')
+@section('title', 'Booking')
 @section('breadcrum')
 <div class="page-header">
-    <h3 class="page-title">Users</h3>
+    <h3 class="page-title">Bookings</h3>
     <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item "><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Users</li>
+        <li class="breadcrumb-item active" aria-current="page">Bookings</li>
     </ol>
     </nav>
 </div>
 @endsection
 @section('content')
 <div class="row">
+    <div class="d-flex gap-2 align-items-right">
+        <button id="fetchBookingsBtn" class="btn btn-sm btn-primary" style="margin-left: 916px;">
+            <span id="fetchBookingBtnText">Fetch Bookings</span>
+            <span id="fetchBookingBtnLoader" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+        </button>
+    </div>
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
+
         <div class="card-body p-0">
           <div class="d-flex justify-content-between flex-column flex-md-row px-3 row-gap-3 py-3 align-items-md-center align-items-start">
             <h4 class="card-title m-0">Booking Management</h4>
@@ -225,4 +232,54 @@
 
 </script>
 
-@stop
+<script>
+    const fetchBookingsUrl = @json(route('admin.booking.get'));
+
+    document.getElementById('fetchBookingsBtn').addEventListener('click', function () {
+        const fetchText = document.getElementById('fetchBookingBtnText');
+        const fetchLoader = document.getElementById('fetchBookingBtnLoader');
+
+        // Show loader, hide text
+        fetchText.classList.add('d-none');
+        fetchLoader.classList.remove('d-none');
+
+        // Get today's date in YYYY-MM-DD format
+        const today = new Date().toISOString().split('T')[0];
+
+        const params = new URLSearchParams({
+            hotel_id: 8618, // change this if dynamic
+            start_date: today, // you can change this if needed
+            end_date: today,
+            extended_list: 1,
+            services: 1,
+            guest_details: 1
+        });
+
+        fetch(`${fetchBookingsUrl}?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                // Show text, hide loader
+                fetchText.classList.remove('d-none');
+                fetchLoader.classList.add('d-none');
+
+                if (data.status_code ==200) {
+                    toastr.success(data.message);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    toastr.error(data.message || "Failed to fetch bookings.");
+                }
+            })
+            .catch(error => {
+                fetchText.classList.remove('d-none');
+                fetchLoader.classList.add('d-none');
+                toastr.error("Something went wrong: " + error.message);
+            });
+    });
+</script>
+
+@endsection
+
+
+

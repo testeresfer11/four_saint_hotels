@@ -18,7 +18,7 @@ class AuthController extends Controller
     use SendResponseTrait;
     protected $sabeeHotelService;
 
-     public function __construct(sabeeHotelService $sabeeHotelService)
+    public function __construct(sabeeHotelService $sabeeHotelService)
     {
         $this->sabeeHotelService = $sabeeHotelService;
     }
@@ -28,7 +28,7 @@ class AuthController extends Controller
      * createdDate  : 19-06-2024
      * purpose      : logged in form submit user
      */
-    public function login(Request $request,SabeeHotelService $sabeeHotelService)
+    public function login(Request $request, SabeeHotelService $sabeeHotelService)
     {
         try {
             if ($request->isMethod('get')) {
@@ -58,9 +58,9 @@ class AuthController extends Controller
 
                 $user = User::where('email', strtolower($request->email))->first();
 
-                 //$hotels = $sabeeHotelService->fetchAndStoreHotels();
+                //$hotels = $sabeeHotelService->fetchAndStoreHotels();
 
-                
+
                 if (!$user->is_email_verified)
                     return redirect()->back()->with("error", 'Email not verified!');
 
@@ -111,14 +111,14 @@ class AuthController extends Controller
 
                         return redirect()->route('verify')->with('message', 'OTP sent to your email.');
                     }
-                       
+
                     return redirect()->route('admin.dashboard')->with('success', 'Login Successfully!');
                 }
 
                 return redirect()->back()->with("error", 'Invalid credentials');
             }
         } catch (\Exception $e) {
-          
+
             return redirect()->back()->with("error", $e->getMessage());
         }
     }
@@ -310,8 +310,8 @@ class AuthController extends Controller
                 return view("admin.profile.detail", compact('user'));
             } elseif ($request->isMethod('post')) {
                 $validator = Validator::make($request->all(), [
-                    'first_name'    => 'required|string|max:255',
-                    'last_name'     => 'required|string|max:255',
+                    'full_name'    => 'required|string|max:255',
+
                     'email'         => 'required|email:rfc,dns',
                     'phone_number'  => 'nullable|numeric',
                     'profile'       => 'nullable|image|max:2048'
@@ -329,14 +329,17 @@ class AuthController extends Controller
 
                 // Update User basic details
                 User::where('id', authId())->update([
-                    'first_name' => $request->first_name,
-                    'last_name'  => $request->last_name,
+                    'full_name' => $request->first_name,
+
                     'two_factor_enabled' => $request->has('two_factor_enabled')
                 ]);
 
-                // Handle image upload
-                $user = User::with('userDetail')->find(authId());
-                $ImgName = $user->userDetail?->profile;
+
+                $user = User::with('userDetail')->findOrFail(authId());
+
+
+                $ImgName = optional($user->userDetail)->profile;
+
 
                 if ($request->hasFile('profile')) {
                     if ($ImgName) {
@@ -346,18 +349,19 @@ class AuthController extends Controller
                 }
 
 
-                // Create or update user detail
                 UserDetail::updateOrCreate(
                     ['user_id' => authId()],
                     [
-                        'phone_number'       => $request->phone_number ?? '',
-                        'address'            => $request->address ?? '',
-                        'zip_code'           => $request->zip_code ?? '',
-                        'country_code'       => $request->country_code ?? '',
+                        'phone_number'       => $request->phone_number  ?? '',
+                        'address'            => $request->address       ?? '',
+                        'zip_code'           => $request->zip_code      ?? '',
+                        'country_code'       => $request->country_code  ?? '',
                         'country_short_code' => $request->country_short_code ?? '',
-                        'dob'                => $request->dob ?? '',
+                        'dob'                => $request->dob            ?? '',
                         'profile'            => $ImgName,
                     ]
+
+
                 );
 
                 if ($request->ajax()) {
@@ -488,7 +492,7 @@ class AuthController extends Controller
 
         return redirect()->route('admin.dashboard')->with('success', '2FA verified successfully!');
     }
-      /**End method verify2fa**/
+    /**End method verify2fa**/
     /**
      * functionName : sendOtp
      * createdDate  : 12-04-2025

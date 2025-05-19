@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\user\{AuthController, CategoryController, HelpDeskController, HomeController, SendNotificationController,NotificationController};
 
-use App\Http\Controllers\Api\{SubjectController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController,ReviewController,SabeeHotelController,SabeeServiceController,BookingController};
+use App\Http\Controllers\Api\{SubjectController,FeedbackController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController,ReviewController,SabeeHotelController,SabeeServiceController,BookingController,TwilioConversationController,TwilioVideoController};
 
 use App\Models\NotificationPreference;
 use Illuminate\Http\Request;
@@ -22,6 +22,8 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::controller(SabeeHotelController::class)->group(function () {
         Route::get('/sabee/hotels/fetch','fetchAndStore');
+        Route::get('/sabee/hotels/detail','hotelDetail');
+        
     });
 
 
@@ -42,7 +44,7 @@ Route::controller(BookingController::class)->group(function () {
 
     });
 
-Route::middleware(['auth:sanctum', 'user'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('logout', 'logOut');
         Route::post('change-password', 'changePassword');
@@ -52,7 +54,6 @@ Route::middleware(['auth:sanctum', 'user'])->group(function () {
     });
 
     Route::controller(HomeController::class)->group(function () {
-        Route::get('/home', 'home');
         Route::get('contentPages/{slug}', 'contentPages');
     });
 
@@ -68,7 +69,7 @@ Route::middleware(['auth:sanctum', 'user'])->group(function () {
 
      // Manage Reviews Routes
 
-    Route::prefix('feedback')->controller(FeedbackController::class)->group(function () {
+    Route::prefix('feedback')->controller(ReviewController::class)->group(function () {
         Route::get('/{id}', 'index'); 
         Route::get('get-feedback-by-user', 'getUserFeedback');            
         Route::post('/add', 'store');          
@@ -77,11 +78,7 @@ Route::middleware(['auth:sanctum', 'user'])->group(function () {
         
     });
 
-     Route::controller(HomeController::class)->group(function () {
-        Route::get('/home', 'home');
-        Route::get('contentPages/{slug}', 'contentPages');
-    });
-     
+  
 
     // Manage Help desk Routes
     Route::controller(HelpDeskController::class)->group(function () {
@@ -96,10 +93,24 @@ Route::middleware(['auth:sanctum', 'user'])->group(function () {
 
 
    Route::controller(SabeeHotelController::class)->group(function () {
-        Route::get('/get-hotels', 'getHotels');
-        Route::get('/hotels/{hotelId}/rooms', 'getRoomsByHotel');
-        Route::get('/rooms/{roomId}', 'getRoomDetails');
+        Route::get('get-hotels', 'getHotels');
+        Route::get('get-hotel-detail/{id}', 'detail');
+        Route::get('hotels/{hotelId}/rooms', 'getRoomsByHotel');
+        Route::get('rooms/{roomId}', 'getRoomDetails');
     });
+
+
+    Route::prefix('twilio/conversation')->controller(TwilioConversationController::class)->group(function () {
+        Route::get('create', 'createConversation');
+        Route::post('add-participant', 'addParticipant');
+        Route::post('send', 'sendMessage');
+        Route::get('messages/{sid}', 'fetchMessages');
+
+    
+    });
+
+
+    
 
 
 
