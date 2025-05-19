@@ -18,6 +18,7 @@ class Hotel extends Model
         'phone',
         'email',
         'currency',
+        'rate_per_night',
     ];
 
     public function roomTypes()
@@ -29,4 +30,19 @@ class Hotel extends Model
     {
         return $this->hasMany(HotelRatePlan::class, 'hotel_id', 'hotel_id');
     }
+    public function hotelImages()
+    {
+        return $this->hasMany(HotelImage::class, 'hotel_id');
+    }
+
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class, 'hotel_id', 'hotel_id');
+    }
+    
+    public function averageRating()
+    {
+        return $this->feedbacks()->avg('rating');
+    }
+
 }

@@ -6,13 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChatRoom extends Model
 {
-    protected $fillable = [
-        'name', // Add more if you have other columns like 'created_by'
-    ];
+    protected $fillable = ['sender_id', 'receiver_id', 'message'];
 
-    // Relationships
-    public function messages()
-    {
-        return $this->hasMany(ChatMessage::class);
-    }
+
+    
+   
 }

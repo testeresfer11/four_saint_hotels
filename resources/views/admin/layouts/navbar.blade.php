@@ -119,7 +119,7 @@
         <!-- Vouchers -->
         @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])
         <li class="nav-item menu-items {{ request()->routeIs('admin.vouchers.*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.vouchers.list') }}">
+            <a class="nav-link" href="{{ route('admin.vouchers.index') }}">
                 <span class="menu-icon">
                     <i class="mdi mdi-gift"></i>
                 </span>
@@ -130,11 +130,11 @@
         <!-- Hotel -->
         {{-- @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])--}}
         <li class="nav-item menu-items {{ request()->routeIs('admin.hotel.*') ? 'active' : '' }}">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{{ route('admin.hotel.list') }}">
                 <span class="menu-icon">
                     <i class="fa-solid fa-hotel"></i>
                 </span>
-                <span class="menu-title">Hotel Mangemanet</span>
+                <span class="menu-title">Hotel Management</span>
             </a>
         </li>
        {{-- @endcanany--}}
@@ -146,7 +146,7 @@
                 <span class="menu-icon">
                     <i class="fa-solid fa-calendar-week"></i>
                 </span>
-                <span class="menu-title">Booking Mangemanet</span>
+                <span class="menu-title">Booking Management</span>
             </a>
         </li>
        {{-- @endcanany--}}
@@ -157,7 +157,7 @@
                 <span class="menu-icon">
                     <i class="fa-solid fa-wrench"></i>
                 </span>
-                <span class="menu-title">Service Mangemanet</span>
+                <span class="menu-title">Service Management</span>
             </a>
         </li>
        {{-- @endcanany--}}
@@ -232,6 +232,14 @@
                     </li>
                 </ul>
             </div>
+        </li>
+         <li class="nav-item menu-items {{ request()->routeIs('admin.chat.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.chat.index') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-chat"></i>
+                </span>
+                <span class="menu-title">Chat</span>
+            </a>
         </li>
 
         <!-- Helpdesk -->

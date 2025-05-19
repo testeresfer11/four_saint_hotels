@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\API\SabeeBookingService;
+use App\Traits\SendResponseTrait;
 
 
 class BookingController extends Controller
 {
+    use SendResponseTrait;
     protected $sabeeBookingService;
 
     public function __construct(SabeeBookingService $sabeeBookingService)
@@ -33,8 +35,14 @@ class BookingController extends Controller
     {
 
         // Retrieve query parameters
-        $hotel_id = $request->query('hotel_id');
+        $hotel_id = session('selected_hotel_id', 8618);
         $start_date = $request->query('start_date');
+
+        if ($start_date) {
+            $start_date = \Carbon\Carbon::parse($start_date)->startOfYear()->toDateString();
+        } else {
+            $start_date = now()->startOfYear()->toDateString(); // default to current year's start
+        }  
         $end_date = $request->query('end_date');
         $extended_list = $request->query('extended_list', 1); // Default to 1
         $services = $request->query('services', 1); // Default to 1
@@ -50,18 +58,10 @@ class BookingController extends Controller
                 $services,
                 $guest_details
             );
-            return $bookings;
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Bookings fetched successfully.',
-                'data' => $bookings,
-            ]);
+             return $this->apiResponse('success', 200, 'Bookings ' . config('constants.SUCCESS.FETCH_DONE'), ['bookings' => $bookings]);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 400);
+           return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
 

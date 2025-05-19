@@ -92,7 +92,7 @@ class AuthController extends Controller
     public function verifyOtp(Request $request){
         try{
             $validator = Validator::make($request->all(), [
-                'email'                 => 'required|email:rfc,dns|exists:otp_management,email',
+                'email'                 => 'required|exists:otp_management,email',
                 'otp'                   => 'required|exists:otp_management,otp',
                 'type'                  => 'required|in:otp_verify,forget_password'
             ]);

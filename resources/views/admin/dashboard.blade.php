@@ -226,63 +226,32 @@
 @section('scripts')
 <script src="{{asset('admin/js/dashboard.js')}}"></script>
 <script src="https://unpkg.com/@adminkit/core@latest/dist/js/app.js"></script>
-<script src="{{asset('admin/js/chart.js')}}"></script>
-<script>
-  new Chart(document.getElementById("chartjs-doughnut"), {
-  type: "doughnut",
-  data: {
-    labels: ["Social", "Search Engines", "Direct", "Other"],
-    datasets: [{
-      data: [260, 125, 54, 146],
-      backgroundColor: [
-        window.theme.primary,
-        window.theme.success,
-        window.theme.warning,
-        "#dee2e6"
-      ],
-      borderColor: "transparent"
-    }]
-  },
-  options: {
-    maintainAspectRatio: false,
-    cutoutPercentage: 65,
-  }
-});
-</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-      
-  var doughnutPieData = {
+  const doughnutPieData = {
+    labels: ["Option", "Confirmed", "CheckedIn", "Onboard", "CheckedOut"],
     datasets: [{
-      data: <?php echo $responseData['total_registered_user']; ?>,
+      data: [10, 20, 15, 30, 25], // Replace with dynamic booking statuses if needed
       backgroundColor: [
         'rgba(255, 99, 132, 0.5)',
         'rgba(54, 162, 235, 0.5)',
         'rgba(255, 206, 86, 0.5)',
         'rgba(75, 192, 192, 0.5)',
-        'rgba(153, 102, 255, 0.5)',
-        'rgba(255, 159, 64, 0.5)'
+        'rgba(153, 102, 255, 0.5)'
       ],
       borderColor: [
         'rgba(255,99,132,1)',
         'rgba(54, 162, 235, 1)',
         'rgba(255, 206, 86, 1)',
         'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)'
+        'rgba(153, 102, 255, 1)'
       ],
-    }],
-
-    // These labels appear in the legend and in the tooltips when hovering different arcs
-    labels: [
-      "Option",
-      'Confirmed',
-      'CheckedIn',
-      'Onboard',
-      'CheckedOut'
-    ]
+      borderWidth: 1
+    }]
   };
-  var doughnutPieOptions = {
+
+  const doughnutPieOptions = {
     responsive: true,
     animation: {
       animateScale: true,
@@ -290,63 +259,66 @@
     }
   };
 
-  var data = {
-    labels: <?php echo $responseData['months']; ?>,
-    datasets: [{
-      label: '$ revenue',
-      data: <?php echo $responseData['total_registered_user']; ?>,
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)'
-      ],
-      borderColor: [
-        'rgba(255,99,132,1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)'
-      ],
-      borderWidth: 1,
-      fill: false
-    }]
-  };
+  const pieChartCanvas = document.getElementById("pieChart").getContext("2d");
+  new Chart(pieChartCanvas, {
+    type: 'doughnut',
+    data: doughnutPieData,
+    options: doughnutPieOptions
+  });
 
-  var options = {
-    scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true
-        },
-        gridLines: {
-          color: "rgba(204, 204, 204,0.1)"
-        }
-      }],
-      xAxes: [{
-        gridLines: {
-          color: "rgba(204, 204, 204,0.1)"
-        }
+  const lineChartCanvas = document.getElementById("lineChart1").getContext("2d");
+  new Chart(lineChartCanvas, {
+    type: 'line',
+    data: {
+      labels: {!! $responseData['months'] !!},
+      datasets: [{
+        label: 'Monthly Earnings ($)',
+        data: {!! $responseData['monthly_earnings'] !!},
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        fill: true,
+        borderWidth: 2,
+        tension: 0.4
       }]
     },
-    legend: {
-      display: false
-    },
-    elements: {
-      point: {
-        radius: 0
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 200
+          }
+        }
       }
     }
-  };
+  });
 
-  var lineChartCanvas = $("#lineChart1").get(0).getContext("2d");
-    var lineChart = new Chart(lineChartCanvas, {
-      type: 'line',
-      data: data,
-      options: options
-    });
+  const doughnutCanvas = document.getElementById("chartjs-doughnut").getContext("2d");
+  new Chart(doughnutCanvas, {
+    type: "doughnut",
+    data: {
+      labels: ["Social", "Search Engines", "Direct", "Other"],
+      datasets: [{
+        data: [260, 125, 54, 146],
+        backgroundColor: [
+          window.theme.primary || "#007bff",
+          window.theme.success || "#28a745",
+          window.theme.warning || "#ffc107",
+          "#dee2e6"
+        ],
+        borderColor: "transparent"
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      cutout: "65%",
+    }
+  });
 </script>
 @endsection
