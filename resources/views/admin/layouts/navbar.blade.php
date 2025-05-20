@@ -166,7 +166,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-bell"></i>
                 </span>
-                <span class="menu-title">Category</span>
+                <span class="menu-title">Feature</span>
             </a>
         </li>
         <li class="nav-item menu-items {{ request()->routeIs('admin.category.*') ? 'active' : '' }}">
@@ -174,7 +174,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-bell"></i>
                 </span>
-                <span class="menu-title">Sub Category</span>
+                <span class="menu-title">Sub Feature</span>
             </a>
         </li>
        {{-- @endcanany--}}

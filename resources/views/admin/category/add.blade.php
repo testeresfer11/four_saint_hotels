@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
-@section('title', 'Add Category')
+@section('title', 'Add Feature')
 
 @section('breadcrum')
 <div class="page-header">
-    <h3 class="page-title">Service Categories</h3>
+    <h3 class="page-title">Feature</h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('admin.category.list') }}">Categories</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.category.list') }}">Feature</a></li>
             <li class="breadcrumb-item active" aria-current="page">Add</li>
         </ol>
     </nav>
@@ -19,7 +19,7 @@
     <div class="col-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Add Service Category</h4>
+                <h4 class="card-title">Add Feature</h4>
 
                 <form id="add-category" class="forms-sample" action="{{ route('admin.category.add') }}" method="POST" enctype="multipart/form-data">
                     @csrf

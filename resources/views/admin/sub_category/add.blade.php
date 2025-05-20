@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
-@section('title', 'Add Sub Category')
+@section('title', 'Add Sub Feature')
 
 @section('breadcrum')
 <div class="page-header">
-    <h3 class="page-title">Sub Categories</h3>
+    <h3 class="page-title">Sub Feature</h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('admin.category.list') }}">Sub Categories</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.category.list') }}">Sub Feature</a></li>
             <li class="breadcrumb-item active" aria-current="page">Add</li>
         </ol>
     </nav>
@@ -29,15 +29,15 @@
     <div class="col-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Add Sub Category</h4>
+                <h4 class="card-title">Add Sub Feature</h4>
 
                 <form id="add-category" class="forms-sample" action="{{ route('admin.sub_category.add') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="form-group">
-                        <label for="category_id">Select Category</label>
+                        <label for="category_id">Select Feature</label>
                         <select class="form-control @error('category_id') is-invalid @enderror" name="category_id" id="category_id">
-                            <option value="">Select Category</option>
+                            <option value="">Select Feature</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}">{{ $category->title }}</option>
                             @endforeach
