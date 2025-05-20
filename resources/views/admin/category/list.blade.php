@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
-@section('title', 'Category')
+@section('title', 'Feature')
 @section('breadcrum')
 <div class="page-header">
-  <h3 class="page-title">Category</h3>
+  <h3 class="page-title">Feature</h3>
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item "><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Category</li>
+      <li class="breadcrumb-item active" aria-current="page">Feature</li>
     </ol>
   </nav>
 </div>
@@ -17,14 +17,14 @@
     <div class="card">
       <div class="card-body">
         <div class="d-flex justify-content-between">
-          <h4 class="card-title">Category Management</h4>
+          <h4 class="card-title">Feature Management</h4>
 
           <div class="admin-filters">
             <x-filter />
           </div>
 
           <a href="{{route('admin.category.add')}}"><button type="button" class="btn default-btn btn-md">
-              <span class="menu-icon">+ Add Category</span></button></a>
+              <span class="menu-icon">+ Add Feature</span></button></a>
         </div>
 
         <div class="table-responsive">

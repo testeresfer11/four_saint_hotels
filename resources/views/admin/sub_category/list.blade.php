@@ -1,12 +1,12 @@
 @extends('admin.layouts.app')
-@section('title', 'Sub Categories')
+@section('title', 'Sub Feature')
 @section('breadcrum')
 <div class="page-header">
-  <h3 class="page-title">Sub Categories</h3>
+  <h3 class="page-title">Sub Feature</h3>
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Sub Categories</li>
+      <li class="breadcrumb-item active" aria-current="page">Sub Feature</li>
     </ol>
   </nav>
 </div>
@@ -18,9 +18,9 @@
       <div class="card-body">
 
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="card-title">Sub Category Management</h4>
+          <h4 class="card-title">Sub Feature Management</h4>
           <a href="{{ route('admin.sub_category.add') }}" class="btn btn-primary btn-md">
-            + Add Sub Category
+            + Add Sub Feature
           </a>
         </div>
 
