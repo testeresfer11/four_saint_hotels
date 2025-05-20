@@ -1292,7 +1292,10 @@ select.form-control:focus{
 .add-form select.form-control > option[disabled] {
   display: none;
 }
-
+.selection-row {
+  display: flex;
+  column-gap: 15px;
+}
 
 .table-responsive table tbody tr>td{
   padding-top: 11px !important;
