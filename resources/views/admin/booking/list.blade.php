@@ -14,45 +14,46 @@
 @section('content')
 <div class="row">
     <div class="d-flex gap-2 align-items-right">
-        <button id="fetchBookingsBtn" class="btn btn-sm btn-primary" style="margin-left: 916px;">
-            <span id="fetchBookingBtnText">Fetch Bookings</span>
-            <span id="fetchBookingBtnLoader" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-        </button>
+        
     </div>
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
 
         <div class="card-body p-0">
-          <div class="d-flex justify-content-between flex-column flex-md-row px-3 row-gap-3 py-3 align-items-md-center align-items-start">
-            <h4 class="card-title m-0">Booking Management</h4>
-            
-              <div class="admin-filters">
-             <form id="filter">
-                    <div class="row align-items-center justify-content-end">
-                        <div class="col-6 d-flex gap-2">
-                            <input type="text" class="form-control"  placeholder="Search" name="search_keyword" value="{{request()->filled('search_keyword') ? request()->search_keyword : ''}}">            
-                        </div>
-                        <div class="col-3">
-                            <select class="form-control" name="status" style="width:100%">
-                                <option value="">All</option>
-                                <option value="CheckedOut" {{(request()->filled('status') && request()->status == "CheckedOut")? 'selected' : ''}}>CheckedOut</option>
-                                <option value="Confirmed" {{(request()->filled('status') && request()->status == "Confirmed")? 'selected' : ''}}>Confirmed</option>
-                                 <option value="Onboard" {{(request()->filled('status') && request()->status == "Onboard")? 'selected' : ''}}>Onboard</option>
+            <div class="d-flex justify-content-between flex-column flex-md-row px-3 row-gap-3 py-3 align-items-md-center align-items-start">
+                <h4 class="card-title m-0">Booking Management</h4>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="admin-filters">
+                        <form id="filter">
+                            <div class="row align-items-center justify-content-end">
+                                <div class="col-6 d-flex gap-2">
+                                    <input type="text" class="form-control"  placeholder="Search" name="search_keyword" value="{{request()->filled('search_keyword') ? request()->search_keyword : ''}}">            
+                                </div>
+                                <div class="col-3">
+                                    <select class="form-control" name="status" style="width:100%">
+                                        <option value="">All</option>
+                                        <option value="CheckedOut" {{(request()->filled('status') && request()->status == "CheckedOut")? 'selected' : ''}}>CheckedOut</option>
+                                        <option value="Confirmed" {{(request()->filled('status') && request()->status == "Confirmed")? 'selected' : ''}}>Confirmed</option>
+                                        <option value="Onboard" {{(request()->filled('status') && request()->status == "Onboard")? 'selected' : ''}}>Onboard</option>
 
-                            </select>
-                        </div>
-                        <div class="col-3">
-                            <button type="submit" class="btn btn-primary">Filter</button>
-                            @if(request()->filled('search_keyword') || request()->filled('status') || request()->filled('category_id'))
-                                <button class="btn btn-danger" id="clear_filter">Clear Filter</button>
-                            @endif
-                        </div>
+                                    </select>
+                                </div>
+                                <div class="col-3">
+                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                    @if(request()->filled('search_keyword') || request()->filled('status') || request()->filled('category_id'))
+                                        <button class="btn btn-danger" id="clear_filter">Clear Filter</button>
+                                    @endif
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
-
-              </div>
-              
-          </div>
+                    <button id="fetchBookingsBtn" class="btn btn-sm btn-primary fetch-btn fetch-hotels-btn" style="">
+                        <span class="fetch-icon" id="fetchBookingBtnLoader"><i class="fa-solid fa-arrows-rotate spinner-icon"></i></span>
+                        <span id="fetchBookingBtnText" class="fetch-text">Fetch Bookings</span>
+                        {{-- <span id="fetchBookingBtnLoader" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> --}}
+                    </button>
+                </div>
+            </div>
           <div class="table-responsive">
            <table class="table table-striped">
         <thead>
@@ -231,7 +232,23 @@
   });
 
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".fetch-hotels-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const spinner = this.querySelector(".spinner-icon");
 
+            if (spinner) {
+                spinner.classList.add("spin");
+                setTimeout(() => {
+                    spinner.classList.remove("spin");
+                }, 3000);
+            }
+        });
+    });
+});
+
+</script>
 <script>
     const fetchBookingsUrl = @json(route('admin.booking.get'));
 
@@ -240,8 +257,8 @@
         const fetchLoader = document.getElementById('fetchBookingBtnLoader');
 
         // Show loader, hide text
-        fetchText.classList.add('d-none');
-        fetchLoader.classList.remove('d-none');
+        // fetchText.classList.add('d-none');
+        // fetchLoader.classList.remove('d-none');
 
         // Get today's date in YYYY-MM-DD format
         const today = new Date().toISOString().split('T')[0];
