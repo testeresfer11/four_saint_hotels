@@ -230,7 +230,7 @@ Route::group(['prefix' => 'admin'], function () {
               Route::get('/','index')->name('index');
                 Route::get('/{sid}/messages','getMessages')->name('messages');
                 Route::post('/{sid}/send','sendMessage')->name('send');
-                Route::get('conversations', [TwilioConversationController::class, 'listConversations']);
+                Route::get('/conversations', 'listConversations');
 
             });
         });

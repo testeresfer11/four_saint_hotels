@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service, HotelRoom, HotelImage};
 use App\Traits\SendResponseTrait;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\{Auth, Hash, Validator};
+use Illuminate\Support\Facades\{Auth, Hash, Validator,DB};
 use App\Services\API\SabeeHotelService;
 use Illuminate\Support\Facades\Storage;
 
@@ -112,6 +112,14 @@ class HotelController extends Controller
 
 
 
+    /**
+     * functionName : getRoomsByHotel
+     * createdDate  : 12-05-2025
+     * purpose      : Get all rooms of a hotel by hotel ID, including room types.
+     *
+     * @param int $hotelId
+     * @return \Illuminate\Http\JsonResponse
+     */
 
     public function getRoomsByHotel($hotelId)
     {
@@ -133,6 +141,19 @@ class HotelController extends Controller
         }
     }
 
+
+
+
+    /**
+     * functionName : getRoomDetails
+     * createdDate  : 12-05-2025
+     * purpose      : Fetch full details of a room including its type and related hotel.
+     *
+     * @param int $roomId
+     * @return \Illuminate\Http\JsonResponse
+     *   
+     */
+
     public function getRoomDetails($roomId)
     {
         try {
@@ -152,37 +173,72 @@ class HotelController extends Controller
     }
 
 
+
+    /**
+     * functionName : uploadImages
+     * createdDate  : 20-05-2025
+     * purpose      : Upload hotel images and update rate per night.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function uploadImages(Request $request)
     {
+        $request->validate([
+            'hotel_id'       => 'required|exists:hotels,id',
+            'rate_per_night' => 'required',
+            'images'         => 'required|array',
+            'images.*'       => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
         try {
-            $request->validate([
-                'hotel_id' => 'required|exists:hotels,id',
-                'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
+            
+            $uploadedImages = DB::transaction(function () use ($request) {
+                $hotelId = $request->hotel_id;
+                $paths   = [];
 
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('hotels/images', 'public');
-                $fullUrl = Storage::url($path);
 
-                HotelImage::create([
-                    'hotel_id' => $request->hotel_id,
-                    'image_path' => asset($fullUrl),
-                ]);
-            }
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('hotels/images', 'public');
+                    $url  = Storage::url($path);
+
+                    $hotelImage = HotelImage::create([
+                        'hotel_id'   => $hotelId,
+                        'image_path' => $url,
+                    ]);
+
+                    $paths[] = $url;
+                }
+
+                Hotel::where('id', $hotelId)->update(['rate_per_night' => $request->rate_per_night]);
+                return $paths;
+            });
 
             return response()->json([
-                'status' => true,
-                'message' => 'Images uploaded successfully',
+                'status'  => true,
+                'message' => 'Images uploaded and rate updated successfully.',
+                'images'  => $uploadedImages,
             ], 200);
         } catch (\Exception $e) {
+
             return response()->json([
-                'status' => false,
-                'message' => 'Image upload failed',
-                'error' => $e->getMessage(),
+                'status'  => false,
+                'message' => 'Failed to upload images.',
+                'error'   => $e->getMessage(),
             ], 500);
         }
     }
 
+
+
+    /**
+     * functionName : getHotelImages
+     * createdDate  : 20-05-2025
+     * purpose      : Fetch all images associated with a specific hotel.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getHotelImages($id)
     {
         try {
@@ -195,6 +251,14 @@ class HotelController extends Controller
 
 
 
+    /**
+     * functionName : deleteHotelImage
+     * createdDate  : 20-05-2025
+     * purpose      : Delete a specific image from storage and database.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deleteHotelImage($id)
     {
         $image = HotelImage::find($id);
@@ -203,7 +267,7 @@ class HotelController extends Controller
         }
         $imageUrl = $image->image_url;
         $path = parse_url($imageUrl, PHP_URL_PATH);
-        $relativePath = ltrim(str_replace('/storage/', '', $path), '/'); 
+        $relativePath = ltrim(str_replace('/storage/', '', $path), '/');
         if (Storage::disk('public')->exists($relativePath)) {
             Storage::disk('public')->delete($relativePath);
         }

@@ -52,4 +52,20 @@ class TwilioChatController extends Controller
 
         return back()->with('success', 'Message sent!');
     }
+
+    public function listConversations(){
+        
+        $conversations = $this->twilio->conversations->v1->conversations->read();
+
+        $result = [];
+        foreach ($conversations as $conversation) {
+            $result[] = [
+                'sid' => $conversation->sid,
+                'friendly_name' => $conversation->friendlyName,
+            ];
+        }
+
+        return response()->json(['conversations' => $result]);
+    }
+
 }

@@ -54,9 +54,16 @@
 $(document).ready(function () {
     fetchConversations();
 
+    // Setup CSRF token for all AJAX requests
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     function fetchConversations() {
         $.ajax({
-            url: '/api/admin/conversations',
+            url: '/admin/chat/conversations',
             method: 'GET',
             success: function (res) {
                 let html = '';
@@ -71,8 +78,9 @@ $(document).ready(function () {
     }
 
     $(document).on('click', '.conversation-item', function () {
-        let sid = $(this).data('sid');
-        let name = $(this).data('name');
+        const sid = $(this).data('sid');
+        const name = $(this).data('name');
+
         $('#conversation_sid').val(sid);
         $('#conversation-title').text(name);
 
@@ -81,12 +89,12 @@ $(document).ready(function () {
 
     function fetchMessages(sid) {
         $.ajax({
-            url: `/api/twilio/conversation/messages/${sid}`,
+            url: `/admin/chat/${sid}/messages`,
             method: 'GET',
             success: function (res) {
                 let messages = '';
-                res.messages.forEach(msg => {
-                    messages += `<div><strong>${msg.author}:</strong> ${msg.body} <small class="text-muted float-right">${msg.date_created}</small></div><hr>`;
+                res.forEach(msg => {
+                    messages += `<div><strong>${msg.author}:</strong> ${msg.body} <small class="text-muted float-right">${msg.dateCreated}</small></div><hr>`;
                 });
                 $('#chat-box').html(messages);
             }
@@ -95,17 +103,16 @@ $(document).ready(function () {
 
     $('#message-form').submit(function (e) {
         e.preventDefault();
+
         const sid = $('#conversation_sid').val();
         const body = $('#message-input').val();
 
+        if (!body.trim()) return;
+
         $.ajax({
-            url: '/api/twilio/conversation/send',
+            url: `/admin/chat/${sid}/send`,
             method: 'POST',
-            data: {
-                conversation_sid: sid,
-                author: '{{ auth()->user()->id }}',
-                body: body
-            },
+            data: { body: body },
             success: function () {
                 $('#message-input').val('');
                 fetchMessages(sid);
@@ -113,5 +120,6 @@ $(document).ready(function () {
         });
     });
 });
+
 </script>
 @endsection

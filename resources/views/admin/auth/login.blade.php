@@ -84,8 +84,7 @@
 
         <div class="form-group d-flex align-items-center justify-content-between">
           <div class="form-check my-1">
-              <input type="checkbox" class="form-check-input" name="remember" id="remember"  {{ old('remember') ? 'checked' : ''}}> <span class="grey remb"> Remember me </span></label>
-            <label class="form-check-label">
+    
           </div>
           <a href="{{route('forget-password')}}" class="forgot-pass grey">{{ __('Forgot Your Password?') }}</a>
         </div>

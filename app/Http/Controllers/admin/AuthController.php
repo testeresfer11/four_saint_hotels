@@ -311,7 +311,6 @@ class AuthController extends Controller
             } elseif ($request->isMethod('post')) {
                 $validator = Validator::make($request->all(), [
                     'full_name'    => 'required|string|max:255',
-
                     'email'         => 'required|email:rfc,dns',
                     'phone_number'  => 'nullable|numeric',
                     'profile'       => 'nullable|image|max:2048'
@@ -329,8 +328,7 @@ class AuthController extends Controller
 
                 // Update User basic details
                 User::where('id', authId())->update([
-                    'full_name' => $request->first_name,
-
+                    'full_name' => $request->full_name,
                     'two_factor_enabled' => $request->has('two_factor_enabled')
                 ]);
 
