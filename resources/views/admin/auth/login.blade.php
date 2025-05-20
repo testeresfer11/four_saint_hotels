@@ -21,14 +21,14 @@
       <div class="carousel-item bg-slide bg-slide-2">
         <div class="overlay"></div>
         <div class="carousel-caption  text-white">
-          <h3 class="pt-5 my-2">Find Hotels Anytime,<br> Anywhere</h3>
+          <h3 class="pt-4 my-2">Find Hotels Anytime,<br> Anywhere</h3>
           <p class="w-75 mx-auto">Lorem ipsum dolor sit amet consectetur. Lorem posuere at odio nullam pulvinar enim consequat at vitae. Elit ullamcorper ultrices magna malesuada erat.</p>
         </div>
       </div>
       <div class="carousel-item bg-slide bg-slide-3">
         <div class="overlay"></div>
         <div class="carousel-caption text-white">
-          <h3 class="pt-5 my-2">Find Hotels Anytime,<br> Anywhere</h3>
+          <h3 class="pt-4 my-2">Find Hotels Anytime,<br> Anywhere</h3>
           <p class="w-75 mx-auto">Lorem ipsum dolor sit amet consectetur. Lorem posuere at odio nullam pulvinar enim consequat at vitae. Elit ullamcorper ultrices magna malesuada erat.</p>
         </div>
       </div>
@@ -45,9 +45,9 @@
   </div>
   
 </div>
-  <div class="col-lg-6 bg-white px-5 py-5">
+  <div class="col-lg-6 bg-white px-md-5 py-md-5 px-2 py-2">
     {{-- <div class=" d-flex align-items-center"> --}}
-    <div class="card-body login-form px-5 py-3">
+    <div class="card-body login-form px-md-5 py-md-3 px-4 py-2">
       <div class="text-center">
       <img src="{{asset('admin/images/auth/new_logo.png')}}" class="img-fluid" alt="">
       <h1 class="heading-primary my-3">{{ __('Login') }}</h1>
@@ -84,7 +84,7 @@
 
         <div class="form-group d-flex align-items-center justify-content-between">
           <div class="form-check my-1">
-              <input type="checkbox" class="form-check-input" name="remember" id="remember"  {{ old('remember') ? 'checked' : ''}}> <span class="grey"> Remember me </span></label>
+              <input type="checkbox" class="form-check-input" name="remember" id="remember"  {{ old('remember') ? 'checked' : ''}}> <span class="grey remb"> Remember me </span></label>
             <label class="form-check-label">
           </div>
           <a href="{{route('forget-password')}}" class="forgot-pass grey">{{ __('Forgot Your Password?') }}</a>
