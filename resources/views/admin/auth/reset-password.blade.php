@@ -45,19 +45,26 @@
     </div>
     
   </div>
-  
-  <div class="card col-lg-4 mx-auto">
-    <div class="card-body px-5 py-5">
-      <h3 class="card-title text-left mb-3">Reset Password</h3>
+
+  <div class="col-lg-6 bg-white px-md-5 py-md-5 px-2 py-2">
+    <div class="card-body login-form px-md-5 py-md-3 px-4 py-2">
+      <div class="text-center">
+        <img src="{{asset('admin/images/auth/new_logo.png')}}" class="img-fluid" alt="">
+        <h3 class="heading-primary">Reset Password</h3>
+        <p class="grey">Enter your email and password to access your account</p>
+      </div>
+     
         {{-- <x-alert /> --}}
       <form action="{{ route('reset-password',['token' => $token]) }}" method="POST" id="loginForm">
           @csrf
-          <div class="form-group">
+          <div class="form-group mb-1">
               <label for="password">{{ __('Password') }} *</label>
-              <input name="password" id="password" type="password" class="form-control  @error('password') is-invalid @enderror" autocomplete="current-password">
-              <span class="togglePassword eye-icon" data-toggle="password">
-                <i class="fa fa-eye-slash"></i>
-              </span>
+              <div class="form-input">
+                <input name="password" id="password" type="password" class="form-control  @error('password') is-invalid @enderror" autocomplete="current-password">
+                <span class="togglePassword eye-icon" data-toggle="password">
+                  <i class="fa fa-eye-slash"></i>
+                </span>
+              </div>
               @error('password')
                   <span class="invalid-feedback" role="alert">
                       <strong>{{ $message }}</strong>
@@ -65,12 +72,14 @@
               @enderror
           </div>
 
-          <div class="form-group">
+          <div class="form-group mt-1 pt-2">
               <label for="password-confirm" >{{ __('Confirm Password') }}</label>
+                <div class="form-input">
                   <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                   <span class="togglePassword eye-icon" data-toggle="password-confirm">
                     <i class="fa fa-eye-slash"></i>
                   </span>
+                </div>
                   @error('password_confirmation')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
