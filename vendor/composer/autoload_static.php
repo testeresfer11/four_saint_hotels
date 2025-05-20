@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4c4aed0879cd1b810ca07cb2d90e70c8
+class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -381,8 +381,8 @@ class ComposerStaticInit4c4aed0879cd1b810ca07cb2d90e70c8
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -430,8 +430,8 @@ class ComposerStaticInit4c4aed0879cd1b810ca07cb2d90e70c8
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri',
-            1 => __DIR__ . '/..' . '/league/uri-interfaces',
+            0 => __DIR__ . '/..' . '/league/uri-interfaces',
+            1 => __DIR__ . '/..' . '/league/uri',
         ),
         'League\\OAuth2\\Server\\' => 
         array (
@@ -623,6 +623,7 @@ class ComposerStaticInit4c4aed0879cd1b810ca07cb2d90e70c8
         'App\\Http\\Controllers\\Api\\ReviewController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/ReviewController.php',
         'App\\Http\\Controllers\\Api\\SabeeHotelController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/SabeeHotelController.php',
         'App\\Http\\Controllers\\Api\\SabeeServiceController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/SabeeServiceController.php',
+        'App\\Http\\Controllers\\Api\\TwilioConversationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/TwilioConversationController.php',
         'App\\Http\\Controllers\\Api\\paymentController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/paymentController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmPasswordController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
@@ -655,6 +656,8 @@ class ComposerStaticInit4c4aed0879cd1b810ca07cb2d90e70c8
         'App\\Http\\Controllers\\admin\\ServiceController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/ServiceController.php',
         'App\\Http\\Controllers\\admin\\StaffController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/StaffController.php',
         'App\\Http\\Controllers\\admin\\TransactionController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/TransactionController.php',
+        'App\\Http\\Controllers\\admin\\TwilioChatController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/TwilioChatController.php',
+        'App\\Http\\Controllers\\admin\\TwilioVideoController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/TwilioVideoController.php',
         'App\\Http\\Controllers\\admin\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/admin/UserController.php',
         'App\\Http\\Controllers\\user\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/user/AuthController.php',
         'App\\Http\\Controllers\\user\\HelpDeskController' => __DIR__ . '/../..' . '/app/Http/Controllers/user/HelpDeskController.php',
@@ -691,6 +694,7 @@ class ComposerStaticInit4c4aed0879cd1b810ca07cb2d90e70c8
         'App\\Models\\ConfigSetting' => __DIR__ . '/../..' . '/app/Models/ConfigSetting.php',
         'App\\Models\\Contact' => __DIR__ . '/../..' . '/app/Models/Contact.php',
         'App\\Models\\ContentPage' => __DIR__ . '/../..' . '/app/Models/ContentPage.php',
+        'App\\Models\\Conversation' => __DIR__ . '/../..' . '/app/Models/Conversation.php',
         'App\\Models\\EmailTemplate' => __DIR__ . '/../..' . '/app/Models/EmailTemplate.php',
         'App\\Models\\Faq' => __DIR__ . '/../..' . '/app/Models/Faq.php',
         'App\\Models\\Feedback' => __DIR__ . '/../..' . '/app/Models/Feedback.php',
@@ -721,6 +725,7 @@ class ComposerStaticInit4c4aed0879cd1b810ca07cb2d90e70c8
         'App\\Models\\Subscription' => __DIR__ . '/../..' . '/app/Models/Subscription.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\UserDetail' => __DIR__ . '/../..' . '/app/Models/UserDetail.php',
+        'App\\Models\\VideoRoom' => __DIR__ . '/../..' . '/app/Models/VideoRoom.php',
         'App\\Models\\VoucherPurchase' => __DIR__ . '/../..' . '/app/Models/VoucherPurchase.php',
         'App\\Notifications\\AccountDeleteNotification' => __DIR__ . '/../..' . '/app/Notifications/AccountDeleteNotification.php',
         'App\\Notifications\\NewMessageNotification' => __DIR__ . '/../..' . '/app/Notifications/NewMessageNotification.php',
@@ -10046,9 +10051,9 @@ class ComposerStaticInit4c4aed0879cd1b810ca07cb2d90e70c8
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4c4aed0879cd1b810ca07cb2d90e70c8::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4c4aed0879cd1b810ca07cb2d90e70c8::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit4c4aed0879cd1b810ca07cb2d90e70c8::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit296aafa6c013f79b52cc694dad2113eb::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit296aafa6c013f79b52cc694dad2113eb::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit296aafa6c013f79b52cc694dad2113eb::$classMap;
 
         }, null, ClassLoader::class);
     }
