@@ -1,13 +1,13 @@
 @extends('admin.layouts.app')
-@section('title', 'Edit Sub Category')
+@section('title', 'Edit Sub Feature')
 
 @section('breadcrum')
 <div class="page-header">
-    <h3 class="page-title">Sub Categories</h3>
+    <h3 class="page-title">Sub Feature</h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('admin.sub_category.list') }}">Sub Categories</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.sub_category.list') }}">Sub Feature</a></li>
             <li class="breadcrumb-item active" aria-current="page">Edit</li>
         </ol>
     </nav>
@@ -29,7 +29,7 @@
     <div class="col-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Edit Sub Category</h4>
+                <h4 class="card-title">Edit Sub Feature</h4>
 
                 <form id="edit-sub-category" class="forms-sample" 
                       action="{{ route('admin.sub_category.edit', $subCategory->id) }}" method="POST" enctype="multipart/form-data">
@@ -37,9 +37,9 @@
                     {{-- if you use POST for edit, no need for method spoofing --}}
                     
                     <div class="form-group">
-                        <label for="category_id">Select Category</label>
+                        <label for="category_id">Select Feature</label>
                         <select class="form-control @error('category_id') is-invalid @enderror" name="category_id" id="category_id" required>
-                            <option value="">Select Category</option>
+                            <option value="">Select Feature</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" 
                                     {{ (old('category_id', $subCategory->category_id) == $category->id) ? 'selected' : '' }}>
