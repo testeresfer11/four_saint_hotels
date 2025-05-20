@@ -68,7 +68,7 @@
                                     </span>&nbsp;&nbsp;&nbsp;
 
                                     <span class="menu-icon">
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#uploadImagesModal" data-hotel-id="{{ $hotel->id }}" title="Add Images" class="text-success openImageUploadModal">
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#uploadImagesModal" data-hotel-id="{{ $hotel->id }}" data-rate-per-night ="{{$hotel->rate_per_night }}" title="Add Images" class="text-success openImageUploadModal">
                                             <i class="mdi mdi-image"></i>
                                         </a>
                                     </span>
@@ -108,6 +108,10 @@
                     <div class="form-group">
                         <label for="images">Select Images</label>
                         <input type="file" name="images[]" id="imageInput" multiple class="form-control" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label for="rate_per_night">Room Rate Per Night</label>
+                        <input type="number" name="rate_per_night" id="rate_per_night"  class="form-control" required>
                     </div>
 
                     <div class="mt-3">
@@ -170,8 +174,9 @@
     document.querySelectorAll('.openImageUploadModal').forEach(button => {
         button.addEventListener('click', function () {
             const hotelId = this.getAttribute('data-hotel-id');
+            const ratePerNight = this.getAttribute('data-rate-per-night');
             document.getElementById('modal_hotel_id').value = hotelId;
-
+            document.getElementById('rate_per_night').value = ratePerNight;
             document.getElementById('savedHotelImages').innerHTML = '';
             document.getElementById('imagePreviewContainer').innerHTML = '';
             document.getElementById('imageInput').value = '';

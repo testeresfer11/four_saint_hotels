@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('feedback', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable(); 
+            $table->unsignedBigInteger('hotel_id')->nullable(); 
             $table->text('message');
             $table->tinyInteger('rating')->nullable(); 
             $table->tinyInteger('status')->default(1); 

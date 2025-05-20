@@ -1,7 +1,22 @@
 @extends('admin.layouts.app')
 @section('title', 'Dashboard')
 @section('breadcrum')
-<h2 class="main-title">Good Morning, Gavano !</h2>
+@php
+    $hour = now()->format('H');
+  
+    if ($hour >= 5 && $hour < 12) {
+        $greeting = 'Good Morning';
+    } elseif ($hour >= 12 && $hour < 17) {
+        $greeting = 'Good Afternoon';
+    } elseif ($hour >= 17 && $hour < 21) {
+        $greeting = 'Good Evening';
+    } else {
+        $greeting = 'Good Night';
+    }
+@endphp
+
+<h2 class="main-title">{{ $greeting }}, {{ auth()->user()->full_name }}!</h2>
+
 <div class="page-header">
    
     <h5 class="m-0 page-title">Booking Summary</h5>
@@ -23,8 +38,8 @@
                         <div class="icon icon-box-success ">
                             <i class="fa-solid fa-calendar-days"></i>
                         </div>
-                        <h3 class="my-2 count-text">{{$responseData['total_registered_user'] ?? 0}}</h3>
-                        <h6 class="glove-text font-weight-normal">Active Bookings</h6>
+                         <h3 class="my-2 count-text">{{$responseData['total_bookings'] ?? 0}}</h3>
+                        <h6 class="glove-text  font-weight-normal">Total Booking</h6>
                     </div>
                 </a>
             </div>
@@ -36,8 +51,34 @@
                         <div class="icon icon-box-success">
                             <i class="fa-solid fa-check"></i>
                         </div>
-                        <h3 class="my-2 count-text">{{$responseData['total_active_user'] ?? 0}}</h3>
-                        <h6 class="glove-text  font-weight-normal">Confirmed Booking</h6>
+                         <h3 class="my-2 count-text">{{$responseData['CheckedIn'] ?? 0}}</h3>
+                        <h6 class="glove-text  font-weight-normal">CheckedIn Booking</h6>
+                    </div>
+                </a>
+            </div>
+        </div>
+         <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+            <div class="card">
+                <a href="{{route('admin.user.list',['status' => 1])}}">
+                    <div class="card-body">
+                        <div class="icon icon-box-success">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                         <h3 class="my-2 count-text">{{$responseData['total_Option'] ?? 0}}</h3>
+                        <h6 class="glove-text  font-weight-normal">Option Booking</h6>
+                    </div>
+                </a>
+            </div>
+        </div>
+          <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+            <div class="card">
+                <a href="{{route('admin.user.list',['status' => 1])}}">
+                    <div class="card-body">
+                        <div class="icon icon-box-success">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                         <h3 class="my-2 count-text">{{$responseData['total_confirmed'] ?? 0}}</h3>
+                        <h6 class="glove-text  font-weight-normal">Option Booking</h6>
                     </div>
                 </a>
             </div>
@@ -49,8 +90,21 @@
                         <div class="icon icon-box-success ">
                             <i class="fa-solid fa-ellipsis"></i>
                         </div>
-                        <h3 class="my-2 count-text">${{$responseData['total_registered_user'] ?? 0}}</h3>
-                        <h6 class="glove-text  font-weight-normal">Pending Booking</h6>
+                        <h3 class="my-2 count-text">{{$responseData['total_onboared'] ?? 0}}</h3>
+                        <h6 class="glove-text  font-weight-normal">OnBoard Booking</h6>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+                <a href="#">
+                    <div class="card-body">
+                        <div class="icon icon-box-success ">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </div>
+                        <h3 class="my-2 count-text">{{$responseData['total_checkedOut'] ?? 0}}</h3>
+                        <h6 class="glove-text  font-weight-normal">CheckedOut Booking</h6>
                     </div>
                 </a>
             </div>
@@ -68,48 +122,8 @@
                 </a>
             </div>
         </div>
-       {{--<div class="col-xl-4 col-sm-6 grid-margin stretch-card">
-            <div class="card">
-                <a href="{{route('admin.category.list')}}">
-                    <div class="card-body">
-                    <div class="row">
-                        <div class="col-9">
-                        <div class="d-flex align-items-center align-self-start">
-                            <h3 class="mb-0">{{$responseData['total_category'] ?? 0}}</h3>
-                        </div>
-                        </div>
-                        <div class="col-3">
-                        <div class="icon icon-box-success ">
-                            <span class="mdi mdi-arrow-top-right icon-item"></span>
-                        </div>
-                        </div>
-                    </div>
-                    <h6 class="text-muted font-weight-normal">Total Categories </h6>
-                    </div>
-                </a>
-            </div>
-        </div>--}}
-        {{-- <div class="col-xl-4 col-sm-6 grid-margin stretch-card">
-            <div class="card">
-                <a href="{{route('admin.card.list')}}">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-9">
-                            <div class="d-flex align-items-center align-self-start">
-                                <h3 class="mb-0">{{$responseData['total_cards'] ?? 0}}</h3>
-                            </div>
-                            </div>
-                            <div class="col-3">
-                            <div class="icon icon-box-success ">
-                                <span class="mdi mdi-arrow-top-right icon-item"></span>
-                            </div>
-                            </div>
-                        </div>
-                        <h6 class="text-muted font-weight-normal">Total Scratch Cards on the Platform  </h6>
-                    </div>
-                </a>
-            </div>
-        </div> --}}
+  
+    
     </div>
     <div class="row">
         <div class="col-lg-6 grid-margin stretch-card">
@@ -129,99 +143,42 @@
             </div>
         </div>
     </div>
-    <div class="row">
-      <div class="col-md-7 grid-margin">
-        <h5 class="mb-3 page-title">Pending Payments</h5>
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">User Name</th>
-              <th scope="col">email</th>
-              <th scope="col">amount</th>
-              <th scope="col">Due Date</th>
-              <th scope="col">Status</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td scope="row">Henry</td>
-              <td>example12@gmail.com</td>
-              <td>$100</td>
-              <td>25 May 2025</td>
-              <td><span class="status pnd-status">Pending</span></td>
-              <td><i class="fa-solid fa-ellipsis"></i></td>
-            </tr>
-            <tr>
-              <td scope="row">Henry</td>
-              <td>example12@gmail.com</td>
-              <td>$100</td>
-              <td>25 May 2025</td>
-              <td><span class="status pnd-status">Pending</span></td>
-              <td><i class="fa-solid fa-ellipsis"></i></td>
-            </tr>
-            <tr>
-              <td scope="row">Henry</td>
-              <td>example12@gmail.com</td>
-              <td>$100</td>
-              <td>25 May 2025</td>
-              <td><span class="status pnd-status">Pending</span></td>
-              <td><i class="fa-solid fa-ellipsis"></i></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-md-5 grid-margin">
-        <h5 class="mb-3 page-title">Pending Payments</h5>
-        <div class="container text-center mt-5" style="width: 300px;">
-          <canvas id="chartjs-doughnut"></canvas>
-          <div id="chartCenterText">Bookings</div>
-        </div>
-    </div>
-</div>
+   
 <div class="row">
   <div class="col-12 grid-margin">
     <h5 class="mb-3 page-title">Recent Bookings</h5>
     <table class="table">
-      <thead>
+  <thead>
+    <tr>
+      <th>Res. Code</th>
+      <th>Guest Name</th>
+      <th>Guest Email</th>
+      <th>Check‑In</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    @forelse($bookings as $booking)
+      @foreach($booking->bookingGuests as $guest)
         <tr>
-          <th scope="col">User Name</th>
-          <th scope="col">email</th>
-          <th scope="col">amount</th>
-          <th scope="col">Due Date</th>
-          <th scope="col">Status</th>
-          <th scope="col">Action</th>
+          <td>{{ $booking->reservation_code }}</td>
+          <td>{{ $guest->first_name }} {{ $guest->last_name }}</td>
+          <td>{{ $guest->email }}</td>
+          <td>{{ \Carbon\Carbon::parse($booking->checkin_date)->format('d M Y') }}</td>
+          <td>{{ $booking->status }}</td>
         </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td scope="row">Henry</td>
-          <td>example12@gmail.com</td>
-          <td>$100</td>
-          <td>25 May 2025</td>
-          <td><span class="status pnd-status">Pending</span></td>
-          <td><i class="fa-solid fa-ellipsis"></i></td>
-        </tr>
-        <tr>
-          <td scope="row">Henry</td>
-          <td>example12@gmail.com</td>
-          <td>$100</td>
-          <td>25 May 2025</td>
-          <td><span class="status paid-status">Paid</span></td>
-          <td><i class="fa-solid fa-ellipsis"></i></td>
-        </tr>
-        <tr>
-          <td scope="row">Henry</td>
-          <td>example12@gmail.com</td>
-          <td>$100</td>
-          <td>25 May 2025</td>
-          <td><span class="status pnd-status">Pending</span></td>
-          <td><i class="fa-solid fa-ellipsis"></i></td>
-        </tr>
-      </tbody>
-    </table>
+      @endforeach
+    @empty
+      <tr>
+        <td colspan="5" class="text-center">No bookings found.</td>
+      </tr>
+    @endforelse
+  </tbody>
+</table>
+
   </div>
 </div>
+
 @endsection
 @section('scripts')
 <script src="{{asset('admin/js/dashboard.js')}}"></script>
@@ -229,10 +186,24 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+    const bookingStatusData = {
+    option: {{ $responseData['total_Option'] }},
+    confirmed: {{ $responseData['total_confirmed'] }},
+    checkedIn: {{ $responseData['total_checkedIn'] }},
+    onboard: {{ $responseData['total_onboared'] }},
+    checkedOut: {{ $responseData['total_checkedOut'] }},
+    
+  };
   const doughnutPieData = {
     labels: ["Option", "Confirmed", "CheckedIn", "Onboard", "CheckedOut"],
     datasets: [{
-      data: [10, 20, 15, 30, 25], // Replace with dynamic booking statuses if needed
+      data: [
+      bookingStatusData.option,
+      bookingStatusData.confirmed,
+      bookingStatusData.checkedIn,
+      bookingStatusData.onboard,
+      bookingStatusData.checkedOut
+    ],
       backgroundColor: [
         'rgba(255, 99, 132, 0.5)',
         'rgba(54, 162, 235, 0.5)',
