@@ -160,6 +160,23 @@
                 <span class="menu-title">Service Management</span>
             </a>
         </li>
+
+        <li class="nav-item menu-items {{ request()->routeIs('admin.category.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.category.list') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-bell"></i>
+                </span>
+                <span class="menu-title">Category</span>
+            </a>
+        </li>
+        <li class="nav-item menu-items {{ request()->routeIs('admin.category.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.sub_category.list') }}">
+                <span class="menu-icon">
+                    <i class="mdi mdi-bell"></i>
+                </span>
+                <span class="menu-title">Sub Category</span>
+            </a>
+        </li>
        {{-- @endcanany--}}
 
         <!-- Notifications -->

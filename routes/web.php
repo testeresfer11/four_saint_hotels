@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController};
-use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController,HotelController,TwilioChatController};
+use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController,HotelController,TwilioChatController,CategoryController,ServiceSubCategoryController};
 use Illuminate\Support\Facades\Route;
 use App\Models\{ContentPage, ManagefAQ};
 use App\Http\Controllers\NewsletterSubscriberController;
@@ -231,6 +231,26 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('/{sid}/messages','getMessages')->name('messages');
                 Route::post('/{sid}/send','sendMessage')->name('send');
                 Route::get('/conversations', 'listConversations');
+
+            });
+        });
+
+
+        Route::group(['prefix' => 'category'], function () {
+            Route::name('category.')->controller(CategoryController::class)->group(function () {
+               Route::get('/', 'getList')->name('list');
+                Route::match(['get', 'post'], 'add', 'add')->name('add');
+                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'delete')->name('delete');
+
+            });
+        });
+         Route::group(['prefix' => 'sub_category'], function () {
+            Route::name('sub_category.')->controller(ServiceSubCategoryController::class)->group(function () {
+               Route::get('/', 'getList')->name('list');
+                Route::match(['get', 'post'], 'add', 'add')->name('add');
+                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'delete')->name('delete');
 
             });
         });

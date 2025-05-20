@@ -1,54 +1,55 @@
 @extends('admin.layouts.app')
-@section('title', 'Edit Category')
+@section('title', 'Add Sub Category')
 
 @section('breadcrum')
 <div class="page-header">
-    <h3 class="page-title">Service Categories</h3>
+    <h3 class="page-title">Sub Categories</h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('admin.category.list') }}">Categories</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Edit</li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.category.list') }}">Sub Categories</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Add</li>
         </ol>
     </nav>
 </div>
 @endsection
 
 @section('content')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="row">
     <div class="col-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Edit Service Category</h4>
+                <h4 class="card-title">Add Sub Category</h4>
 
-                <form id="edit-category" class="forms-sample" action="{{ route('admin.category.edit', $category->id) }}" method="POST" enctype="multipart/form-data">
+                <form id="add-category" class="forms-sample" action="{{ route('admin.sub_category.add') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="form-group">
-                        <label for="hotel_id">Select Hotel</label>
-                        <select class="form-control @error('hotel_id') is-invalid @enderror" name="hotel_id" id="hotel_id">
-                            <option value="">Select Hotel</option>
-                            @foreach($hotels as $hotel)
-                                <option value="{{ $hotel->id }}" {{ $category->hotel_id == $hotel->id ? 'selected' : '' }}>
-                                    {{ $hotel->name }}
-                                </option>
+                        <label for="category_id">Select Category</label>
+                        <select class="form-control @error('category_id') is-invalid @enderror" name="category_id" id="category_id">
+                            <option value="">Select Category</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->title }}</option>
                             @endforeach
                         </select>
-                        @error('hotel_id')
+                        @error('category_id')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                         @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <input 
-                            type="text" 
-                            name="title" 
-                            class="form-control @error('title') is-invalid @enderror" 
-                            id="title" 
-                            placeholder="Enter title"
-                            value="{{ old('title', $category->title) }}"
-                        >
+                        <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" id="title" placeholder="Enter title">
                         @error('title')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                         @enderror
@@ -56,13 +57,7 @@
 
                     <div class="form-group">
                         <label for="description">Description (optional)</label>
-                        <textarea 
-                            name="description" 
-                            class="form-control @error('description') is-invalid @enderror" 
-                            id="description" 
-                            rows="3" 
-                            placeholder="Enter description"
-                        >{{ old('description', $category->description) }}</textarea>
+                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" id="description" rows="3" placeholder="Enter description"></textarea>
                         @error('description')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                         @enderror
@@ -70,27 +65,16 @@
 
                     <div class="form-group">
                         <label for="icon">Icon (optional)</label>
-                        <input 
-                            type="file" 
-                            name="icon" 
-                            class="form-control @error('icon') is-invalid @enderror" 
-                            id="icon" 
-                            accept="image/*" 
-                            onchange="previewIcon(event)"
-                        >
-                        @error('icon')
+                        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" id="image" accept="image/*" onchange="previewIcon(event)">
+                        @error('image')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                         @enderror
-
                         <div class="mt-2">
-                            @if($category->icon)
-                                <img src="{{ asset('storage/' . $category->icon) }}" alt="Current Icon" style="max-width: 200px; border: 1px solid #ccc; padding: 5px; border-radius: 6px;">
-                            @endif
                             <img id="iconPreview" src="#" style="display:none; max-width: 200px; border: 1px solid #ccc; padding: 5px; border-radius: 6px;">
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Update Category</button>
+                    <button type="submit" class="btn btn-primary mt-3">Add Category</button>
                 </form>
             </div>
         </div>
@@ -111,7 +95,7 @@
     }
 
     $(document).ready(function() {
-        $("#edit-category").validate({
+        $("#add-category").validate({
             rules: {
                 hotel_id: {
                     required: true,
