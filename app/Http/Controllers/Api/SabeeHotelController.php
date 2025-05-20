@@ -86,7 +86,7 @@ class SabeeHotelController extends Controller
     public function getHotels(Request $request)
     {
         try {
-            $query = Hotel::with(['roomTypes', 'ratePlans', 'hotelImages', 'feedbacks','categories','categories.subCategories']);
+            $query = Hotel::with(['roomTypes', 'ratePlans', 'hotelImages']);
 
             // Filter by ID
             if ($request->filled('id')) {
