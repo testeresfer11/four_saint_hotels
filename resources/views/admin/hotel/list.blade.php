@@ -2,7 +2,7 @@
 @section('title', 'Hotels')
 <style type="text/css">
     
-.modal-content button.btn-close {
+/* .modal-content button.btn-close {
     border-radius: 50%;
     height: 10px !important;
     width: 10px !important;
@@ -10,7 +10,7 @@
     font-size: 14px;
     background: #0090e7 !important;
     color: #fff;
-}
+} */
 </style>
 @section('breadcrum')
 <div class="page-header">
@@ -28,16 +28,17 @@
 <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="card-title mb-0"></h4>
-                    <button id="fetchHotelsBtn" class="btn btn-sm btn-primary">
-                        <span id="fetchBtnText">Fetch Hotels</span>
-                        <span id="fetchBtnLoader" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            <div class="card-body p-0">
+                <div class="d-flex justify-content-between flex-column row-gap-3 flex-sm-row px-3 py-3 align-items-md-center align-items-center">
+                    <h4 class="card-title mb-0">Hotel Management</h4>
+                    <button id="fetchHotelsBtn" class="btn btn-sm btn-primary fetch-hotels-btn">
+                        <span class="fetch-icon" id="fetchBtnLoader"><i class="fa-solid fa-arrows-rotate spinner-icon"></i></span>
+                        <span id="fetchBtnText" class="fetch-btn-text">Fetch Hotels</span>
+                        {{-- <span  class="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span> --}}
                     </button>
                 </div>
 
-                <h4 class="card-title">Hotel Management</h4>
+                {{-- <h4 class="card-title">Hotel Management</h4> --}}
                 <div class="table-responsive">
                     <table class="table table-stripe">
                         <thead>
@@ -102,7 +103,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="uploadImagesModalLabel">Upload Hotel Images</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -137,13 +138,31 @@
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".fetch-hotels-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const spinner = this.querySelector(".spinner-icon");
+
+            if (spinner) {
+                spinner.classList.add("spin");
+                setTimeout(() => {
+                    spinner.classList.remove("spin");
+                }, 3000);
+            }
+        });
+    });
+});
+
+</script>
+
+<script>
     document.getElementById('fetchHotelsBtn').addEventListener('click', function() {
         const fetchBtnText = document.getElementById('fetchBtnText');
         const fetchBtnLoader = document.getElementById('fetchBtnLoader');
 
         // Show loader and hide button text
-        fetchBtnText.classList.add('d-none');
-        fetchBtnLoader.classList.remove('d-none');
+        // fetchBtnText.classList.add('d-none');
+        // fetchBtnLoader.classList.remove('d-none');
 
         fetch('/api/sabee/hotels/fetch')
             .then(response => response.json())
@@ -195,7 +214,7 @@
 
                             col.innerHTML = `
                                 <img src="${image.image_path}" class="img-fluid rounded border" style="height: 120px; object-fit: cover;" alt="Saved Image">
-                                <button type="button" class="btn-close position-absolute top-0 end-0 m-1 bg-danger text-white rounded-circle" aria-label="Close"></button>
+                                <button type="button" class="btn-close position-absolute top-0 end-0 m-1 bg-danger text-white rounded-circle" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
                             `;
                             container.appendChild(col);
 
