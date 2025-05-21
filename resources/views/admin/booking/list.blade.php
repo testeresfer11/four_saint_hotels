@@ -276,7 +276,7 @@
             .then(response => response.json())
             .then(data => {
                 // Show text, hide loader
-                fetchText.classList.remove('d-none');
+                fetchText.classList.remove('d-none');   
                 fetchLoader.classList.add('d-none');
 
                 if (data.status_code ==200) {
