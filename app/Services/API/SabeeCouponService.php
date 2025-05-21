@@ -17,8 +17,6 @@ class SabeeCouponService
     ])->get(config('services.sabee.api_url') . '/coupon/list', [
         'hotel_id' => $hotelId,
     ]);
-   
-
     if ($response->successful()) {
         $coupons = $response->json('data.coupons');
 

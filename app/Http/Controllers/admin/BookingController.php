@@ -47,14 +47,14 @@ class BookingController extends Controller
         // Default date range
             $start_date = $request->query('start_date');
 
+            $start_date = $request->query('start_date');
             if ($start_date) {
-                $start_date = \Carbon\Carbon::parse($start_date)->startOfYear()->toDateString();
+                $start_date = Carbon::parse($start_date)->startOfMonth()->toDateString(); // Use given date, reset to start of its month
             } else {
-                $start_date = now()->startOfYear()->toDateString(); // default to current year's start
-            }  
+                $start_date = now()->startOfMonth()->toDateString(); // Default to start of current month
+            }
 
             $end_date = $request->query('end_date', now()->toDateString());
-            
         // Filters
         $search = $request->query('search_keyword');
         $status = $request->query('status');

@@ -20,12 +20,16 @@ class SabeeServiceListService
             'api_key'     => config('services.sabee.api_key'),
             'api_version' => config('services.sabee.api_version'),
         ])->get(config('services.sabee.api_url') . "service/list?hotel_id={$hotelId}");
+        
+      
+        
 
         if (! $response->successful()) {
             throw new \Exception('Failed to fetch service inventory: ' . $response->body());
         }
 
         $services = $response->json('data.services');
+     
         
         if ($services) {
             foreach ($services as $serviceData) {

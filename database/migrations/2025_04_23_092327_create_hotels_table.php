@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('hotels', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('hotel_id')->unique(); // Sabee hotel ID
+            $table->unsignedBigInteger('hotel_id')->unique(); 
             $table->string('name');
             $table->string('city')->nullable();
             $table->string('country')->nullable();
@@ -23,7 +23,8 @@ return new class extends Migration
             $table->decimal('longitude', 10, 7)->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
-            $table->string('currency')->nullable();
+            $table->string(column: 'currency')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
         
