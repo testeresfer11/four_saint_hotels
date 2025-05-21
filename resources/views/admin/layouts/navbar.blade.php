@@ -13,17 +13,17 @@
         {{-- <li class="nav-item profile">
             <div class="profile-desc">
                 <a href="{{ route('admin.profile') }}">
-                    <div class="profile-pic">
-                        <div class="count-indicator">
-                            <img class="img-xs rounded-circle" src="{{ userImageById(authId()) }}" alt="User profile picture">
-                            <span class="count bg-success"></span>
-                        </div>
-                        <div class="profile-name">
-                            <h5 class="mb-0 font-weight-normal">{{ UserNameById(authId()) }}</h5>
-                        </div>
-                    </div>
-                </a>
+        <div class="profile-pic">
+            <div class="count-indicator">
+                <img class="img-xs rounded-circle" src="{{ userImageById(authId()) }}" alt="User profile picture">
+                <span class="count bg-success"></span>
             </div>
+            <div class="profile-name">
+                <h5 class="mb-0 font-weight-normal">{{ UserNameById(authId()) }}</h5>
+            </div>
+        </div>
+        </a>
+        </div>
         </li> --}}
 
         @canany(['dashboard-view'])
@@ -83,38 +83,38 @@
 
         <!-- User Management -->
         @canany(['user-list','user-add','user-edit','user-delete','user-view','user-change-status','user-trashed-list','user-restore','staff-list'])
-       <li class="nav-item menu-items {{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? 'active' : '' }}">
-        <a class="nav-link {{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? '' : 'collapsed' }}" data-toggle="collapse" href="#service1" aria-expanded="{{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? 'true' : 'false' }}" aria-controls="service1">
-            <span class="menu-icon">
-                <i class="fa-solid fa-users"></i>
-            </span>
-            <span class="menu-title">User Management</span>
-            <i class="menu-arrow"></i>
-        </a>
-        <div class="collapse {{ request()->routeIs('admin.user.*','admin.staff.*','admin.trashed.list') ? 'show' : '' }}" id="service1">
-            <ul class="nav flex-column sub-menu">
-              @can('user-list')
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.user.*') ? 'active' : '' }}" href="{{ route('admin.user.list') }}">Users</a>
-                </li>
-              @endcan
-             
-              @can('staff-list')
-                <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('admin.staff.*') ? 'active' : '' }}" href="{{ route('admin.staff.list') }}">Staff</a>
-                </li>
-              @endcan
-              @can('trashed-user-list')
-                <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('admin.trashed.list') ? 'active' : '' }}" href="{{ route('admin.trashed.list') }}">Trashed User</a>
-                </li>
-              @endcan
-            </ul>
-        </div>
-      </li>
-         @endcanany
+        <li class="nav-item menu-items {{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? 'active' : '' }}">
+            <a class="nav-link {{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? '' : 'collapsed' }}" data-toggle="collapse" href="#service1" aria-expanded="{{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? 'true' : 'false' }}" aria-controls="service1">
+                <span class="menu-icon">
+                    <i class="fa-solid fa-users"></i>
+                </span>
+                <span class="menu-title">User Management</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse {{ request()->routeIs('admin.user.*','admin.staff.*','admin.trashed.list') ? 'show' : '' }}" id="service1">
+                <ul class="nav flex-column sub-menu">
+                    @can('user-list')
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.user.*') ? 'active' : '' }}" href="{{ route('admin.user.list') }}">Users</a>
+                    </li>
+                    @endcan
+
+                    @can('staff-list')
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.staff.*') ? 'active' : '' }}" href="{{ route('admin.staff.list') }}">Staff</a>
+                    </li>
+                    @endcan
+                    @can('trashed-user-list')
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.trashed.list') ? 'active' : '' }}" href="{{ route('admin.trashed.list') }}">Trashed User</a>
+                    </li>
+                    @endcan
+                </ul>
+            </div>
+        </li>
+        @endcanany
         <!-- Trashed User -->
-        
+
 
         <!-- Vouchers -->
         @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])
@@ -123,7 +123,7 @@
                 <span class="menu-icon">
                     <i class="mdi mdi-gift"></i>
                 </span>
-                <span class="menu-title">Vouchers</span>
+                <span class="menu-title">Coupans</span>
             </a>
         </li>
         @endcanany
@@ -137,9 +137,9 @@
                 <span class="menu-title">Hotel Management</span>
             </a>
         </li>
-       {{-- @endcanany--}}
+        {{-- @endcanany--}}
 
-         <!-- Vouchers -->
+        <!-- Vouchers -->
         {{-- @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])--}}
         <li class="nav-item menu-items {{ request()->routeIs('admin.booking.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.booking.list') }}">
@@ -149,35 +149,43 @@
                 <span class="menu-title">Booking Management</span>
             </a>
         </li>
-       {{-- @endcanany--}}
+        {{-- @endcanany--}}
         <!-- Vouchers -->
         {{-- @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])--}}
         <li class="nav-item menu-items {{ request()->routeIs('admin.service.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.service.list') }}">
                 <span class="menu-icon">
-                    <i class="fa-solid fa-wrench"></i>
+                    <i class="fa-solid fa-archive"></i>
                 </span>
                 <span class="menu-title">Service Management</span>
             </a>
         </li>
 
-        <li class="nav-item menu-items {{ request()->routeIs('admin.category.*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.category.list') }}">
+        <li class="nav-item menu-items">
+            <a class="nav-link" data-bs-toggle="collapse" href="#featureSubmenu" role="button" aria-expanded="{{ request()->routeIs('admin.category.*') || request()->routeIs('admin.sub_category.*') ? 'true' : 'false' }}" aria-controls="featureSubmenu">
                 <span class="menu-icon">
-                    <i class="mdi mdi-bell"></i>
+                    <i class="fa-solid fa-list"></i>
                 </span>
-                <span class="menu-title">Feature</span>
+                <span class="menu-title">Feature Management</span>
+                <i class="menu-arrow"></i>
             </a>
+            <div class="collapse {{ request()->routeIs('admin.category.*') || request()->routeIs('admin.sub_category.*') ? 'show' : '' }}" id="featureSubmenu">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item {{ request()->routeIs('admin.category.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.category.list') }}">
+                            Feature
+                        </a>
+                    </li>
+                    <li class="nav-item {{ request()->routeIs('admin.sub_category.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.sub_category.list') }}">
+                             Sub Feature
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </li>
-        <li class="nav-item menu-items {{ request()->routeIs('admin.category.*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.sub_category.list') }}">
-                <span class="menu-icon">
-                    <i class="mdi mdi-bell"></i>
-                </span>
-                <span class="menu-title">Sub Feature</span>
-            </a>
-        </li>
-       {{-- @endcanany--}}
+
+        {{-- @endcanany--}}
 
         <!-- Notifications -->
         @canany(['notification-list', 'notification-read', 'notification-delete'])
@@ -250,7 +258,7 @@
                 </ul>
             </div>
         </li>
-         <li class="nav-item menu-items {{ request()->routeIs('admin.chat.*') ? 'active' : '' }}">
+        <li class="nav-item menu-items {{ request()->routeIs('admin.chat.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.chat.index') }}">
                 <span class="menu-icon">
                     <i class="mdi mdi-chat"></i>

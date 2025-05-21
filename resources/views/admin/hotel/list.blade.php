@@ -69,8 +69,8 @@
                                     </span>&nbsp;&nbsp;&nbsp;
 
                                     <span class="menu-icon">
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#uploadImagesModal" data-hotel-id="{{ $hotel->id }}" data-rate-per-night ="{{$hotel->rate_per_night }}" title="Add Images" class="text-success openImageUploadModal">
-                                            <i class="mdi mdi-image"></i>
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#uploadImagesModal" data-hotel-id="{{ $hotel->id }}" data-rate-per-night ="{{$hotel->rate_per_night }}" data-description="{{ $hotel->description }}" title="Add Images" class="text-success openImageUploadModal">
+                                            <i class="mdi mdi-pen"></i>
                                         </a>
                                     </span>
 
@@ -96,13 +96,13 @@
 
 <!-- Upload Images Modal -->
 <div class="modal fade" id="uploadImagesModal" tabindex="-1" aria-labelledby="uploadImagesModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <form id="uploadImagesForm" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="hotel_id" id="modal_hotel_id">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="uploadImagesModalLabel">Upload Hotel Images</h5>
+                    <h5 class="modal-title" id="uploadImagesModalLabel">Update Hotel Data</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="modal-body">
@@ -113,6 +113,10 @@
                     <div class="form-group">
                         <label for="rate_per_night">Room Rate Per Night</label>
                         <input type="number" name="rate_per_night" id="rate_per_night"  class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                      <textarea  name="description" id="description"required maxlength="200"></textarea>
                     </div>
 
                     <div class="mt-3">
@@ -127,7 +131,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Upload</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </form>
@@ -160,22 +164,18 @@
         const fetchBtnText = document.getElementById('fetchBtnText');
         const fetchBtnLoader = document.getElementById('fetchBtnLoader');
 
-        // Show loader and hide button text
-        // fetchBtnText.classList.add('d-none');
-        // fetchBtnLoader.classList.remove('d-none');
-
         fetch('/api/sabee/hotels/fetch')
             .then(response => response.json())
             .then(data => {
-                // Hide loader and show button text again
+          
                 fetchBtnText.classList.remove('d-none');
                 fetchBtnLoader.classList.add('d-none');
-                console.log(data)
+              
                 if (data.status_code == 200) {
                     toastr.success(data.message);
                     setTimeout(() => {
                         location.reload();
-                    }, 2000); // Reload after 1.5 seconds
+                    }, 2000); 
                 } else {
                     toastr.error(data.message || 'Something went wrong');
                 }
@@ -194,8 +194,11 @@
         button.addEventListener('click', function () {
             const hotelId = this.getAttribute('data-hotel-id');
             const ratePerNight = this.getAttribute('data-rate-per-night');
+            const description = this.getAttribute('data-description');
             document.getElementById('modal_hotel_id').value = hotelId;
             document.getElementById('rate_per_night').value = ratePerNight;
+            document.getElementById('description').value = description;
+            $("textarea#description").val(description);
             document.getElementById('savedHotelImages').innerHTML = '';
             document.getElementById('imagePreviewContainer').innerHTML = '';
             document.getElementById('imageInput').value = '';
@@ -204,7 +207,6 @@
             fetch(`/admin/hotel/${hotelId}/images`)
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data);
                     if (data.status) {
                         const container = document.getElementById('savedHotelImages');
                         data.images.forEach(image => {
@@ -240,7 +242,7 @@
                                     }
                                 })
                                 .catch(err => {
-                                    console.error(err);
+                                   
                                     toastr.error('Error deleting image');
                                 });
                             });
@@ -296,7 +298,7 @@
                 fetch(`/admin/hotel/${hotelId}/images`)
                     .then(res => res.json())
                     .then(data => {
-                        console.log(data);
+                        
                         if (data.status) {
                             const container = document.getElementById('savedHotelImages');
                             container.innerHTML = '';
@@ -332,7 +334,6 @@
                                         }
                                     })
                                     .catch(err => {
-                                        console.error(err);
                                         toastr.error('Error deleting image');
                                     });
                                 });
@@ -345,7 +346,6 @@
         })
         .catch(err => {
             submitBtn.disabled = false;
-            console.error(err);
             toastr.error('Something went wrong.');
         });
     });
