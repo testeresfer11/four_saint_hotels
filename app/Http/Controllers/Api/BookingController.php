@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\API\SabeeBookingService;
 use App\Traits\SendResponseTrait;
+use App\Notifications\BookingCreatedNotification;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 
 class BookingController extends Controller
@@ -46,7 +49,7 @@ class BookingController extends Controller
         }
 
         $end_date = $request->query('end_date', now()->toDateString());
-        
+
         $extended_list = $request->query('extended_list', 1); // Default to 1
         $services = $request->query('services', 1); // Default to 1
         $guest_details = $request->query('guest_details', 1); // Default to 1
@@ -133,6 +136,9 @@ class BookingController extends Controller
             }
 
             $response = $this->sabeeBookingService->createBooking($payload);
+            $user = Auth::user();
+
+            $user->notify(new BookingCreatedNotification($booking));
 
             return response()->json([
                 'status' => 'success',
