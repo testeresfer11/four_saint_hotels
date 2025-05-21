@@ -187,48 +187,48 @@ class HotelController extends Controller
         $request->validate([
             'hotel_id'       => 'required|exists:hotels,id',
             'rate_per_night' => 'required',
-            'images'         => 'required|array',
+            'images'         => 'nullable|array',
             'images.*'       => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
+    
         try {
-            
             $uploadedImages = DB::transaction(function () use ($request) {
                 $hotelId = $request->hotel_id;
                 $paths   = [];
-
-
-                foreach ($request->file('images') as $image) {
-                    $path = $image->store('hotels/images', 'public');
-                    $url  = Storage::url($path);
-
-                    $hotelImage = HotelImage::create([
-                        'hotel_id'   => $hotelId,
-                        'image_path' => $url,
-                    ]);
-
-                    $paths[] = $url;
+    
+                if ($request->hasFile('images')) {
+                    foreach ($request->file('images') as $image) {
+                        $path = $image->store('hotels/images', 'public');
+                        $url  = Storage::url($path);
+    
+                        HotelImage::create([
+                            'hotel_id'   => $hotelId,
+                            'image_path' => $url,
+                        ]);
+    
+                        $paths[] = $url;
+                    }
                 }
-
-                Hotel::where('id', $hotelId)->update(['rate_per_night' => $request->rate_per_night]);
+    
+                Hotel::where('id', $hotelId)->update(['rate_per_night' => $request->rate_per_night,'description'=>$request->description]);
+    
                 return $paths;
             });
-
+    
             return response()->json([
                 'status'  => true,
-                'message' => 'Images uploaded and rate updated successfully.',
+                'message' => 'Data processed successfully.',
                 'images'  => $uploadedImages,
             ], 200);
         } catch (\Exception $e) {
-
             return response()->json([
                 'status'  => false,
-                'message' => 'Failed to upload images.',
+                'message' => 'Failed to process request.',
                 'error'   => $e->getMessage(),
             ], 500);
         }
     }
-
+    
 
 
     /**

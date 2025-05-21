@@ -2,7 +2,7 @@
 @section('title', 'Hotels')
 <style type="text/css">
     
-.modal-content button.btn-close {
+/* .modal-content button.btn-close {
     border-radius: 50%;
     height: 10px !important;
     width: 10px !important;
@@ -10,7 +10,7 @@
     font-size: 14px;
     background: #0090e7 !important;
     color: #fff;
-}
+} */
 </style>
 @section('breadcrum')
 <div class="page-header">
@@ -28,16 +28,17 @@
 <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="card-title mb-0"></h4>
-                    <button id="fetchHotelsBtn" class="btn btn-sm btn-primary">
-                        <span id="fetchBtnText">Fetch Hotels</span>
-                        <span id="fetchBtnLoader" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            <div class="card-body p-0">
+                <div class="d-flex justify-content-between flex-column row-gap-3 flex-sm-row px-3 py-3 align-items-md-center align-items-center">
+                    <h4 class="card-title mb-0">Hotel Management</h4>
+                    <button id="fetchHotelsBtn" class="btn btn-sm btn-primary fetch-hotels-btn">
+                        <span class="fetch-icon" id="fetchBtnLoader"><i class="fa-solid fa-arrows-rotate spinner-icon"></i></span>
+                        <span id="fetchBtnText" class="fetch-btn-text">Fetch Hotels</span>
+                        {{-- <span  class="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span> --}}
                     </button>
                 </div>
 
-                <h4 class="card-title">Hotel Management</h4>
+                {{-- <h4 class="card-title">Hotel Management</h4> --}}
                 <div class="table-responsive">
                     <table class="table table-stripe">
                         <thead>
@@ -68,8 +69,8 @@
                                     </span>&nbsp;&nbsp;&nbsp;
 
                                     <span class="menu-icon">
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#uploadImagesModal" data-hotel-id="{{ $hotel->id }}" data-rate-per-night ="{{$hotel->rate_per_night }}" title="Add Images" class="text-success openImageUploadModal">
-                                            <i class="mdi mdi-image"></i>
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#uploadImagesModal" data-hotel-id="{{ $hotel->id }}" data-rate-per-night ="{{$hotel->rate_per_night }}" data-description="{{ $hotel->description }}" title="Add Images" class="text-success openImageUploadModal">
+                                            <i class="mdi mdi-pen"></i>
                                         </a>
                                     </span>
 
@@ -95,14 +96,14 @@
 
 <!-- Upload Images Modal -->
 <div class="modal fade" id="uploadImagesModal" tabindex="-1" aria-labelledby="uploadImagesModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <form id="uploadImagesForm" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="hotel_id" id="modal_hotel_id">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="uploadImagesModalLabel">Upload Hotel Images</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="uploadImagesModalLabel">Update Hotel Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -112,6 +113,10 @@
                     <div class="form-group">
                         <label for="rate_per_night">Room Rate Per Night</label>
                         <input type="number" name="rate_per_night" id="rate_per_night"  class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                      <textarea  name="description" id="description"required maxlength="200"></textarea>
                     </div>
 
                     <div class="mt-3">
@@ -126,7 +131,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Upload</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </form>
@@ -137,26 +142,40 @@
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".fetch-hotels-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            const spinner = this.querySelector(".spinner-icon");
+
+            if (spinner) {
+                spinner.classList.add("spin");
+                setTimeout(() => {
+                    spinner.classList.remove("spin");
+                }, 3000);
+            }
+        });
+    });
+});
+
+</script>
+
+<script>
     document.getElementById('fetchHotelsBtn').addEventListener('click', function() {
         const fetchBtnText = document.getElementById('fetchBtnText');
         const fetchBtnLoader = document.getElementById('fetchBtnLoader');
 
-        // Show loader and hide button text
-        fetchBtnText.classList.add('d-none');
-        fetchBtnLoader.classList.remove('d-none');
-
         fetch('/api/sabee/hotels/fetch')
             .then(response => response.json())
             .then(data => {
-                // Hide loader and show button text again
+          
                 fetchBtnText.classList.remove('d-none');
                 fetchBtnLoader.classList.add('d-none');
-                console.log(data)
+              
                 if (data.status_code == 200) {
                     toastr.success(data.message);
                     setTimeout(() => {
                         location.reload();
-                    }, 2000); // Reload after 1.5 seconds
+                    }, 2000); 
                 } else {
                     toastr.error(data.message || 'Something went wrong');
                 }
@@ -175,8 +194,11 @@
         button.addEventListener('click', function () {
             const hotelId = this.getAttribute('data-hotel-id');
             const ratePerNight = this.getAttribute('data-rate-per-night');
+            const description = this.getAttribute('data-description');
             document.getElementById('modal_hotel_id').value = hotelId;
             document.getElementById('rate_per_night').value = ratePerNight;
+            document.getElementById('description').value = description;
+            $("textarea#description").val(description);
             document.getElementById('savedHotelImages').innerHTML = '';
             document.getElementById('imagePreviewContainer').innerHTML = '';
             document.getElementById('imageInput').value = '';
@@ -185,7 +207,6 @@
             fetch(`/admin/hotel/${hotelId}/images`)
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data);
                     if (data.status) {
                         const container = document.getElementById('savedHotelImages');
                         data.images.forEach(image => {
@@ -195,7 +216,7 @@
 
                             col.innerHTML = `
                                 <img src="${image.image_path}" class="img-fluid rounded border" style="height: 120px; object-fit: cover;" alt="Saved Image">
-                                <button type="button" class="btn-close position-absolute top-0 end-0 m-1 bg-danger text-white rounded-circle" aria-label="Close"></button>
+                                <button type="button" class="btn-close position-absolute top-0 end-0 m-1 bg-danger text-white rounded-circle" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
                             `;
                             container.appendChild(col);
 
@@ -221,7 +242,7 @@
                                     }
                                 })
                                 .catch(err => {
-                                    console.error(err);
+                                   
                                     toastr.error('Error deleting image');
                                 });
                             });
@@ -277,7 +298,7 @@
                 fetch(`/admin/hotel/${hotelId}/images`)
                     .then(res => res.json())
                     .then(data => {
-                        console.log(data);
+                        
                         if (data.status) {
                             const container = document.getElementById('savedHotelImages');
                             container.innerHTML = '';
@@ -313,7 +334,6 @@
                                         }
                                     })
                                     .catch(err => {
-                                        console.error(err);
                                         toastr.error('Error deleting image');
                                     });
                                 });
@@ -326,7 +346,6 @@
         })
         .catch(err => {
             submitBtn.disabled = false;
-            console.error(err);
             toastr.error('Something went wrong.');
         });
     });

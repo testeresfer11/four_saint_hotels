@@ -1317,7 +1317,7 @@ select.form-control:focus{
 
 /*Modal style start*/
 .modal-content {
-  box-shadow: 0px 1px 10px #fff;
+  box-shadow: 0px 1px 10px #ffffff2e;
 }
 
 .modal-content .modal-header {
@@ -1349,22 +1349,37 @@ a {
 .row-gap-3 {
   row-gap: 13px;
 }
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+      transform: rotate(360deg);
+  }
+}
 /* End model style */
 @media screen and (max-width:767px) {
-  a.add-btn {
+  a.add-btn, button.fetch-btn {
     position: absolute;
     top: 10px;
     right: 10px;
   }
   button.btn-md {
-    padding: 7px 12px;
+    padding: 7px 12px !important;
   }
   #filter button.btn{
     padding: 10px 15px;
   }
 }
+@media screen and  (max-width:578px) {
+  .btn span.menu-text {
+    display: none;
+}
+}
 @media screen and (max-width:430px) {
-  .add-btn span.menu-text{
+  .add-btn span.menu-text, button span.fetch-text{
     display: none;
   }
 }

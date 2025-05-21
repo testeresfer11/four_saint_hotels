@@ -20,8 +20,7 @@ class UsersTableSeeder extends Seeder
         User::updateOrCreate([
             'email'             => "admin@yopmail.com",
             'role_id'           => $role->id],[
-            'first_name'        =>  'super',
-            'last_name'         =>  'admin',
+            'full_name'        =>  'super',
             'password'          =>   Hash::make('Admin@123'),
             'is_email_verified' =>  1
         ]);
@@ -33,8 +32,8 @@ class UsersTableSeeder extends Seeder
         User::updateOrCreate([
             'email'             => "john@yopmail.com",
             'role_id'           => $role->id],[
-            'first_name'        =>  'john',
-            'last_name'         =>  'smith',
+            'full_name'        =>  'john',
+           
             'password'          =>   Hash::make('Pass@123'),
         ]);
         $user = User::where('email' , "john@yopmail.com")->first();
@@ -44,8 +43,8 @@ class UsersTableSeeder extends Seeder
         User::updateOrCreate([
             'email'             => "Amy@yopmail.com",
             'role_id'           => $role->id],[
-            'first_name'        =>  'Alison',
-            'last_name'         =>  'Amy',
+            'full_name'        =>  'Alison',
+            
             'password'          =>   Hash::make('Pass@123'),
         ]);
         $user = User::where('email' , "Amy@yopmail.com")->first();
@@ -55,8 +54,8 @@ class UsersTableSeeder extends Seeder
         User::updateOrCreate([
             'email'             => "Jake@yopmail.com",
             'role_id'           => $role->id],[
-            'first_name'        =>  'Jake',
-            'last_name'         =>  'Sharma',
+            'full_name'        =>  'Jake',
+           
             'password'          =>   Hash::make('Pass@123'),
         ]);
         $user = User::where('email' , "Jake@yopmail.com")->first();
