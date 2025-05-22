@@ -262,11 +262,14 @@
 
         // Get today's date in YYYY-MM-DD format
         const today = new Date().toISOString().split('T')[0];
+        const endDateObj = new Date();
+        endDateObj.setDate(endDateObj.getDate() + 30);
+        const end = endDateObj.toISOString().split('T')[0];
 
         const params = new URLSearchParams({
             hotel_id: 8618, // change this if dynamic
             start_date: today, // you can change this if needed
-            end_date: today,
+            end_date: end,
             extended_list: 1,
             services: 1,
             guest_details: 1

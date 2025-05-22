@@ -39,5 +39,10 @@ return [
         'api_version' => env('SABEE_API_VERSION'),
         'api_url' => env('SABEE_API_URL'),
     ],
+    'twilio' => [
+    'sid' => env('TWILIO_SID'),
+    'token' => env('TWILIO_TOKEN'),
+    'from' => env('TWILIO_FROM'),
+],
 
 ];

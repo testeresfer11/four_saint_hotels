@@ -7,10 +7,19 @@ use Illuminate\Http\Request;
 use Twilio\Rest\Client;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Services\API\TwilioService;
+
 
 class TwilioConversationController extends Controller
 {
     protected $twilio;
+
+
+    public function __construct(TwilioService $twilio)
+    {
+        $this->twilio = $twilio;
+    }
+
 
     /**
      * functionName : __construct
@@ -113,5 +122,31 @@ class TwilioConversationController extends Controller
         });
 
         return response()->json(['messages' => $result]);
+    }
+
+    /**
+     * functionName : makeCall
+     * createdDate  : 2025-05-19
+     * purpose      : make call from twillio
+     */
+    public function makeCall(Request $request)
+    {
+        $request->validate([
+            'to' => 'required|string',
+            'twiml_url' => 'required|url',
+        ]);
+
+        try {
+            $call = $this->twilio->makeCall($request->to, $request->twiml_url);
+            return response()->json([
+                'message' => 'Call initiated successfully.',
+                'sid' => $call->sid,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to make the call.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

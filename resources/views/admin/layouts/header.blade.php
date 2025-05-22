@@ -8,32 +8,29 @@
   <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
     <ul class="navbar-nav navbar-nav-right">
 
-      <!-- Hotel Dropdown (Corrected Position) -->
-      <li class="nav-item dropdown hotel_status">
-        <a class="nav-link dropdown-toggle" href="#" id="hotelDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-          Select Hotel
-        </a>
-        <div class="dropdown-menu" aria-labelledby="hotelDropdown">
-        <form method="POST" action="{{ route('admin.hotel.select') }}">
-            @csrf
-            <select name="hotel_id" onchange="this.form.submit()">
-                <option value="">All Hotels</option>
-                @foreach($hotels as $hotel)
-                    <option value="{{ $hotel->hotel_id }}" @selected(session('selected_hotel_id') == $hotel->hotel_id)>
-                      {{ $hotel->name }}
-                  </option>
+      @php
+    $selectedHotelId = session('selected_hotel_id');
+    @endphp
 
-                @endforeach
-            </select>
-        </form>
+    <form method="POST" action="{{ route('admin.hotel.select') }}">
+        @csrf
+        <select  class ="hotel_status" name="hotel_id"  onchange="this.form.submit()" class="form-control">
+            <option value="">Select Hotel</option>
+            @foreach($hotels as $hotel)
+                <option value="{{ $hotel->hotel_id }}" @selected($selectedHotelId == $hotel->hotel_id)>
+                    {{ $hotel->name }}
+                </option>
+            @endforeach
+        </select>
+    </form>
 
 
-        </div>
-      </li>
+
+
 
 
       @php
-          $notification_count = auth()->user()->unreadNotifications()->count();
+      $notification_count = auth()->user()->unreadNotifications()->count();
       @endphp
 
       <!-- Notifications -->
@@ -42,25 +39,25 @@
           <i class="mdi mdi-bell"></i>
           <span class="noti-count">2</span>
           @if ($notification_count)
-            <span class="count bg-danger"></span>
+          <span class="count bg-danger"></span>
           @endif
         </a>
         @if($notification_count)
-          <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-            <h6 class="p-3 mb-0">Notifications</h6>
-            @foreach (auth()->user()->unreadNotifications()->take(5)->get() as $notification)
-              <div class="dropdown-divider m-0"></div>
-              <a href="{{ route('admin.notification.list') }}">
-                <p class="preview-subject p-3 mb-0">{{ ($notification->data)['description'] }}</p>
-              </a>
-            @endforeach
-            @if(auth()->user()->unreadNotifications()->count() > 5)
-              <div class="dropdown-divider"></div>
-              <a href="{{ route('admin.notification.list') }}">
-                <p class="p-3 mb-0 text-center">See all notifications</p>
-              </a>
-            @endif
-          </div>
+        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+          <h6 class="p-3 mb-0">Notifications</h6>
+          @foreach (auth()->user()->unreadNotifications()->take(5)->get() as $notification)
+          <div class="dropdown-divider m-0"></div>
+          <a href="{{ route('admin.notification.list') }}">
+            <p class="preview-subject p-3 mb-0">{{ ($notification->data)['description'] }}</p>
+          </a>
+          @endforeach
+          @if(auth()->user()->unreadNotifications()->count() > 5)
+          <div class="dropdown-divider"></div>
+          <a href="{{ route('admin.notification.list') }}">
+            <p class="p-3 mb-0 text-center">See all notifications</p>
+          </a>
+          @endif
+        </div>
         @endif
       </li>
 
