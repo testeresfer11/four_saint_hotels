@@ -41,73 +41,63 @@ class BookingController extends Controller
 
 
     public function getList(Request $request)
-    {
-        // Get hotel_id from session or fallback to a default
-        $hotel_id = session('selected_hotel_id', 8618);
+{
+    $hotel_id = session('selected_hotel_id', 8618);
 
-        // Default date range
-            $start_date = $request->query('start_date');
+    // Default date range
+    $start_date = $request->query('start_date');
+    $start_date = $start_date ? Carbon::parse($start_date)->startOfMonth()->toDateString() : now()->startOfMonth()->toDateString();
 
-            $start_date = $request->query('start_date');
-            if ($start_date) {
-                $start_date = Carbon::parse($start_date)->startOfMonth()->toDateString(); // Use given date, reset to start of its month
-            } else {
-                $start_date = now()->startOfMonth()->toDateString(); // Default to start of current month
-            }
+    $end_date = $request->query('end_date', now()->toDateString());
 
-            $end_date = $request->query('end_date', now()->toDateString());
-        // Filters
-        $search = $request->query('search_keyword');
-        $status = $request->query('status');
+    $search = $request->query('search_keyword');
+    $status = $request->query('status');
 
-        try {
-            $bookingsQuery = Booking::with([
-                'bookingGuests',
-                'bookingPrices',
-                'bookingServices',
-                'customer',
-                'payments',
-            ])
-            // Hotel ID filter
-            ->where('hotel_id', $hotel_id)
-
-            // Date range filter
-            ->whereDate('checkin_date', '>=', $start_date)
-            ->whereDate('checkout_date', '<=', $end_date)
-
-            // Optional status filter
-            ->when($status, fn($q) => $q->where('status', $status))
-
-            // Optional search filter
-            ->when($search, function ($query) use ($search) {
-                $query->where(function ($q) use ($search) {
-                    $q->whereHas('customer', function ($q) use ($search) {
-                        $q->where('first_name', 'like', "%$search%")
-                          ->orWhere('last_name', 'like', "%$search%")
-                          ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
-                          ->orWhere('email', 'like', "%$search%");
-                    })
-                    ->orWhere('room_type_name', 'like', "%$search%")
-                    ->orWhere('reservation_code', 'like', "%$search%");
-                });
+    try {
+        $bookingsQuery = Booking::with([
+            'bookingGuests',
+            'bookingPrices',
+            'bookingServices',
+            'customer',
+            'payments',
+        ])
+        ->where('hotel_id', $hotel_id)
+      
+        ->when($status, fn($q) => $q->where('status', $status))
+        ->when($search, function ($query) use ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('customer', function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%$search%")
+                      ->orWhere('last_name', 'like', "%$search%")
+                      ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
+                      ->orWhere('email', 'like', "%$search%");
+                })
+                ->orWhereHas('bookingGuests', function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%$search%")
+                      ->orWhere('last_name', 'like', "%$search%")
+                      ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
+                      ->orWhere('email', 'like', "%$search%");
+                })
+                ->orWhere('room_type_name', 'like', "%$search%")
+                ->orWhere('reservation_code', 'like', "%$search%");
             });
+        });
 
-            $bookings = $bookingsQuery->orderBy('checkin_date', 'asc')
-                                      ->paginate(10);
+        $bookings = $bookingsQuery->orderBy('id', 'desc')->paginate(10);
 
-            return view('admin.booking.list', [
-                'bookings' => $bookings,
-                'start_date' => $start_date,
-                'end_date' => $end_date,
-                'search_keyword' => $search,
-                'status' => $status,
-                'selected_hotel_id' => $hotel_id,
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error fetching bookings: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error fetching bookings. Please try again later.');
-        }
+        return view('admin.booking.list', [
+            'bookings' => $bookings,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            'search_keyword' => $search,
+            'status' => $status,
+            'selected_hotel_id' => $hotel_id,
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Error fetching bookings: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Error fetching bookings. Please try again later.');
     }
+}
 
 
 

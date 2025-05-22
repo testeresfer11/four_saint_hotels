@@ -32,7 +32,7 @@ class DashboardController extends Controller
     $totalConfirmed = (clone $bookingBase)->where('status', 'Confirmed')->count();
     $totalCheckedIn = (clone $bookingBase)->where('status', 'CheckedIn')->count();
     $totalOnboard   = (clone $bookingBase)->where('status', 'Onboard')->count();
-    $totalOption    = (clone $bookingBase)->where('status', 'Option')->count();
+    $totalOption    = (clone $bookingBase)->where('status', 'Cancelled')->count();
     $totalCheckedOut= (clone $bookingBase)->where('status', 'CheckedOut')->count();
 
     $totalGuests  = BookingGuest::count();

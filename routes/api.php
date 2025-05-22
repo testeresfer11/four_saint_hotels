@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\user\{AuthController, CategoryController, HelpDeskController, HomeController, SendNotificationController,NotificationController};
+use App\Http\Controllers\user\{AuthController, CategoryController, HelpDeskController, HomeController, SendNotificationController, NotificationController};
 
-use App\Http\Controllers\Api\{SubjectController,FeedbackController, PostShareController,ConnectionController, PostController, ReplyController,QuickSolveController,StudyRoomController,ChatController,ReviewController,SabeeHotelController,SabeeServiceController,BookingController,TwilioConversationController,TwilioVideoController};
+use App\Http\Controllers\Api\{SubjectController, FeedbackController, PostShareController, ConnectionController, PostController, ReplyController, QuickSolveController, StudyRoomController, ChatController, ReviewController, SabeeHotelController, SabeeServiceController, BookingController, TwilioConversationController, TwilioVideoController,BookingPaymentController};
 
 use App\Models\NotificationPreference;
 use Illuminate\Http\Request;
@@ -21,28 +21,24 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::controller(SabeeHotelController::class)->group(function () {
-        Route::get('/sabee/hotels/fetch','fetchAndStore');
-        Route::get('/sabee/hotels/detail','hotelDetail');
-        
-    });
+    Route::get('/sabee/hotels/fetch', 'fetchAndStore');
+    Route::get('/sabee/hotels/detail', 'hotelDetail');
+});
 
 
 
 
 Route::controller(SabeeServiceController::class)->group(function () {
-        Route::get('/sabee/service/fetch','fetchAndStore');
-        Route::post('/sabee/submit-service','submitService');
-
-    });
+    Route::get('/sabee/service/fetch', 'fetchAndStore');
+    Route::post('/sabee/submit-service', 'submitService');
+});
 
 Route::controller(BookingController::class)->group(function () {
-        Route::get('/bookings','getBookings')->name('admin.booking.get');  
-        Route::post('/booking/create','create')->name('admin.booking.create');
-        Route::post('/booking/update','update')->name('admin.booking.update');
-        Route::post('/booking/cancel','cancel')->name('admin.booking.cancel');
-  
-
-    });
+    Route::get('/bookings', 'getBookings')->name('admin.booking.get');
+    Route::post('/booking/create', 'create')->name('admin.booking.create');
+    Route::post('/booking/update', 'update')->name('admin.booking.update');
+    Route::post('/booking/cancel', 'cancel')->name('admin.booking.cancel');
+});
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(AuthController::class)->group(function () {
@@ -50,7 +46,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('change-password', 'changePassword');
         Route::match(['get', 'post'], 'profile', 'Profile');
         Route::get('account/delete', 'accountDelete');
-      
     });
 
     Route::controller(HomeController::class)->group(function () {
@@ -58,27 +53,26 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
 
-   
-    Route::group(['prefix' =>'notification'],function () {
+
+    Route::group(['prefix' => 'notification'], function () {
         Route::name('notification.')->controller(NotificationController::class)->group(function () {
-            Route::get('/','getList')->name('list');
-            Route::get('read/{id}','notificationRead')->name('read');
-            Route::get('delete/{id}','delete')->name('delete');
+            Route::get('/', 'getList')->name('list');
+            Route::get('read/{id}', 'notificationRead')->name('read');
+            Route::get('delete/{id}', 'delete')->name('delete');
         });
     });
 
-     // Manage Reviews Routes
+    // Manage Reviews Routes
 
     Route::prefix('feedback')->controller(ReviewController::class)->group(function () {
-        Route::get('/{id}', 'index'); 
-        Route::get('get-feedback-by-user', 'getUserFeedback');            
-        Route::post('/add', 'store');          
-        Route::post('/edit/{id}', 'update');   
-        Route::get('/delete/{id}', 'destroy'); 
-        
+        Route::get('/{id}', 'index');
+        Route::get('get-feedback-by-user', 'getUserFeedback');
+        Route::post('/add', 'store');
+        Route::post('/edit/{id}', 'update');
+        Route::get('/delete/{id}', 'destroy');
     });
 
-  
+
 
     // Manage Help desk Routes
     Route::controller(HelpDeskController::class)->group(function () {
@@ -92,7 +86,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
 
-   Route::controller(SabeeHotelController::class)->group(function () {
+    Route::controller(SabeeHotelController::class)->group(function () {
         Route::get('get-hotels', 'getHotels');
         Route::get('get-hotel-detail/{id}', 'detail');
         Route::get('hotels/{hotelId}/rooms', 'getRoomsByHotel');
@@ -105,17 +99,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('add-participant', 'addParticipant');
         Route::post('send', 'sendMessage');
         Route::get('messages/{sid}', 'fetchMessages');
-
-    
+        Route::post('/twilio/call', 'makeCall');
     });
 
+    Route::post('/booking/payment', [BookingPaymentController::class, 'processPayment']);
+    Route::get('payment-success', [BookingPaymentController::class, 'paypalSuccess']);
+    Route::get('payment-cancel', [BookingPaymentController::class, 'paypalCancel']);
 
-    
 
+    Route::prefix('twilio')->controller(TwilioConversationController::class)->group(function () {
 
-
-    
+        Route::post('/call', 'makeCall');
+    });
 });
-
-
-

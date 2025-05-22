@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController};
+use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController,PaymentController};
 use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController,HotelController,TwilioChatController,CategoryController,ServiceSubCategoryController};
 use Illuminate\Support\Facades\Route;
 use App\Models\{ContentPage, ManagefAQ};
@@ -261,6 +261,13 @@ Route::group(['prefix' => 'admin'], function () {
          // Manage service routes
         Route::group(['prefix' => 'service'], function () {
             Route::name('service.')->controller(ServiceController::class)->group(function () {
+                Route::get('list', 'getList')->name('list');
+                Route::get('view/{id}', 'view')->name('view');
+            });
+        });
+
+         Route::group(['prefix' => 'payment'], function () {
+            Route::name('payment.')->controller(PaymentController::class)->group(function () {
                 Route::get('list', 'getList')->name('list');
                 Route::get('view/{id}', 'view')->name('view');
             });

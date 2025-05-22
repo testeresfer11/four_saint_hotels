@@ -6,9 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\API\SabeeBookingService;
 use App\Traits\SendResponseTrait;
-use App\Notifications\BookingCreatedNotification;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 
 class BookingController extends Controller
@@ -40,26 +37,25 @@ class BookingController extends Controller
         // Retrieve query parameters
         $hotel_id = session('selected_hotel_id', 8618);
         $start_date = $request->query('start_date');
+        $end_date = $request->query('end_date');
 
-        $start_date = $request->query('start_date');
         if ($start_date) {
-            $start_date = Carbon::parse($start_date)->startOfMonth()->toDateString(); // Use given date, reset to start of its month
+            $start_date =$request->query('start_date'); //\Carbon\Carbon::parse($start_date)->startOfMonth()->toDateString();
         } else {
-            $start_date = now()->startOfMonth()->toDateString(); // Default to start of current month
-        }
+            $end_date = $request->query('end_date');
+//\Carbon\Carbon::parse($end_date)->endOfMonth()->toDateString();
+        }  
 
-        $end_date = $request->query('end_date', now()->toDateString());
-
-        $extended_list = $request->query('extended_list', 1); // Default to 1
-        $services = $request->query('services', 1); // Default to 1
+       
+        $extended_list =$request->query('extended_list',1);
+        $services = "0"; // Default to 1
         $guest_details = $request->query('guest_details', 1); // Default to 1
-
         try {
-            // Fetch bookings using SabeeBookingService
+         
             $bookings = $this->sabeeBookingService->fetchBookings(
                 $hotel_id,
                 $start_date,
-                $end_date,
+                $end_date ,
                 $extended_list,
                 $services,
                 $guest_details
@@ -86,7 +82,6 @@ class BookingController extends Controller
 
     public function create(Request $request)
     {
-        
         $validated = $request->validate([
             'hotel_id' => 'required|integer',
             'customer.first_name' => 'required|string',
@@ -136,9 +131,6 @@ class BookingController extends Controller
             }
 
             $response = $this->sabeeBookingService->createBooking($payload);
-            $user = Auth::user();
-
-            $user->notify(new BookingCreatedNotification($booking));
 
             return response()->json([
                 'status' => 'success',

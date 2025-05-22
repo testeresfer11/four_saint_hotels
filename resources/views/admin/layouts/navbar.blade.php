@@ -38,6 +38,15 @@
         </li>
         @endcanany
 
+        <li class="nav-item menu-items {{ request()->routeIs('admin.payment') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.payment.list') }}">
+                <span class="menu-icon">
+                    <i class="fa-solid fa-table-cells-large"></i>
+                </span>
+                <span class="menu-title">Payments</span>
+            </a>
+        </li>
+
         <!-- Settings Link -->
         <li class="nav-item menu-items {{ request()->routeIs('admin.profile', 'admin.changePassword') ? 'active' : '' }}">
             <a class="nav-link {{ request()->routeIs('admin.profile', 'admin.changePassword') ? '' : 'collapsed' }}"

@@ -138,6 +138,9 @@ table thead {
 .hotel_status {
   background: #B46326;
   border-radius: 19px;
+  color: #fff !important;
+  border: none;
+
 }
 .hotel_status>a{
   color: #fff !important;
