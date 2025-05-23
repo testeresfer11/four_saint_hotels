@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\API\SabeeBookingService;
 use App\Traits\SendResponseTrait;
+use Illuminate\Support\Facades\Http;
 
 
 class BookingController extends Controller
@@ -43,7 +44,7 @@ class BookingController extends Controller
             $start_date =$request->query('start_date'); //\Carbon\Carbon::parse($start_date)->startOfMonth()->toDateString();
         } else {
             $end_date = $request->query('end_date');
-//\Carbon\Carbon::parse($end_date)->endOfMonth()->toDateString();
+          
         }  
 
        
@@ -307,4 +308,39 @@ class BookingController extends Controller
             ], 400);
         }
     }
+
+
+
+    public function checkAvailability(Request $request){
+
+
+        $validated = $request->validate([
+            'hotel_id' => 'required|integer',
+            'start_date' => 'required|date_format:Y-m-d',
+            'end_date' => 'required|date_format:Y-m-d|after:start_date',
+            'rooms' => 'required|array',
+            'rooms.*.room_id' => 'required|integer',
+            'rooms.*.guest_count.adults' => 'required|integer|min:1',
+            'rooms.*.guest_count.children_ages' => 'nullable|array',
+        ]);
+
+        try {
+              $response = Http::withHeaders([
+                    'api_key' => config('services.sabee.api_key'),
+                    'api_version' => config('services.sabee.api_version'),
+                ])->post('https://api.sabeeapp.com/connect/booking/availability', $validated);
+            return response()->json([
+                'status' => 'success',
+                'data' => $response->json()
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
 }

@@ -8,7 +8,7 @@ class BookingCustomer extends Model
 {
     protected $fillable = [
         'booking_id', 'first_name', 'last_name', 'birth_date', 'citizenship', 'address',
-        'city', 'zip', 'country_code', 'phone_number', 'remarks', 'email'
+        'city', 'zip', 'country_code', 'phone_number', 'remarks', 'email','customer_id',
     ];
 
     public function booking()

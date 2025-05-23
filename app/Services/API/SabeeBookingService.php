@@ -57,7 +57,7 @@ class SabeeBookingService
             }
 
             $data = $response->json('data');
-            
+            //dd($data);
             $reservations = $data['reservations'] ?? [];
             $pagination = $data['pagination'] ?? null;
             $totalPages = $pagination['total_pages'] ?? null;
@@ -112,6 +112,7 @@ class SabeeBookingService
                             'zip' => $customer['zip'],
                             'country_code' => $customer['country_code'],
                             'phone_number' => $customer['phone_number'],
+                            'customer_id' => $customer['customer_id'],
                             'remarks' => $customer['remarks'],
                         ]
                     );

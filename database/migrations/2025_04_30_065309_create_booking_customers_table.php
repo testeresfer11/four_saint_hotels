@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('phone_number')->nullable();
             $table->text('remarks')->nullable();
             $table->string('email')->nullable();
+            $table->string('customer_id')->nullable();
             $table->timestamps();
         });
     }

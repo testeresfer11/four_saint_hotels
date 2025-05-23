@@ -121,7 +121,8 @@
                 <tbody>
                     @foreach($booking->payments as $payment)
                     <tr>
-                        <td>{{ $payment->customer_name ?? '-' }}</td>
+                       <td>{{ $booking->customer->first_name ?? '-' }} {{ $booking->customer->last_name ?? '' }}</td>
+
                         <td>{{ number_format($payment->amount, 2) }}</td>
                         <td>{{ $payment->currency }}</td>
                         <td>{{ $payment->payment_type }}</td>

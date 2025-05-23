@@ -38,6 +38,8 @@ Route::controller(BookingController::class)->group(function () {
     Route::post('/booking/create', 'create')->name('admin.booking.create');
     Route::post('/booking/update', 'update')->name('admin.booking.update');
     Route::post('/booking/cancel', 'cancel')->name('admin.booking.cancel');
+    Route::post('/booking/check-availability', 'checkAvailability')->name('admin.booking.checkAvailability');
+
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {

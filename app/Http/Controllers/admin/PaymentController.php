@@ -5,51 +5,33 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Models\BookingPayment;
 
 class PaymentController extends Controller
 {
-    public function getList(Request $request)
-    {
+    public function getList(Request $request){
         $hotelId = session('selected_hotel_id', 8618);
 
-        $paymentDateTime = '2024-07-06 13:46:26';
+        $payments = BookingPayment::with('booking')
+            ->whereHas('booking', function ($query) use ($hotelId, $request) {
+                $query->where('hotel_id', $hotelId);
 
+                if ($request->filled('search_keyword')) {
+                    $query->where('reservation_code', 'like', '%' . $request->search_keyword . '%');
+                }
 
-        if (!$hotelId || !$paymentDateTime) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'hotel_id and payment_date_time are required'
-            ], 422);
-        }
+                if ($request->filled('from_date')) {
+                    $query->whereDate('checkin_date', '>=', $request->from_date);
+                }
 
-        $url = 'https://api.sabeeapp.com/connect/payment/changes';
+                if ($request->filled('to_date')) {
+                    $query->whereDate('checkout_date', '<=', $request->to_date);
+                }
+            })
+            ->orderByDesc('id')
+            ->paginate(10);
 
-        try {
-            $response = Http::withHeaders([
-                'api_key' => 'febfaf24b51e25e5f7a4e0d0f8ca01a5',
-                'api_version' => '1',
-            ])->get($url, [
-                'hotel_id' => $hotelId,
-                'payment_date_time' => $paymentDateTime,
-            ]);
-
-            if ($response->successful()) {
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $response->json(),
-                ]);
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Failed to fetch payment data',
-                    'details' => $response->body(),
-                ], $response->status());
-            }
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Exception occurred: ' . $e->getMessage(),
-            ], 500);
-        }
+        return view("admin.transaction.list", compact("payments"));
     }
+
 }
