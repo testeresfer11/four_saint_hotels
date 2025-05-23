@@ -120,6 +120,10 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::match(['get', 'post'], 'add', 'add')->name('add');
                 Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
                 Route::get('view/{id}','view')->name('view');
+                Route::get('get-rooms','getRooms')->name('get-rooms');
+                Route::post('/cancel','cancel')->name('cancel');
+
+
             });
         });
 

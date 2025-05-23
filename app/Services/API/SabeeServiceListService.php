@@ -19,7 +19,7 @@ class SabeeServiceListService
         $response = Http::withHeaders([
             'api_key'     => config('services.sabee.api_key'),
             'api_version' => config('services.sabee.api_version'),
-        ])->get(config('services.sabee.api_url') . "service/list?hotel_id={$hotelId}");
+        ])->get(config('services.sabee.api_url') . "pos/service/list?hotel_id={$hotelId}");
         
       
         
