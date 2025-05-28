@@ -22,7 +22,10 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::controller(SabeeHotelController::class)->group(function () {
     Route::get('/sabee/hotels/fetch', 'fetchAndStore');
+     Route::get('/sabee/roomtype/fetch', 'roomFetchAndStore');
     Route::get('/sabee/hotels/detail', 'hotelDetail');
+    Route::get('/sabee/hotels/room_price', 'getRoomPrice');
+
 });
 
 
@@ -91,8 +94,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(SabeeHotelController::class)->group(function () {
         Route::get('get-hotels', 'getHotels');
         Route::get('get-hotel-detail/{id}', 'detail');
-        Route::get('hotels/{hotelId}/rooms', 'getRoomsByHotel');
         Route::get('rooms/{roomId}', 'getRoomDetails');
+        Route::get('hotels/{hotelId}/roomtype', 'getRoomTypeByHotel');
+
+
     });
 
 

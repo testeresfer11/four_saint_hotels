@@ -129,6 +129,29 @@
             </a>
         </li>
         @endcanany
+        <li class="nav-item menu-items">
+            <a class="nav-link" data-bs-toggle="collapse" href="#featureSubmenu" role="button" aria-expanded="{{ request()->routeIs('admin.category.*') || request()->routeIs('admin.sub_category.*') ? 'true' : 'false' }}" aria-controls="featureSubmenu">
+                <span class="menu-icon">
+                    <i class="fa-solid fa-list"></i>
+                </span>
+                <span class="menu-title">Feature Management</span>
+                <i class="menu-arrow"></i>
+            </a>
+            <div class="collapse {{ request()->routeIs('admin.category.*') || request()->routeIs('admin.sub_category.*') ? 'show' : '' }}" id="featureSubmenu">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item {{ request()->routeIs('admin.category.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.category.list') }}">
+                            Feature
+                        </a>
+                    </li>
+                    <li class="nav-item {{ request()->routeIs('admin.sub_category.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.sub_category.list') }}">
+                             Sub Feature
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
         <!-- Hotel -->
         {{-- @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])--}}
         <li class="nav-item menu-items {{ request()->routeIs('admin.hotel.*') ? 'active' : '' }}">
@@ -139,6 +162,15 @@
                 <span class="menu-title">Hotel Management</span>
             </a>
         </li>
+        <li class="nav-item menu-items {{ request()->routeIs('admin.roomtype.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.roomtype.list') }}">
+                <span class="menu-icon">
+                    <i class="fa-solid fa-columns"></i>
+                </span>
+                <span class="menu-title">Room Type Management</span>
+            </a>
+        </li>
+        
         {{-- @endcanany--}}
 
         <!-- Vouchers -->
@@ -173,29 +205,7 @@
             </a>
         </li>
 
-        <li class="nav-item menu-items">
-            <a class="nav-link" data-bs-toggle="collapse" href="#featureSubmenu" role="button" aria-expanded="{{ request()->routeIs('admin.category.*') || request()->routeIs('admin.sub_category.*') ? 'true' : 'false' }}" aria-controls="featureSubmenu">
-                <span class="menu-icon">
-                    <i class="fa-solid fa-list"></i>
-                </span>
-                <span class="menu-title">Feature Management</span>
-                <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse {{ request()->routeIs('admin.category.*') || request()->routeIs('admin.sub_category.*') ? 'show' : '' }}" id="featureSubmenu">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item {{ request()->routeIs('admin.category.*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('admin.category.list') }}">
-                            Feature
-                        </a>
-                    </li>
-                    <li class="nav-item {{ request()->routeIs('admin.sub_category.*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('admin.sub_category.list') }}">
-                             Sub Feature
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
+       
 
         {{-- @endcanany--}}
 

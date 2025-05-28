@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class HotelRoomType extends Model
 {
     protected $guarded = [];
+    protected $primaryKey = 'room_type_id';
 
     public function hotel()
     {
@@ -17,4 +18,22 @@ class HotelRoomType extends Model
     {
         return $this->hasMany(HotelRoom::class, 'room_type_id', 'room_type_id');
     }
+    public function rates()
+    {
+        return $this->hasMany(RoomRate::class, 'room_id', 'room_type_id');
+    }
+
+    public function images(){
+        return $this->hasMany(RoomTypeImage::class, 'room_type_id', 'room_type_id');
+    }
+
+   
+    public function serviceCategories(){
+        return $this->belongsToMany(
+          ServiceCategory::class,
+          'hotel_room_type_service_category',
+          'hotel_room_type_id',
+          'service_category_id'
+        );
+  }
 }

@@ -51,5 +51,6 @@ class Hotel extends Model
     {
         return $this->feedbacks()->avg('rating');
     }
+    
 
 }

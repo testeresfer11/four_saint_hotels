@@ -44,7 +44,7 @@ class BookingController extends Controller
 
     public function getList(Request $request)
     {
-        $hotel_id = session('selected_hotel_id', 8618);
+        $hotel_id = session(key: 'selected_hotel_id', 8618);
 
         // Default date range
         $start_date = $request->query('start_date');
