@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController,PaymentController};
+use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController,PaymentController,RoomTypeController};
 use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController,HotelController,TwilioChatController,CategoryController,ServiceSubCategoryController};
 use Illuminate\Support\Facades\Route;
 use App\Models\{ContentPage, ManagefAQ};
@@ -121,13 +121,13 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
                 Route::get('view/{id}','view')->name('view');
                 Route::get('get-rooms','getRooms')->name('get-rooms');
-                Route::post('/cancel','cancel')->name('cancel');
+                Route::post('/cancel','cancel');
 
 
             });
         });
 
-        // Manage booking routes
+        // Manage hotel routes
         Route::group(['prefix' => 'hotel'], function () {
             Route::name('hotel.')->controller(HotelController::class)->group(function () {
                 Route::get('list', 'getList')->name('list');
@@ -135,6 +135,19 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::post('upload-images', [HotelController::class, 'uploadImages'])->name('upload.images');
                 Route::get('{hotelId}/images', [HotelController::class, 'getHotelImages']);
                 Route::delete('/image/delete/{id}', [HotelController::class, 'deleteHotelImage'])->name('image.delete');
+
+
+            });
+        });
+
+         // Manage roomtypes routes
+         Route::group(['prefix' => 'roomtype'], function () {
+            Route::name('roomtype.')->controller(RoomTypeController::class)->group(function () {
+                Route::get('list', 'getList')->name('list');
+                Route::get('view/{id}','detail')->name('view');
+                Route::post('upload-images', 'uploadImages')->name('upload.images');
+                Route::get('{room_type_id}/images', 'getHotelImages');
+                Route::delete('/image/delete/{id}', 'deleteHotelImage')->name('image.delete');
 
 
             });

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('room_type_id')->unique(); // from API
             $table->string('room_name');
             $table->string('property_type');
+            $table->string('description');
             $table->integer('max_occupancy');
             $table->integer('number_of_rooms');
             $table->timestamp('create_date_time')->nullable();
