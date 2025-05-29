@@ -13,8 +13,7 @@ class AdminAuthController extends Controller
     {
         $data = $request->validated();
 
-        if(!isset($data['remember']))
-        {
+        if (!isset($data['remember'])) {
             $data['remember'] = 0;
         }
 
@@ -23,12 +22,11 @@ class AdminAuthController extends Controller
             'password' => $data['password'],
         ];
 
-        if (Auth::attempt($credentials,$data['remember'])) {
+        if (Auth::attempt($credentials, $data['remember'])) {
             return redirect()->route('view.admin.dashboard')->with('success', 'Login successful!');
         }
-        
-        session()->flash('error','Invalid Credentials');
+
+        session()->flash('error', 'Invalid Credentials');
         return redirect()->back()->withInput();
-        
     }
 }

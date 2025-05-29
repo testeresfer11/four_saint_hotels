@@ -44,7 +44,7 @@ class BookingController extends Controller
 
     public function getList(Request $request)
     {
-        $hotel_id = session(key: 'selected_hotel_id', 8618);
+        $hotel_id = session('selected_hotel_id', 8618);
 
         // Default date range
         $start_date = $request->query('start_date');
@@ -150,8 +150,8 @@ class BookingController extends Controller
         $booking = Booking::with(['bookingGuests', 'bookingPrices', 'bookingServices', 'customer'])->findOrFail($id);
 
         $guestCount = is_array($booking->guest_count)
-        ? $booking->guest_count
-        : json_decode($booking->guest_count, true);        
+            ? $booking->guest_count
+            : json_decode($booking->guest_count, true);
         $roomTypes = HotelRoomType::where('hotel_id', $booking->hotel_id ?? 1)->get();
         $rooms = HotelRoom::whereHas('roomType', function ($query) use ($booking) {
             $query->where('hotel_id', $booking->hotel_id ?? 1);
@@ -198,11 +198,11 @@ class BookingController extends Controller
                             ];
                         })->toArray(),
                         'guest_count' => $guestCount,
-                        "prices"=> [[
-                                     'date' => Carbon::parse($booking->created_at_api)->toDateString(),
+                        "prices" => [[
+                            'date' => Carbon::parse($booking->created_at_api)->toDateString(),
 
-                              "amount"=> 0.00
-                            ]],
+                            "amount" => 0.00
+                        ]],
                         'total_price' => $booking->paid,
 
                         'currency' => $booking->currency,
@@ -239,7 +239,7 @@ class BookingController extends Controller
     }
 
 
-       /**
+    /**
      * 
      * functionName : cancel
      * createdDate  : 23-05-2025
@@ -272,7 +272,7 @@ class BookingController extends Controller
                 // Update local booking status
                 $booking = Booking::where('reservation_code', $reservationCode)->first();
 
-                
+
 
                 if ($booking) {
                     $booking->status = 'Cancelled';
@@ -295,13 +295,12 @@ class BookingController extends Controller
 
                 return response()->json([
                     'status' => $alreadyCancelled ? 'warning' : 'error',
-                    'message' => $alreadyCancelled 
-                        ? 'This booking is already cancelled.' 
+                    'message' => $alreadyCancelled
+                        ? 'This booking is already cancelled.'
                         : ($errorMessages ?: 'Unknown error from Sabee API'),
                     'data' => $responseData
                 ]);
             }
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',

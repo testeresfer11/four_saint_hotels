@@ -4,21 +4,23 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service, HotelRoom, HotelImage,RoomTypeImage,ServiceCategory};
+use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service, HotelRoom, HotelImage, RoomTypeImage, ServiceCategory};
 use App\Traits\SendResponseTrait;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\{Auth, Hash, Validator,DB};
-use App\Services\API\SabeeRoomTypeService ;
-use Illuminate\Support\Facades\Storage;;
+use Illuminate\Support\Facades\{Auth, Hash, Validator, DB};
+use App\Services\API\{SabeeRoomTypeService,SabeeHotelService};
+use Illuminate\Support\Facades\Storage;
 
 class RoomTypeController extends Controller
 {
     use SendResponseTrait;
-    protected $sabeeRoomTypeService ;
+    protected $sabeeRoomTypeService;
+    protected $SabeeHotelService;
 
-    public function __construct(sabeeRoomTypeService $sabeeRoomTypeService)
+    public function __construct(sabeeRoomTypeService $sabeeRoomTypeService,sabeeHotelService $sabeeHotelService)
     {
         $this->sabeeRoomTypeService = $sabeeRoomTypeService;
+        $this->sabeeHotelService = $sabeeHotelService;
     }
     /**
      * functionName : fetchAndStore
@@ -36,56 +38,56 @@ class RoomTypeController extends Controller
      * and an error response is returned to the client.
      */
 
-        public function fetchAndStore(sabeeRoomTypeService $sabeeRoomTypeService)
-        {
-            $hotel_id = session('selected_hotel_id', 8618); // Default to 8618 if not in session
+    public function fetchAndStore(sabeeRoomTypeService $sabeeRoomTypeService)
+    {
+        $hotel_id = session('selected_hotel_id', 8618); // Default to 8618 if not in session
 
-            try {
-                $hotels = $sabeeRoomTypeService->fetchAndStoreRoomTypes($hotel_id);
-                return $this->apiResponse('success', 200, 'Hotel ' . config('constants.SUCCESS.FETCH_DONE'), ['hotels' => $hotels]);
-            } catch (\Exception $e) {
-                return $this->apiResponse('error', 400, $e->getMessage());
-            }
+        try {
+            $hotels = $sabeeRoomTypeService->fetchAndStoreRoomTypes($hotel_id);
+            return $this->apiResponse('success', 200, 'Hotel ' . config('constants.SUCCESS.FETCH_DONE'), ['hotels' => $hotels]);
+        } catch (\Exception $e) {
+            return $this->apiResponse('error', 400, $e->getMessage());
         }
+    }
 
-        /**
-         * functionName : detail
-         * createdDate  : 23-04-2025
-         * purpose      : Get hotel data from sabee and save in our db
-         * 
-         * retriveve hotel details from database.
-         *
-         * This method accepts a request, processes it through the service layer, 
-         * and returns a JSON response containing the details of the requested page.
-         * It handles exceptions gracefully and returns an appropriate error message in case of failure.
-         * @return \Illuminate\Http\JsonResponse A JSON response containing the hotel detail or an error message.
-         *
-         * @throws \Exception If an error occurs during the retrieval of hotel detail, an exception is thrown 
-         * and an error response is returned to the client.
-         */
+    /**
+     * functionName : detail
+     * createdDate  : 23-04-2025
+     * purpose      : Get hotel data from sabee and save in our db
+     * 
+     * retriveve hotel details from database.
+     *
+     * This method accepts a request, processes it through the service layer, 
+     * and returns a JSON response containing the details of the requested page.
+     * It handles exceptions gracefully and returns an appropriate error message in case of failure.
+     * @return \Illuminate\Http\JsonResponse A JSON response containing the hotel detail or an error message.
+     *
+     * @throws \Exception If an error occurs during the retrieval of hotel detail, an exception is thrown 
+     * and an error response is returned to the client.
+     */
 
 
-        public function detail($id, SabeeHotelService $sabeeHotelService)
-        {
-            try {
-                $response = $sabeeHotelService->hotelDetail($id);
+    public function detail($id, SabeeHotelService $sabeeHotelService)
+    {
+        try {
+            $response = $sabeeHotelService->RoomDetail($id);
 
-                // Extract the actual hotel data
-                $data = $response->getData();
+            // Extract the actual hotel data
+            $data = $response->getData();
 
-                if ($data->status === 'success') {
-                    $hotel = $data->data;
+            if ($data->status === 'success') {
+                $hotel = $data->data;
 
-                    return view('admin.hotel.view', [
-                        'hotel' => $hotel,
-                    ]);
-                } else {
-                    return redirect()->back()->with('error', $data->message ?? 'Hotel not found');
-                }
-            } catch (\Exception $e) {
-                return $this->apiResponse('error', 400, $e->getMessage());
+                return view('admin.roomtype.view', [
+                    'hotel' => $hotel,
+                ]);
+            } else {
+                return redirect()->back()->with('error', $data->message ?? 'Hotel not found');
             }
+        } catch (\Exception $e) {
+            return $this->apiResponse('error', 400, $e->getMessage());
         }
+    }
 
 
 
@@ -95,30 +97,35 @@ class RoomTypeController extends Controller
      * createdDate  : 12-05-2025
      * purpose      : Fetch hotels from the local database
      */
-public function getList()
-{
+   public function getList(){
     try {
         $hotel_id = session('selected_hotel_id', 8618); // Default to 8618 if not in session
+        $today = Carbon::today()->format('Y-m-d');
 
-        $roomTypes = HotelRoomType::where('hotel_id', $hotel_id)->get();
+        // Get room types with availabilities where today is within start and end date
+        $roomTypes = HotelRoomType::with(['availabilities' => function ($query) use ($today) {
+            $query->whereDate('start_date', '<=', $today)
+                  ->whereDate('end_date', '>=', $today);
+        }])->where('hotel_id', $hotel_id)->get();
+
+
+
         $hotel = Hotel::where('hotel_id', $hotel_id)->first();
         $service_categories = [];
         if ($hotel) {
             $service_categories = ServiceCategory::where('hotel_id', $hotel->id)->get();
-
         }
-        
 
         return view('admin.roomtype.list', [
             'data' => $roomTypes,
             'service_categories' => $service_categories
         ]);
     } catch (\Exception $e) {
+        return $e;
         \Log::error('Error fetching roomtype: ' . $e->getMessage());
         return redirect()->back()->with('error', 'Error fetching room types. Please try again later.');
     }
 }
-
 
 
 
@@ -135,7 +142,7 @@ public function getList()
     {
         try {
             $hotel = Hotel::where('hotel_id', $hotelId)
-                ->with(['roomTypes.rooms']) // eager load room types and rooms
+                ->with(['roomTypes','roomTypes.rooms']) // eager load room types and rooms
                 ->firstOrFail();
 
             return response()->json([
@@ -192,61 +199,60 @@ public function getList()
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-public function uploadImages(Request $request)
-{
-    $request->validate([
-        'images' => 'nullable|array',
-        'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        'description' => 'nullable|string|max:200',
-        'service_categories' => 'nullable|array',
-        'service_categories.*' => 'exists:service_categories,id',
-       
-    ]);
+    public function uploadImages(Request $request)
+    {
+        $request->validate([
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'description' => 'nullable|string|max:200',
+            'service_categories' => 'nullable|array',
+            'service_categories.*' => 'exists:service_categories,id',
 
-    try {
-        $uploadedImages = DB::transaction(function () use ($request) {
-            $paths = [];
+        ]);
 
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $path = $image->store('roomtype/images', 'public');
-                    $url = asset('storage/' . $path);
+        try {
+            $uploadedImages = DB::transaction(function () use ($request) {
+                $paths = [];
 
-                    RoomTypeImage::create([
-                        'room_type_id' => $request->room_type_id,
-                        'image_path' => $url,
-                    ]);
+                if ($request->hasFile('images')) {
+                    foreach ($request->file('images') as $image) {
+                        $path = $image->store('roomtype/images', 'public');
+                        $url = asset('storage/' . $path);
 
-                    $paths[] = $url;
+                        RoomTypeImage::create([
+                            'room_type_id' => $request->room_type_id,
+                            'image_path' => $url,
+                        ]);
+
+                        $paths[] = $url;
+                    }
                 }
-            }
 
-            // Update description and sync features
-            $roomType = HotelRoomType::find($request->room_type_id);
-            if ($roomType) {
-                $roomType->description = $request->description;
-                $roomType->save();
+                // Update description and sync features
+                $roomType = HotelRoomType::find($request->room_type_id);
+                if ($roomType) {
+                    $roomType->description = $request->description;
+                    $roomType->save();
 
-                  $roomType->serviceCategories()->sync($request->service_categories ?? []);
+                    $roomType->serviceCategories()->sync($request->service_categories ?? []);
+                }
 
-            }
+                return $paths;
+            });
 
-            return $paths;
-        });
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Data processed successfully.',
-            'images' => $uploadedImages,
-        ], 200);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Failed to process request.',
-            'error' => $e->getMessage(),
-        ], 500);
+            return response()->json([
+                'status' => true,
+                'message' => 'Data processed successfully.',
+                'images' => $uploadedImages,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to process request.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
-}
 
 
 
@@ -263,7 +269,7 @@ public function uploadImages(Request $request)
 
         try {
             $images = RoomTypeImage::where('room_type_id', $id)->get();
-            
+
             return response()->json(['status' => true, 'images' => $images]);
         } catch (\Exception $e) {
             return response()->json(['status' => false, 'message' => 'Error fetching images']);
@@ -282,8 +288,8 @@ public function uploadImages(Request $request)
      */
     public function deleteHotelImage($id)
     {
-       
-        $image = RoomTypeImage::where('id',$id)->first();
+
+        $image = RoomTypeImage::where('id', $id)->first();
         if (!$image) {
             return response()->json(['status' => false, 'message' => 'Image not found']);
         }
@@ -298,4 +304,11 @@ public function uploadImages(Request $request)
         return response()->json(['status' => true, 'message' => 'Image deleted successfully']);
     }
 
+
+
+    public function checkRoomAvailability(SabeeHotelService $sabeeHotelService){
+        $hotel_id = session('selected_hotel_id', 8618); 
+        $result = $sabeeHotelService->getAvailabilityByRoomType($hotel_id);
+        return response()->json($result);
+    }
 }

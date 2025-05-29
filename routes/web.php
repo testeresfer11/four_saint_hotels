@@ -21,7 +21,14 @@ Route::get('/', function () {
 Route::get('/contentPage/{slug}', [App\Http\Controllers\admin\ContentPageController::class, 'contentPage'])->name('contentPage');
 Route::post('/contact-us', [App\Http\Controllers\admin\ContentPageController::class, 'storeContact'])->name('contact-us');
 
+Route::group(['prefix' => 'roomtype'], function () {
+    Route::name('roomtype.')->controller(RoomTypeController::class)->group(function () {
+           Route::get('checkRoomAvailability','checkRoomAvailability')->name('checkRoomAvailability');
 
+
+
+    });
+});
 Route::controller(AuthController::class)->group(function () {
     Route::match(['get', 'post'], 'login', 'login')->name('login');
     Route::match(['get', 'post'], 'register', 'register')->name('register');

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service, HotelRoom,RoomRate};
+use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service, HotelRoom, RoomRate};
 use App\Traits\SendResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\{Auth, Hash, Validator};
@@ -71,16 +71,16 @@ class SabeeHotelController extends Controller
      */
 
 
-     public function roomFetchAndStore(sabeeRoomTypeService $sabeeRoomTypeService)
+    public function roomFetchAndStore(sabeeRoomTypeService $sabeeRoomTypeService)
     {
         try {
-            $hotel_id = session('selected_hotel_id', 8618); 
+            $hotel_id = session('selected_hotel_id', 8618);
             $roomTypes = $sabeeRoomTypeService->fetchAndStoreRoomTypes($hotel_id);
 
-          
+
             return $this->apiResponse('success', 200, 'Room types ' . config('constants.SUCCESS.FETCH_DONE'), ['data' => $roomTypes]);
         } catch (\Exception $e) {
-          
+
             return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
@@ -88,120 +88,120 @@ class SabeeHotelController extends Controller
 
 
 
-    
 
 
 
 
-   public function getRoomPrice(sabeeRoomTypeService $sabeeRoomTypeService){
-    try {
-        $hotel_id = session('selected_hotel_id', 8618);
 
-        $roomTypes = $sabeeRoomTypeService->fetchAndStoreRoomTypes($hotel_id);
-       
+    public function getRoomPrice(sabeeRoomTypeService $sabeeRoomTypeService)
+    {
+        try {
+            $hotel_id = session('selected_hotel_id', 8618);
 
-        $ratePlans = HotelRatePlan::where('hotel_id', $hotel_id)
-            ->get(['rateplan_id'])
-            ->map(function ($plan) {
-                return ['rateplan_id' => $plan->rateplan_id];
-            })
-            ->toArray();
+            $roomTypes = $sabeeRoomTypeService->fetchAndStoreRoomTypes($hotel_id);
 
-        if (empty($ratePlans)) {
-            throw new \Exception('No rate plans found for this hotel.');
+
+            $ratePlans = HotelRatePlan::where('hotel_id', $hotel_id)
+                ->get(['rateplan_id'])
+                ->map(function ($plan) {
+                    return ['rateplan_id' => $plan->rateplan_id];
+                })
+                ->toArray();
+
+            if (empty($ratePlans)) {
+                throw new \Exception('No rate plans found for this hotel.');
+            }
+
+            $rooms = [];
+
+            foreach ($roomTypes as $room) {
+                $rooms[] = [
+                    'room_id' => $room['room_type_id'],
+                    'rateplans' => $ratePlans,
+                    'room_types' => $roomTypesWithCategories,
+                ];
+            }
+
+            $startDate = now()->format('Y-m-d');
+            $endDate = now()->addDays(7)->format('Y-m-d');
+
+            $ratesData = $this->fetchRoomRates($hotel_id, $startDate, $endDate, $rooms);
+
+            // Save rates to DB
+            $this->saveRoomRatesToDB($hotel_id, $ratesData);
+
+            return $this->apiResponse('success', 200, 'Room types and rates fetched and saved successfully', [
+                'room_types' => $roomTypes,
+                'rates' => $ratesData,
+            ]);
+        } catch (\Exception $e) {
+            return $this->apiResponse('error', 400, $e->getMessage());
         }
+    }
 
-        $rooms = [];
-        
-        foreach ($roomTypes as $room) {
-            $rooms[] = [
-                'room_id' => $room['room_type_id'],
-                'rateplans' => $ratePlans,
-                 'room_types' => $roomTypesWithCategories,
-            ];
-        }
 
-        $startDate = now()->format('Y-m-d');
-        $endDate = now()->addDays(7)->format('Y-m-d');
 
-        $ratesData = $this->fetchRoomRates($hotel_id, $startDate, $endDate, $rooms);
-
-        // Save rates to DB
-        $this->saveRoomRatesToDB($hotel_id, $ratesData);
-
-        return $this->apiResponse('success', 200, 'Room types and rates fetched and saved successfully', [
-            'room_types' => $roomTypes,
-            'rates' => $ratesData,
+    public function fetchRoomRates($hotelId, $startDate, $endDate, $rooms)
+    {
+        $response = Http::withHeaders([
+            'api_key' => config('services.sabee.api_key'),
+            'api_version' => config('services.sabee.api_version'),
+            'Content-Type' => 'application/json',
+        ])->post(config('services.sabee.api_url') . 'availabilityandrates/rate', [
+            'hotel_id'   => $hotelId,
+            'start_date' => $startDate,
+            'end_date'   => $endDate,
+            'rooms'      => $rooms,
         ]);
-    } catch (\Exception $e) {
-        return $this->apiResponse('error', 400, $e->getMessage());
-    }
-}
 
+        if (!$response->successful()) {
+            throw new \Exception('Failed to fetch room rates: ' . $response->body());
+        }
 
-
-public function fetchRoomRates($hotelId, $startDate, $endDate, $rooms)
-{
-    $response = Http::withHeaders([
-        'api_key' => config('services.sabee.api_key'),
-        'api_version' => config('services.sabee.api_version'),
-        'Content-Type' => 'application/json',
-    ])->post(config('services.sabee.api_url') . 'availabilityandrates/rate', [
-        'hotel_id'   => $hotelId,
-        'start_date' => $startDate,
-        'end_date'   => $endDate,
-        'rooms'      => $rooms,
-    ]);
-
-    if (!$response->successful()) {
-        throw new \Exception('Failed to fetch room rates: ' . $response->body());
+        return $response->json();
     }
 
-    return $response->json();
-}
+    /**
+     * Save the rates response into DB.
+     */
+    protected function saveRoomRatesToDB($hotelId, $ratesData)
+    {
 
-/**
- * Save the rates response into DB.
- */
-protected function saveRoomRatesToDB($hotelId, $ratesData)
-{
+        if (empty($ratesData['data']['rooms'])) {
+            throw new \Exception('No rate data found in response.');
+        }
 
-    if (empty($ratesData['data']['rooms'])) {
-        throw new \Exception('No rate data found in response.');
-    }
+        foreach ($ratesData['data']['rooms'] as $room) {
+            $roomId = $room['room_id'];
+            $rateplan = $room['rateplan'];
+            $rateplanId = $rateplan['rateplan_id'];
+            $startDate = \Carbon\Carbon::parse($room['start_date']);
+            $endDate = \Carbon\Carbon::parse($room['end_date']);
 
-    foreach ($ratesData['data']['rooms'] as $room) {
-        $roomId = $room['room_id'];
-        $rateplan = $room['rateplan'];
-        $rateplanId = $rateplan['rateplan_id'];
-         $startDate = \Carbon\Carbon::parse($room['start_date']);
-        $endDate = \Carbon\Carbon::parse($room['end_date']);
-     
 
-        foreach ($rateplan['rates'] as $rate) {
-            
-            RoomRate::updateOrCreate(
-                [
-                    'hotel_id' => $hotelId,
-                    'room_id' => $roomId,
-                    'rateplan_id' => $rateplanId,
-                    'start_rate_date' => $startDate,
-                    'end_rate_date' => $endDate,
-                    'number_of_guests' => $rate['number_of_guests'] ?? 1,
-                ],
-                [
-                    'price' => $rate['amount'],
-                    'currency' => $rate['currency'] ?? 'GBP',
-                ]
-            );
+            foreach ($rateplan['rates'] as $rate) {
+
+                RoomRate::updateOrCreate(
+                    [
+                        'hotel_id' => $hotelId,
+                        'room_id' => $roomId,
+                        'rateplan_id' => $rateplanId,
+                        'start_rate_date' => $startDate,
+                        'end_rate_date' => $endDate,
+                        'number_of_guests' => $rate['number_of_guests'] ?? 1,
+                    ],
+                    [
+                        'price' => $rate['amount'],
+                        'currency' => $rate['currency'] ?? 'GBP',
+                    ]
+                );
+            }
         }
     }
-   
-}
 
 
 
-    
+
 
     /**
      * functionName : detail
@@ -292,33 +292,33 @@ protected function saveRoomRatesToDB($hotelId, $ratesData)
 
 
 
-public function getRoomTypeByHotel($hotelId)
-{
-    try {
-        $today = Carbon::today()->toDateString();
+    public function getRoomTypeByHotel($hotelId)
+    {
+        try {
+            $today = Carbon::today()->toDateString();
 
-        $hotel = Hotel::where('hotel_id', $hotelId)
-            ->with(['roomTypes','roomTypes.serviceCategories','roomTypes.images', 'roomTypes.rates' => function ($query) use ($today) {
-                $query->select('id', 'room_id', 'number_of_guests', 'price', 'currency')
-                      ->whereDate('start_rate_date', '<=', $today)
-                      ->whereDate('end_rate_date', '>=', $today)
-                      ->where('number_of_guests', 1)
-                      ->where('rateplan_id', 0);
-            }])
-            ->firstOrFail();
+            $hotel = Hotel::where('hotel_id', $hotelId)
+                ->with(['roomTypes', 'roomTypes.serviceCategories', 'roomTypes.images', 'roomTypes.rates' => function ($query) use ($today) {
+                    $query->select('id', 'room_id', 'number_of_guests', 'price', 'currency')
+                        ->whereDate('start_rate_date', '<=', $today)
+                        ->whereDate('end_rate_date', '>=', $today)
+                        ->where('number_of_guests', 1)
+                        ->where('rateplan_id', 0);
+                }])
+                ->firstOrFail();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Rooms fetched successfully.',
-            'data' => $hotel->roomTypes
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Error: ' . $e->getMessage()
-        ], 404);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Rooms fetched successfully.',
+                'data' => $hotel->roomTypes
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error: ' . $e->getMessage()
+            ], 404);
+        }
     }
-}
 
 
     public function getRoomDetails($roomId)

@@ -41,30 +41,29 @@ class BookingController extends Controller
         $end_date = $request->query('end_date');
 
         if ($start_date) {
-            $start_date =$request->query('start_date'); //\Carbon\Carbon::parse($start_date)->startOfMonth()->toDateString();
+            $start_date = $request->query('start_date'); //\Carbon\Carbon::parse($start_date)->startOfMonth()->toDateString();
         } else {
             $end_date = $request->query('end_date');
-          
-        }  
+        }
 
-       
-        $extended_list =$request->query('extended_list',1);
+
+        $extended_list = $request->query('extended_list', 1);
         $services = "0"; // Default to 1
         $guest_details = $request->query('guest_details', 1); // Default to 1
         try {
-         
+
             $bookings = $this->sabeeBookingService->fetchBookings(
                 $hotel_id,
                 $start_date,
-                $end_date ,
+                $end_date,
                 $extended_list,
                 $services,
                 $guest_details
             );
 
-             return $this->apiResponse('success', 200, 'Bookings ' . config('constants.SUCCESS.FETCH_DONE'), ['bookings' => $bookings]);
+            return $this->apiResponse('success', 200, 'Bookings ' . config('constants.SUCCESS.FETCH_DONE'), ['bookings' => $bookings]);
         } catch (\Exception $e) {
-           return $this->apiResponse('error', 400, $e->getMessage());
+            return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
 
@@ -311,7 +310,8 @@ class BookingController extends Controller
 
 
 
-    public function checkAvailability(Request $request){
+    public function checkAvailability(Request $request)
+    {
 
 
         $validated = $request->validate([
@@ -325,15 +325,14 @@ class BookingController extends Controller
         ]);
 
         try {
-              $response = Http::withHeaders([
-                    'api_key' => config('services.sabee.api_key'),
-                    'api_version' => config('services.sabee.api_version'),
-                ])->post('https://api.sabeeapp.com/connect/booking/availability', $validated);
+            $response = Http::withHeaders([
+                'api_key' => config('services.sabee.api_key'),
+                'api_version' => config('services.sabee.api_version'),
+            ])->post('https://api.sabeeapp.com/connect/booking/availability', $validated);
             return response()->json([
                 'status' => 'success',
                 'data' => $response->json()
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -341,6 +340,4 @@ class BookingController extends Controller
             ], 500);
         }
     }
-
-
 }

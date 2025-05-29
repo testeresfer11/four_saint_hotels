@@ -5,7 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Twilio\Rest\Client;
-use App\Models\{User,Conversation};
+use App\Models\{User, Conversation};
 use Illuminate\Support\Facades\Auth;
 
 class TwilioChatController extends Controller
@@ -53,8 +53,9 @@ class TwilioChatController extends Controller
         return back()->with('success', 'Message sent!');
     }
 
-    public function listConversations(){
-        
+    public function listConversations()
+    {
+
         $conversations = $this->twilio->conversations->v1->conversations->read();
 
         $result = [];
@@ -67,5 +68,4 @@ class TwilioChatController extends Controller
 
         return response()->json(['conversations' => $result]);
     }
-
 }
