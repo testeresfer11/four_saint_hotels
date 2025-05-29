@@ -35,5 +35,10 @@ class HotelRoomType extends Model
           'hotel_room_type_id',
           'service_category_id'
         );
-  }
+    }
+
+    public function availabilities()
+    {
+        return $this->hasMany(RoomAvailability::class, 'room_type_id');
+    }
 }

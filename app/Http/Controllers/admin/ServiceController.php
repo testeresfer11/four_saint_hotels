@@ -25,7 +25,7 @@ class ServiceController extends Controller
         try {
             // Fetch the list of services, you can add pagination or filters if needed
             $services = Service::paginate(10);
-            
+
             return view('admin.service.list', compact('services'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error fetching services: ' . $e->getMessage());
@@ -55,5 +55,3 @@ class ServiceController extends Controller
         }
     }
 }
-
-

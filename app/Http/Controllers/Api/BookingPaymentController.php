@@ -41,8 +41,8 @@ class BookingPaymentController extends Controller
             'amount' => 'required|numeric',
             'currency' => 'required|string',
             'customer_name' => 'required|string',
-            'hotel_id' =>'required',
-            'resveration_code' =>'required'
+            'hotel_id' => 'required',
+            'resveration_code' => 'required'
         ]);
 
         $method = $request->payment_method;
@@ -77,7 +77,7 @@ class BookingPaymentController extends Controller
             ]);
 
 
-             $payments = [
+            $payments = [
                 [
                     'customer_name' => $request->customer_name,
                     'price' => $request->amount,
@@ -87,10 +87,10 @@ class BookingPaymentController extends Controller
                 ]
             ];
 
-        $hotelId = $request->hotel_id;
-        $reservationCode = $request->resvation_code;
+            $hotelId = $request->hotel_id;
+            $reservationCode = $request->resvation_code;
 
-        $sabeeResponse = $this->sabeePaymentService->submitPaymentToSabee($hotelId, $reservationCode, $payments);
+            $sabeeResponse = $this->sabeePaymentService->submitPaymentToSabee($hotelId, $reservationCode, $payments);
 
             return response()->json([
                 'status' => 'success',
@@ -129,21 +129,21 @@ class BookingPaymentController extends Controller
 
         $amount = new Amount();
         $amount->setCurrency($request->currency)
-               ->setTotal($request->amount);
+            ->setTotal($request->amount);
 
         $transaction = new Transaction();
         $transaction->setAmount($amount)
-                    ->setDescription("Payment by {$request->customer_name}");
+            ->setDescription("Payment by {$request->customer_name}");
 
         $redirectUrls = new RedirectUrls();
         $redirectUrls->setReturnUrl(url('/api/payment-success'))
-                     ->setCancelUrl(url('/api/payment-cancel'));
+            ->setCancelUrl(url('/api/payment-cancel'));
 
         $payment = new Payment();
         $payment->setIntent('sale')
-                ->setPayer($payer)
-                ->setTransactions([$transaction])
-                ->setRedirectUrls($redirectUrls);
+            ->setPayer($payer)
+            ->setTransactions([$transaction])
+            ->setRedirectUrls($redirectUrls);
 
         try {
             $payment->create($apiContext);
@@ -196,7 +196,7 @@ class BookingPaymentController extends Controller
             $execution->setPayerId($payerId);
             $result = $payment->execute($execution, $apiContext);
 
-               $payments = [
+            $payments = [
                 [
                     'customer_name' => $request->customer_name,
                     'price' => $request->amount,
@@ -204,12 +204,12 @@ class BookingPaymentController extends Controller
                     'payment_method' => 'PayPal',
                     'description' => 'Payment with paypal',
                 ]
-                ];
+            ];
 
-                $hotelId = $request->hotel_id;
-                $reservationCode = $request->resvation_code;
+            $hotelId = $request->hotel_id;
+            $reservationCode = $request->resvation_code;
 
-                $sabeeResponse = $this->sabeePaymentService->submitPaymentToSabee($hotelId, $reservationCode, $payments);
+            $sabeeResponse = $this->sabeePaymentService->submitPaymentToSabee($hotelId, $reservationCode, $payments);
 
             return response()->json([
                 'status' => 'success',
@@ -247,13 +247,13 @@ class BookingPaymentController extends Controller
     private function payOnArrival($request)
     {
         $payments = [
-        [
-            'customer_name' => $request->customer_name,
-            'price' => $request->amount,
-            'payment_date_time' => now()->format('Y-m-d H:i:s'),
-            'payment_method' => 'Cash',
-            'description' => 'Cash payment on arrival',
-        ]
+            [
+                'customer_name' => $request->customer_name,
+                'price' => $request->amount,
+                'payment_date_time' => now()->format('Y-m-d H:i:s'),
+                'payment_method' => 'Cash',
+                'description' => 'Cash payment on arrival',
+            ]
         ];
 
         $hotelId = $request->hotel_id;
@@ -266,8 +266,4 @@ class BookingPaymentController extends Controller
             'message' => 'Marked as Pay on Arrival. No online transaction done.'
         ]);
     }
-
-
-
-
 }

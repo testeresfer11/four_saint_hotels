@@ -36,20 +36,20 @@ class ServiceSubCategoryController extends Controller
                     $validated['image'] = $path;
                 }
 
-               
+
 
                 // Create the new service sub-category
                 ServiceSubCategory::create($validated);
 
                 return redirect()->route('admin.sub_category.list')
-                                 ->with('success', 'Sub-category added successfully!');
+                    ->with('success', 'Sub-category added successfully!');
             } catch (\Exception $e) {
                 // Log the error for debugging
                 Log::error('Error adding sub-category: ' . $e->getMessage());
 
                 // Redirect back with an error message
                 return back()->withInput()
-                             ->with('error', 'An error occurred while adding the sub-category. Please try again.');
+                    ->with('error', 'An error occurred while adding the sub-category. Please try again.');
             }
         }
 
@@ -107,4 +107,3 @@ class ServiceSubCategoryController extends Controller
         return redirect()->route('admin.sub_category.list')->with('success', 'Sub-category deleted successfully!');
     }
 }
-

@@ -114,7 +114,7 @@
                 <span class="menu-icon">
                         <a href="{{route('admin.booking.view',['id' => $booking->id])}}" title="View" class="text-primary"><i class="mdi mdi-eye"></i></a>
                       </span>&nbsp;&nbsp;&nbsp;
-                       <a href="{{ route('admin.booking.edit', ['id' => $booking->id]) }}" ><i class="mdi mdi-pencil"></i></a>&nbsp;&nbsp;&nbsp;
+                       {{--<a href="{{ route('admin.booking.edit', ['id' => $booking->id]) }}" ><i class="mdi mdi-pencil"></i></a>&nbsp;&nbsp;&nbsp;--}}
                    <a href="#" title="Cancel Booking" class="text-danger cancelBooking" data-id="{{ $booking->reservation_code }}" data-hotel="{{ $booking->hotel_id }}"><i class="mdi mdi-cancel"></i></a>
 
                 </td>

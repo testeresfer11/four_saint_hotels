@@ -36,6 +36,7 @@
                                 <th>Max Occupancy</th>
                                 <th>Number of Rooms</th>
                                 <th>Hotel Name</th>
+                                <th>Room Avaliable Today</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -47,10 +48,14 @@
                                 <td>{{ $room->max_occupancy }}</td>
                                 <td>{{ $room->number_of_rooms }}</td>
                                 <td>{{ $room->hotel->name ?? 'N/A' }}</td>
+                                 <td>
+                                    {{ $room->availabilities->first()->available_rooms ?? 'N/A' }}
+                                </td>
+
                                 
                                   <td>
-                                    <span class="menu-icon">
-                                        <a href="#" title="View" class="text-primary"><i class="mdi mdi-eye"></i></a>
+                                  <span class="menu-icon">
+                                        <a href="{{route('admin.roomtype.view',['id' => $room->room_type_id])}}" title="View" class="text-primary"><i class="mdi mdi-eye"></i></a>
                                     </span>&nbsp;&nbsp;&nbsp;
 
                                     <span class="menu-icon">

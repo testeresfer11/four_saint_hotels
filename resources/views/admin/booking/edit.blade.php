@@ -301,9 +301,9 @@
                                     <label>Status:</label>
                                     <select class="form-control" name="status">
                                         <option value="Confirmed" {{ ($booking->status ?? 'Confirmed') === 'Confirmed' ? 'selected' : '' }}>Confirmed</option>
-                                        <option value="Option" {{ ($booking->status ?? '') === 'Option' ? 'selected' : '' }}>Option</option>
+                                       
                                         <option value="Cancelled" {{ ($booking->status ?? '') === 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                        <option value="NoShow" {{ ($booking->status ?? '') === 'NoShow' ? 'selected' : '' }}>NoShow</option>
+                                        
                                     </select>
                                 </div>
                             </div>

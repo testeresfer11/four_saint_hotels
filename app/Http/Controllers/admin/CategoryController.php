@@ -11,10 +11,11 @@ class CategoryController extends Controller
 {
 
 
-    
-   public function getList(){
-    $categories = ServiceCategory::orderBy('id', 'DESC')->paginate(10);
-    return view('admin.category.list', compact('categories'));
+
+    public function getList()
+    {
+        $categories = ServiceCategory::orderBy('id', 'DESC')->paginate(10);
+        return view('admin.category.list', compact('categories'));
     }
 
 
