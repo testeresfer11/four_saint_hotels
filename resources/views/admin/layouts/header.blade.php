@@ -10,19 +10,22 @@
 
       @php
     $selectedHotelId = session('selected_hotel_id');
+
+   
     @endphp
 
-    <form method="POST" action="{{ route('admin.hotel.select') }}">
-        @csrf
-        <select  class ="hotel_status" name="hotel_id"  onchange="this.form.submit()" class="form-control">
-            <option value="">Select Hotel</option>
-            @foreach($hotels as $hotel)
-                <option value="{{ $hotel->hotel_id }}" @selected($selectedHotelId == $hotel->hotel_id)>
-                    {{ $hotel->name }}
-                </option>
-            @endforeach
-        </select>
-    </form>
+  <form method="POST" action="{{ route('admin.hotel.select') }}">
+      @csrf
+      <select name="hotel_id" class="form-control hotel_status" onchange="this.form.submit()">
+          <option value="">Select Hotel</option>
+          @foreach($hotels as $hotel)
+              <option value="{{ $hotel->hotel_id }}" {{ $selectedHotelId == $hotel->hotel_id ? 'selected' : '' }}>
+                  {{ $hotel->name }}
+              </option>
+          @endforeach
+      </select>
+  </form>
+
 
 
 

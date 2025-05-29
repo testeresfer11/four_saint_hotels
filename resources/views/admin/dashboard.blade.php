@@ -270,26 +270,5 @@
     }
   });
 
-  const doughnutCanvas = document.getElementById("chartjs-doughnut").getContext("2d");
-  new Chart(doughnutCanvas, {
-    type: "doughnut",
-    data: {
-      labels: ["Social", "Search Engines", "Direct", "Other"],
-      datasets: [{
-        data: [260, 125, 54, 146],
-        backgroundColor: [
-          window.theme.primary || "#007bff",
-          window.theme.success || "#28a745",
-          window.theme.warning || "#ffc107",
-          "#dee2e6"
-        ],
-        borderColor: "transparent"
-      }]
-    },
-    options: {
-      maintainAspectRatio: false,
-      cutout: "65%",
-    }
-  });
 </script>
 @endsection
