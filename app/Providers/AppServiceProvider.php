@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
            View::composer('admin.*', function ($view) {
-            $view->with('hotels', Hotel::select('id', 'name')->get());
+            $view->with('hotels', Hotel::select('id','hotel_id', 'name')->get());
         });
     }
 }
