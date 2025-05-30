@@ -16,15 +16,23 @@
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body p-0">
-          <div class="d-flex px-3 py-3 justify-content-between">
-            <h4 class="card-title m-0">Notifications</h4>
-            @if($notifications->count())
+          <div class="d-flex px-3 py-3 mb-2 flex-md-row flex-column row-gap-3 justify-content-between align-items-center header-wrapper">
+            <h4 class="card-title m-0">Your Notifications</h4>
+            <div class="btn-box">
+              <button class="btn mark">
+                <i class="fa-solid fa-check-double"></i><span>Mark All as read</span>
+              </button>
+              <button class="btn clear">
+               <span>Clear All</span>
+              </button>
+            </div>
+            {{-- @if($notifications->count())
               <button type="button" class="btn btn-danger btn-md ClearAllNotification">
                 <span class="menu-icon"> Clear All</span>
               </button>
-            @endif
+            @endif --}}
           </div>
-          <div class="table-responsive">
+          {{-- <div class="table-responsive">
             <table class="table table-striped">
               <thead>
                 <tr>
@@ -59,9 +67,111 @@
               
               </tbody>
             </table>
-          </div>
-          <div class="custom_pagination">
+          </div> --}}
+          {{-- <div class="custom_pagination">
             {{ $notifications->appends(request()->query())->links('pagination::bootstrap-4') }}
+          </div> --}}
+          <div class="pt-2 pb-3">
+            <div class="status py-2 px-3 mb-3">
+              <h5 class="title m-0">Today</h5>
+            </div>
+            <div class="py-2 px-3">
+              <div class="card-content p-2">
+                <div class="row align-items-center">
+                  <div class="col-lg-11 col-10">
+                    <div class="d-flex align-items-center">
+                    <span class="notifi-icon">
+                      <img src="{{ asset('images/calendar.png') }}" alt="" class="img-fluid">
+                    </span>
+                    <div class="body-content pl-2">
+                      <p class="m-0 "><b>Lorem ipsum</b> is simply dummy text of the print and typesetting industry. Lorem Ipsum has been the industry's standard dummy text. Lorem ipsum is a dummy content you can use for dummy purpose only.</p>
+                      <span class="time">09:00 AM</span>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="col-lg-1 col-2">
+                    <button class="btn del-btn">
+                      <img src="{{ asset('images/delete.png') }}" alt="" class="img-fluid">
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="py-2 px-3">
+              <div class="card-content p-2">
+                <div class="row align-items-center">
+                  <div class="col-lg-11 col-10">
+                    <div class="d-flex align-items-center">
+                    <span class="notifi-icon">
+                      <img src="{{ asset('images/calendar.png') }}" alt="" class="img-fluid">
+                    </span>
+                    <div class="body-content pl-2">
+                      <p class="m-0 "><b>Lorem ipsum</b> is simply dummy text of the print and typesetting industry. Lorem Ipsum has been the industry's standard dummy text. Lorem ipsum is a dummy content you can use for dummy purpose only.</p>
+                      <span class="time">09:00 AM</span>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="col-lg-1 col-2">
+                    <button class="btn del-btn">
+                      <img src="{{ asset('images/delete.png') }}" alt="" class="img-fluid">
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="pt-2 pb-3">
+            <div class="status py-2 px-3 mb-3">
+              <h5 class="title m-0">11 Oct, 2024</h5>
+            </div>
+            <div class="py-2 px-3">
+              <div class="card-content p-2">
+                <div class="row align-items-center">
+                  <div class="col-lg-11 col-10">
+                    <div class="d-flex align-items-center">
+                    <span class="notifi-icon">
+                      <img src="{{ asset('images/calendar.png') }}" alt="" class="img-fluid">
+                    </span>
+                    <div class="body-content pl-2">
+                      <p class="m-0 "><b>Lorem ipsum</b> is simply dummy text of the print and typesetting industry. Lorem Ipsum has been the industry's standard dummy text. Lorem ipsum is a dummy content you can use for dummy purpose only.</p>
+                      <span class="time">09:00 AM</span>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="col-lg-1 col-2">
+                    <button class="btn del-btn">
+                      <img src="{{ asset('images/delete.png') }}" alt="" class="img-fluid">
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="py-2 px-3">
+              <div class="card-content p-2">
+                <div class="row align-items-center">
+                  <div class="col-lg-11 col-10">
+                    <div class="d-flex align-items-center">
+                    <span class="notifi-icon">
+                      <img src="{{ asset('images/calendar.png') }}" alt="" class="img-fluid">
+                    </span>
+                    <div class="body-content pl-2">
+                      <p class="m-0 "><b>Lorem ipsum</b> is simply dummy text of the print and typesetting industry. Lorem Ipsum has been the industry's standard dummy text. Lorem ipsum is a dummy content you can use for dummy purpose only.</p>
+                      <span class="time">09:00 AM</span>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="col-lg-1 col-2">
+                    <button class="btn del-btn">
+                      <img src="{{ asset('images/delete.png') }}" alt="" class="img-fluid">
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
           </div>
         </div>
       </div>
