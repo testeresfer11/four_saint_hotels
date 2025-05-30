@@ -75,7 +75,7 @@
           <a class="dropdown-item preview-item" href="{{ route('admin.profile') }}">
             <div class="preview-thumbnail">
               <div class="preview-icon bg-dark rounded-circle">
-                <i class="mdi mdi-account"></i>
+                <i class="fa-regular fa-user"></i>
               </div>
             </div>
             <div class="preview-item-content">
@@ -86,7 +86,7 @@
           <a class="dropdown-item preview-item" href="javascript:void(0);" data-toggle="modal" data-target="#logoutModal1">
             <div class="preview-thumbnail">
               <div class="preview-icon bg-dark rounded-circle">
-                <i class="mdi mdi-logout"></i>
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
               </div>
             </div>
             <div class="preview-item-content">
