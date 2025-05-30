@@ -753,7 +753,10 @@ margin-right: auto;
 }
 
 .chat-box  li .card .card-body {padding:10px;min-height: unset !important;height: auto !important;max-height: unset !important;}
-
+.preview-list .preview-item .preview-thumbnail .preview-icon{
+  width: 34px;
+  height: 34px;
+}
 .chat-box  li {
 align-items:flex-end;
 }
@@ -1374,7 +1377,7 @@ color: #6c7293 !important;
 .profile-dropdown>a{
   border-bottom: 1px solid #e5e5e5;
 }
-.dropdown-item:hover .preview-icon>i, .dropdown-item:focus.preview-icon>i{
+.dropdown-item:hover .preview-icon>i, .dropdown-item:focus.preview-icon>i, .dropdown-item:hover .preview-item-content>p{
   color: #B46326;
 }
 /* 03/09 start */
