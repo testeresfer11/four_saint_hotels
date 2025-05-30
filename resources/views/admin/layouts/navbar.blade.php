@@ -31,7 +31,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.dashboard') }}">
                 <span class="menu-icon">
-                    <i class="fa-solid fa-table-cells-large"></i>
+                    {{-- <i class="fa-solid fa-table-cells-large"></i> --}}
+                    <img src="{{ asset('images/dashboard.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Dashboard</span>
             </a>
@@ -45,7 +46,8 @@
             <a class="nav-link {{ request()->routeIs('admin.profile', 'admin.changePassword') ? '' : 'collapsed' }}"
                 data-toggle="collapse" href="#settings-menu" aria-expanded="{{ request()->routeIs('admin.profile', 'admin.changePassword') ? 'true' : 'false' }}" aria-controls="settings-menu">
                 <span class="menu-icon">
-                    <i class="mdi mdi-settings"></i>
+                    {{-- <i class="fa-solid fa-sliders"></i> --}}
+                    <img src="{{ asset('images/setting.png') }}" alt="logout" class="img-fluid">
                 </span>
                 <span class="menu-title">Settings</span>
                 <i class="menu-arrow"></i>
@@ -68,7 +70,8 @@
             <a class="nav-link {{ request()->routeIs('admin.role.list') ? '' : 'collapsed' }}" data-toggle="collapse" href="#role-permissions-menu"
                 aria-expanded="{{ request()->routeIs('admin.role.list') ? 'true' : 'false' }}" aria-controls="role-permissions-menu">
                 <span class="menu-icon">
-                    <i class="mdi mdi-account"></i>
+                    {{-- <i class="fa-regular fa-user"></i> --}}
+                    <img src="{{ asset('images/user.png') }}" alt="logout" class="img-fluid">
                 </span>
                 <span class="menu-title">Roles & Permissions</span>
                 <i class="menu-arrow"></i>
@@ -88,7 +91,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? 'active' : '' }}">
             <a class="nav-link {{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? '' : 'collapsed' }}" data-toggle="collapse" href="#service1" aria-expanded="{{ request()->routeIs('admin.customer.*','admin.driver.*','admin.staff.*','admin.trashed.list') ? 'true' : 'false' }}" aria-controls="service1">
                 <span class="menu-icon">
-                    <i class="fa-solid fa-users"></i>
+                    {{-- <i class="fa-solid fa-users"></i> --}}
+                    <img src="{{ asset('images/people.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">User Management</span>
                 <i class="menu-arrow"></i>
@@ -123,7 +127,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.vouchers.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.vouchers.index') }}">
                 <span class="menu-icon">
-                    <i class="mdi mdi-gift"></i>
+                    {{-- <i class="mdi mdi-gift"></i> --}}
+                    <img src="{{ asset('images/gift.png') }}" alt="logout" class="img-fluid">
                 </span>
                 <span class="menu-title">Coupans</span>
             </a>
@@ -132,7 +137,8 @@
         <li class="nav-item menu-items">
             <a class="nav-link" data-bs-toggle="collapse" href="#featureSubmenu" role="button" aria-expanded="{{ request()->routeIs('admin.category.*') || request()->routeIs('admin.sub_category.*') ? 'true' : 'false' }}" aria-controls="featureSubmenu">
                 <span class="menu-icon">
-                    <i class="fa-solid fa-list"></i>
+                    {{-- <i class="fa-solid fa-list"></i> --}}
+                    <img src="{{ asset('images/features.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Feature Management</span>
                 <i class="menu-arrow"></i>
@@ -157,7 +163,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.hotel.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.hotel.list') }}">
                 <span class="menu-icon">
-                    <i class="fa-solid fa-hotel"></i>
+                    {{-- <i class="fa-solid fa-hotel"></i> --}}
+                    <img src="{{ asset('images/hotel.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Hotel Management</span>
             </a>
@@ -165,7 +172,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.roomtype.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.roomtype.list') }}">
                 <span class="menu-icon">
-                    <i class="fa-solid fa-columns"></i>
+                    {{-- <i class="fa-solid fa-columns"></i> --}}
+                    <img src="{{ asset('images/living-room.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Room Type Management</span>
             </a>
@@ -178,7 +186,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.booking.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.booking.list') }}">
                 <span class="menu-icon">
-                    <i class="fa-solid fa-calendar-week"></i>
+                    {{-- <i class="fa-regular fa-calendar-check"></i> --}}
+                    <img src="{{ asset('images/tick-mark.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Booking Management</span>
             </a>
@@ -187,7 +196,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.payment') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.payment.list') }}">
                 <span class="menu-icon">
-                <i class="fa-solid fa-sack-dollar"></i>
+                {{-- <i class="fa-solid fa-sack-dollar"></i> --}}
+                <img src="{{ asset('images/payment.png') }}" alt="" class="img-fluid">
 
                 </span>
                 <span class="menu-title">Payments</span>
@@ -199,7 +209,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.service.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.service.list') }}">
                 <span class="menu-icon">
-                    <i class="fa-solid fa-archive"></i>
+                    {{-- <i class="fa-solid fa-archive"></i> --}}
+                    <img src="{{ asset('images/services.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Service Management</span>
             </a>
@@ -214,7 +225,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.notification.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.notification.list') }}">
                 <span class="menu-icon">
-                    <i class="mdi mdi-bell"></i>
+                    {{-- <i class="mdi mdi-bell"></i> --}}
+                    <img src="{{ asset('images/notification.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Notifications</span>
             </a>
@@ -226,7 +238,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.newsletter.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.newsletter.index') }}">
                 <span class="menu-icon">
-                    <i class="fa-solid fa-envelope-open-text"></i>
+                    {{-- <i class="fa-solid fa-envelope-open-text"></i> --}}
+                    <img src="{{ asset('images/newsletter.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Newsletter Subscribers</span>
             </a>
@@ -238,7 +251,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.announcements.index') }}">
                 <span class="menu-icon">
-                    <i class="fa-solid fa-bullhorn"></i>
+                    {{-- <i class="fa-solid fa-bullhorn"></i> --}}
+                    <img src="{{ asset('images/announce.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Announcements</span>
             </a>
@@ -250,7 +264,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.feedback.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.feedback.list') }}">
                 <span class="menu-icon">
-                    <i class="mdi mdi-comment-text"></i>
+                    {{-- <i class="mdi mdi-comment-text"></i> --}}
+                    <img src="{{ asset('images/feedback.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Feedbacks</span>
             </a>
@@ -261,7 +276,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.contentPages.*') ? 'active' : '' }}">
             <a class="nav-link {{ request()->routeIs('admin.contentPages.*') ? '' : 'collapsed' }}" data-toggle="collapse" href="#contentPages" aria-expanded="{{ request()->routeIs('admin.contentPages.*') ? 'true' : 'false' }}" aria-controls="contentPages">
                 <span class="menu-icon">
-                    <i class="mdi mdi-content-save"></i>
+                    {{-- <i class="mdi mdi-content-save"></i> --}}
+                    <img src="{{ asset('images/notes.png') }}" alt="logout" class="img-fluid">
                 </span>
                 <span class="menu-title">Content Pages</span>
                 <i class="menu-arrow"></i>
@@ -283,7 +299,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.chat.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.chat.index') }}">
                 <span class="menu-icon">
-                    <i class="mdi mdi-chat"></i>
+                    {{-- <i class="mdi mdi-chat"></i> --}}
+                    <img src="{{ asset('images/chat.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Chat</span>
             </a>
@@ -294,7 +311,8 @@
         <li class="nav-item menu-items {{ request()->routeIs('admin.helpDesk.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.helpDesk.list', ['type' => 'open']) }}">
                 <span class="menu-icon">
-                    <i class="mdi mdi-desktop-mac"></i>
+                    {{-- <i class="mdi mdi-desktop-mac"></i> --}}
+                    <img src="{{ asset('images/helpdesk.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Helpdesk</span>
             </a>
@@ -303,13 +321,40 @@
 
         <!-- Log Out -->
         <li class="nav-item menu-items">
-            <a class="nav-link" href="{{ route('admin.logout') }}">
+            <a href="javascript:void(0);" class="nav-link" data-toggle="modal" data-target="#logoutModal">
+                
+            {{-- <a class="nav-link" href="#"  data-toggle="modal" data-target="#logoutModal"> --}}
                 <span class="menu-icon">
-                    <i class="mdi mdi-logout"></i>
+                    {{-- <i class="mdi mdi-logout"></i> --}}
+                    <img src="{{ asset('images/logout.png') }}" alt="logout" class="img-fluid">
                 </span>
                 <span class="menu-title">Log Out</span>
             </a>
+            
         </li>
+        
     </ul>
+    
 </nav>
+<!-- Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content px-4 py-3">
+        <div class="icon-box text-center pb-3">
+          <span>
+            <img src="{{ asset('images/logout-img.png') }}" alt="logout" class="img-fluid">
+          </span>
+        </div>
+        <div class="modal-body text-center">
+          <h3 class="modal-title" id="logoutModalLabel">Are you sure you want to logout?</h3>
+        </div>
+        <div class="text-center modal-footer-btn pt-2">
+          <!-- Cancel Button -->
+          <a href="javascript:void(0);" class="btn btn-secondary mr-3" data-dismiss="modal">Cancel</a>
+          <!-- Logout Button -->
+          <a class="btn btn-logout" href="{{ route('admin.logout') }}">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
 <!-- partial -->

@@ -28,7 +28,7 @@
               <div class="form-group">
                 <div class="row">
                     <div class="col-6">
-                        <label for="exampleInputFirstName">full Name</label>
+                        <label for="exampleInputFirstName">Full Name</label>
                         <input type="text" class="form-control @error('full_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="full name" name="full_name" value="{{$user->full_name ?? ''}}">
                         @error('full_name')
                             <span class="invalid-feedback" role="alert">

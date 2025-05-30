@@ -75,7 +75,12 @@ color: #ffffff;
 background-color: black;
 border-color: #2c2e33 #2c2e33 black; 
 }
-
+span.menu-icon img {
+  width: 26px;
+}
+.sidebar .nav li.nav-item.menu-items:hover .menu-icon>img{
+  filter:sepia(100%) saturate(127%) hue-rotate(323deg) contrast(98%) brightness(70%);
+}
 .sidebar .nav .nav-item.active > .nav-link {
 background: #FFF8F3;
 color: #B46326;
@@ -83,6 +88,9 @@ position: relative;
 }
 .sidebar .nav .nav-item.active > .nav-link .menu-icon>i{
   color: #B46326;
+}
+.sidebar .nav .nav-item.active > .nav-link .menu-icon>img{
+  filter:sepia(100%) saturate(127%) hue-rotate(323deg) contrast(98%) brightness(70%);
 }
 .sidebar .nav .nav-item .menu-icon>i{
   color: #7C8DB5;
@@ -140,13 +148,74 @@ table thead {
   border-radius: 19px;
   color: #fff !important;
   border: none;
-
+  padding: 8px 10px;
+  font-size: 14px;
 }
 .hotel_status>a{
   color: #fff !important;
 }
 .hotel_status>a::after{
   color: #fff !important;
+}
+/*notification page*/
+.btn-box button.btn{
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+.btn-box button.btn.mark{
+  border: 1px solid #D4E2FF;
+  color: #0046E2;
+}
+.btn-box button.btn.mark:focus, .btn-box button.btn.mark:active{
+  outline: 3px solid #ebf1ff;
+}
+.btn-box button.btn.clear{
+ border: 1px solid #FFDEDE;
+ color: #FF3131;
+}
+.btn-box button.btn.clear:active, .btn-box button.btn.clear:focus{
+  outline: 3px solid #ffe7e7;
+}
+.header-wrapper {
+  border-bottom: 1px solid #E9EDF2;
+}
+.status{
+  background-color: #F4F4F4;
+}
+.status h5{
+  font-weight: 600;
+}
+.notifi-icon{
+  display: inline-block;
+  background-color: #FFF8F3;
+  border-radius: 50%;
+  padding: 14px;
+}
+.notifi-icon img {
+  width: 40px;
+}
+.card-content {
+  border: 1px solid #E9EDF2;
+  border-radius: 8px;
+}
+.body-content{
+  font-family: "inter", sans-serif;
+  color: #232323;
+}
+span.time{
+  color: #7C8DB5;
+  font-size: 14px;
+}
+.del-btn>img{
+  width: 21px;
+}
+.del-btn{
+  border: 1px solid #FF7070;
+  background-color: #FFF0F0;
+  padding: 5px;
+}
+button.del-btn:focus, button.del-btn:active{
+  outline: 3px solid #ffdede;
 }
 /* .sidebar .nav .nav-item.active > .nav-link:before {
 content: "";
@@ -158,7 +227,37 @@ position: absolute;
 left: 0;
 top: 0; 
 } */
-
+/*logout*/
+.icon-box span{
+  border: 1px solid #FF3232;
+  display: inline-block;
+  padding: 7px;
+  border-radius: 7px;
+  background: #FFF0F0;
+}
+.icon-box{
+  border-bottom: 1px solid #E9EDF2;
+}
+.modal-title{
+  color: #23262F;
+}
+.modal-footer-btn>a.btn {
+  padding: 17px 36px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+.modal-footer-btn .btn-secondary{
+  border: 1px solid #E9EDF2;
+  background-color: #fff;
+}
+.modal-footer-btn .btn-logout{
+  background-color: #B46326;
+  border: 1px solid #B46326;
+  color: #fff;
+}
+.modal-open .modal{
+  overflow-y: hidden;
+}
 .padding {
   padding: 10px;
 }
