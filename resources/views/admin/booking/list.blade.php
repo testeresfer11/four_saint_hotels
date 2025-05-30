@@ -317,30 +317,43 @@ $(document).on('click', '.cancelBooking', function(e) {
     let reservationCode = $(this).data('id');
     let hotelId = $(this).data('hotel');
 
-    if (!confirm('Are you sure you want to cancel this booking?')) {
-        return;
-    }
-
-    $.ajax({
-        url: '{{ route("admin.booking.cancel") }}', // Ensure this route exists in web.php
-        type: 'POST',
-        data: {
-            _token: '{{ csrf_token() }}',
-            reservation_code: reservationCode,
-            hotel_id: hotelId,
-        },
-       success: function(response) {
-        console.log(response.data);
-        if (response.data.success === true) {
-            toastr.success(response.message);
-        } else if (response.status === 'warning') {
-            toastr.warning(response.message);
-        } else {
-            toastr.error('Error cancelling booking: ' +'Already cancelled');
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you really want to cancel this booking?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#B46326',
+        cancelButtonColor: '#fff',
+        confirmButtonText: 'Yes, cancel it!',
+        cancelButtonText: 'No, keep it',
+        customClass: {
+            cancelButton: 'swal-cancel-custom'
         }
-    }
-
-
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '{{ route("admin.booking.cancel") }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    reservation_code: reservationCode,
+                    hotel_id: hotelId,
+                },
+                success: function(response) {
+                    console.log(response.data);
+                    if (response.data.success === true) {
+                        toastr.success(response.message);
+                    } else if (response.status === 'warning') {
+                        toastr.warning(response.message);
+                    } else {
+                        toastr.error('Error cancelling booking: Already cancelled');
+                    }
+                },
+                error: function() {
+                    toastr.error('An error occurred while cancelling booking.');
+                }
+            });
+        }
     });
 });
 

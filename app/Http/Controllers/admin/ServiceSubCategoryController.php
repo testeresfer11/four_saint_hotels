@@ -7,6 +7,8 @@ use App\Models\ServiceSubCategory;
 use App\Models\ServiceCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+
 
 
 class ServiceSubCategoryController extends Controller
@@ -96,6 +98,7 @@ class ServiceSubCategoryController extends Controller
 
     public function delete($id)
     {
+        try {
         $subCategory = ServiceSubCategory::findOrFail($id);
 
         if ($subCategory->image && Storage::disk('public')->exists($subCategory->image)) {
@@ -105,5 +108,13 @@ class ServiceSubCategoryController extends Controller
         $subCategory->delete();
 
         return redirect()->route('admin.sub_category.list')->with('success', 'Sub-category deleted successfully!');
+    } catch (\Exception $e) {
+        // Log the error for debugging
+        Log::error('Error deleting sub-category: ' . $e->getMessage());
+
+        // Redirect back with an error message
+        return back()->withInput()
+            ->with('error', 'An error occurred while adding the sub-category. Please try again.');
+    }
     }
 }

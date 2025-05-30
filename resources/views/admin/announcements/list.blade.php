@@ -92,9 +92,12 @@
           text: "You want to delete the announcement?",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#2ea57c",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
+          confirmButtonColor: '#B46326',
+           cancelButtonColor: '#fff',
+          confirmButtonText: "Yes, delete it!",
+          customClass: {
+            cancelButton: 'swal-cancel-custom'
+        }
         }).then((result) => {
           if (result.isConfirmed) {
               $.ajax({
