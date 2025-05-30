@@ -1488,3 +1488,7 @@ a {
     display: none;
   }
 }
+
+.swal-cancel-custom {
+  color: #000 !important;
+}

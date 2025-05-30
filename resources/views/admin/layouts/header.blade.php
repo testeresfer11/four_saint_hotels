@@ -38,31 +38,37 @@
 
       <!-- Notifications -->
       <li class="nav-item dropdown">
-        <a class="nav-link count-indicator dropdown-toggle notifi read-notification" id="notificationDropdown" href="#" data-toggle="dropdown">
-          <i class="fa-regular fa-bell"></i>
-          <span class="noti-count">2</span>
-          @if ($notification_count)
-          <span class="count bg-danger"></span>
-          @endif
-        </a>
-        @if($notification_count)
-        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-          <h6 class="p-3 mb-0">Notifications</h6>
-          @foreach (auth()->user()->unreadNotifications()->take(5)->get() as $notification)
-          <div class="dropdown-divider m-0"></div>
-          <a href="{{ route('admin.notification.list') }}">
-            <p class="preview-subject p-3 mb-0">{{ ($notification->data)['description'] }}</p>
-          </a>
-          @endforeach
-          @if(auth()->user()->unreadNotifications()->count() > 5)
-          <div class="dropdown-divider"></div>
-          <a href="{{ route('admin.notification.list') }}">
-            <p class="p-3 mb-0 text-center">See all notifications</p>
-          </a>
-          @endif
+  <a class="nav-link count-indicator dropdown-toggle notifi read-notification" id="notificationDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+    <i class="fa-regular fa-bell"></i>
+    @if($notification_count)
+      <span class="noti-count">{{ $notification_count }}</span>
+      <span class="count bg-danger"></span>
+    @endif
+  </a>
+
+  @if($notification_count)
+  <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+    <h6 class="p-3 mb-0">Notifications</h6>
+
+    @foreach (auth()->user()->unreadNotifications()->take(5)->get() as $notification)
+      <div class="dropdown-divider m-0"></div>
+      <a class="dropdown-item preview-item" href="{{ route('admin.notification.list') }}">
+        <div class="preview-item-content">
+          <p class="preview-subject mb-0">{{ ($notification->data)['description'] }}</p>
         </div>
-        @endif
-      </li>
+      </a>
+    @endforeach
+
+    @if(auth()->user()->unreadNotifications()->count() > 5)
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item text-center" href="{{ route('admin.notification.list') }}">
+        See all notifications
+      </a>
+    @endif
+  </div>
+  @endif
+</li>
+
 
       <!-- Profile -->
       <li class="nav-item dropdown">
