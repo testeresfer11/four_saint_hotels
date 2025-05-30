@@ -15562,7 +15562,11 @@ input:focus {
     font-weight: 700;
     src: url("../fonts/product-sans/Product-Sans-Bold.ttf");
     /* IE9 Compat Modes */ }
-
+    @font-face {
+      font-family: 'inter';
+      font-weight: 400;
+      src: url("../fonts/inter/Inter_24pt-Regular.ttf");
+    }
 /* Backgrounds  */
 .bg-gradient-primary {
   background: #0090e7; }

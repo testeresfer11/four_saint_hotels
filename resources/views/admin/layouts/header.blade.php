@@ -36,7 +36,7 @@
       <!-- Notifications -->
       <li class="nav-item dropdown">
         <a class="nav-link count-indicator dropdown-toggle notifi read-notification" id="notificationDropdown" href="#" data-toggle="dropdown">
-          <i class="mdi mdi-bell"></i>
+          <i class="fa-regular fa-bell"></i>
           <span class="noti-count">2</span>
           @if ($notification_count)
           <span class="count bg-danger"></span>
@@ -83,7 +83,7 @@
             </div>
           </a>
           {{-- <div class="dropdown-divider"></div> --}}
-          <a class="dropdown-item preview-item" href="{{ route('admin.logout') }}">
+          <a class="dropdown-item preview-item" href="javascript:void(0);" data-toggle="modal" data-target="#logoutModal1">
             <div class="preview-thumbnail">
               <div class="preview-icon bg-dark rounded-circle">
                 <i class="mdi mdi-logout"></i>
@@ -102,3 +102,23 @@
     </button>
   </div>
 </nav>
+<div class="modal fade" id="logoutModal1" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content px-4 py-3">
+      <div class="icon-box text-center pb-3">
+        <span>
+          <img src="{{ asset('images/logout-img.png') }}" alt="logout" class="img-fluid">
+        </span>
+      </div>
+      <div class="modal-body text-center">
+        <h3 class="modal-title" id="logoutModalLabel">Are you sure you want to logout?</h3>
+      </div>
+      <div class="text-center modal-footer-btn pt-2">
+        <!-- Cancel Button -->
+        <a href="javascript:void(0);" class="btn btn-secondary mr-3" data-dismiss="modal">Cancel</a>
+        <!-- Logout Button -->
+        <a class="btn btn-logout" href="{{ route('admin.logout') }}">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
