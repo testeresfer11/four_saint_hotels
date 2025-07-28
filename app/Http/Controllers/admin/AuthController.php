@@ -47,7 +47,7 @@ class AuthController extends Controller
                             $query->where('status', 1);
                         })
                     ],
-                    'password' => 'required|min:8'
+                    'password' => 'required'
                 ]);
 
 
@@ -309,22 +309,28 @@ class AuthController extends Controller
                 $user = User::with('userDetail')->find(authId());
                 return view("admin.profile.detail", compact('user'));
             } elseif ($request->isMethod('post')) {
-                $validator = Validator::make($request->all(), [
-                    'full_name'    => 'required|string|max:255',
-                    'email'         => 'required|email:rfc,dns',
-                    'phone_number'  => 'nullable|numeric',
-                    'profile'       => 'nullable|image|max:2048'
-                ]);
+               $cutoff = Carbon::today()->subYears(18)->format('Y-m-d');
 
-                if ($validator->fails()) {
-                    if ($request->ajax()) {
-                        return response()->json([
-                            "status" => "error",
-                            "message" => $validator->errors()->first()
-                        ], 422);
+                    $validator = Validator::make($request->all(), [
+                        'full_name'    => 'required|string|max:255',
+                        'email'        => 'required|email:rfc,dns',
+                        'phone_number' => 'nullable|numeric',
+                        'profile'      => 'nullable|image|max:2048',
+                        // require DOB, must be a date on or before $cutoff
+                        'dob'          => "required|date|before_or_equal:{$cutoff}",
+                    ], [
+                        'dob.before_or_equal' => 'You must be at least 18 years old.',
+                    ]);
+
+                    if ($validator->fails()) {
+                        if ($request->ajax()) {
+                            return response()->json([
+                                "status"  => "error",
+                                "message" => $validator->errors()->first()
+                            ], 422);
+                        }
+                        return redirect()->back()->withErrors($validator)->withInput();
                     }
-                    return redirect()->back()->withErrors($validator)->withInput();
-                }
 
                 // Update User basic details
                 User::where('id', authId())->update([

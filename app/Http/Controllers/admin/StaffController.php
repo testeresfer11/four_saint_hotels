@@ -20,29 +20,38 @@ class StaffController extends Controller
      * createdDate  : 29-11-2024
      * purpose      : Get the list for all the staff user
      */
-    public function getList(Request $request)
-    {
-        try {
-            $role = Role::whereNotIn('name', [config('constants.ROLES.USER'), config('constants.ROLES.ADMIN')])->pluck('id')->toArray();
+    public function getList(Request $request){
+    try {
+        $role = Role::whereNotIn('name', [config('constants.ROLES.USER'), config('constants.ROLES.ADMIN')])
+                    ->pluck('id')->toArray();
 
-            $users = User::whereIn("role_id", $role)
-                ->when($request->filled('search_keyword'), function ($query) use ($request) {
-                    $query->where(function ($query) use ($request) {
-                        $query->where('first_name', 'like', "%$request->search_keyword%")
-                            ->orWhere('last_name', 'like', "%$request->search_keyword%")
-                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$request->search_keyword}%"])
-                            ->orWhere('email', 'like', "%$request->search_keyword%");
-                    });
-                })
-                ->when($request->filled('status'), function ($query) use ($request) {
-                    $query->where('status', $request->status);
-                })->orderBy("id", "desc")->paginate(10);
+        $users = User::whereIn("role_id", $role)
+            ->when($request->filled('search_keyword'), function ($query) use ($request) {
+                $query->where(function ($query) use ($request) {
+                    $query->where('first_name', 'like', "%{$request->search_keyword}%")
+                        ->orWhere('last_name', 'like', "%{$request->search_keyword}%")
+                        ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$request->search_keyword}%"])
+                        ->orWhere('email', 'like', "%{$request->search_keyword}%");
+                });
+            })
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when($request->filled('start_date'), function ($query) use ($request) {
+                $query->whereDate('created_at', '>=', $request->start_date);
+            })
+            ->when($request->filled('end_date'), function ($query) use ($request) {
+                $query->whereDate('created_at', '<=', $request->end_date);
+            })
+            ->orderBy("id", "desc")
+            ->paginate(10);
 
-            return view("admin.staff.list", compact("users"));
-        } catch (\Exception $e) {
-            return redirect()->back()->with("error", $e->getMessage());
-        }
+        return view("admin.staff.list", compact("users"));
+    } catch (\Exception $e) {
+        return redirect()->back()->with("error", $e->getMessage());
     }
+}
+
     /**End method getList**/
 
     /**

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class HotelCoupon extends Model
 {
     protected $fillable = [
-        'hotel_id', 'coupon_code', 'coupon_name', 'type', 'value', 'available', 'expiration_date',
+        'hotel_id', 'coupon_code', 'coupon_name', 'type', 'value', 'available', 'expiration_date','max_uses'
     ];
 
     protected $casts = [

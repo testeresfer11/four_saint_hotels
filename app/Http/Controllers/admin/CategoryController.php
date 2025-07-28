@@ -12,11 +12,24 @@ class CategoryController extends Controller
 
 
 
-    public function getList()
-    {
-        $categories = ServiceCategory::orderBy('id', 'DESC')->paginate(10);
-        return view('admin.category.list', compact('categories'));
-    }
+   public function getList(Request $request)
+{
+    $categories = ServiceCategory::query()
+        ->when($request->filled('search_keyword'), function ($query) use ($request) {
+            $query->where('title', 'like', '%' . $request->search_keyword . '%');
+        })
+        ->when($request->filled('start_date'), function ($query) use ($request) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        })
+        ->when($request->filled('end_date'), function ($query) use ($request) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        })
+        ->orderBy('id', 'DESC')
+        ->paginate(10);
+
+    return view('admin.category.list', compact('categories'));
+}
+
 
 
     public function add(Request $request)

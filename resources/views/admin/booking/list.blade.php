@@ -26,10 +26,19 @@
                     <div class="admin-filters">
                         <form id="filter">
                             <div class="row align-items-center justify-content-end">
-                                <div class="col-6 d-flex gap-2">
+                                <div class="col-3 d-flex gap-2">
                                     <input type="text" class="form-control"  placeholder="Search" name="search_keyword" value="{{request()->filled('search_keyword') ? request()->search_keyword : ''}}">            
                                 </div>
-                                <div class="col-3">
+
+                                 <div class="col-md-2">
+                                    <input type="date" class="form-control" name="checkin_date" value="{{ request()->checkin_date }}">
+                                </div>
+
+                                <div class="col-md-2">
+                                    <input type="date" class="form-control" name="checkout_date" value="{{ request()->checkout_date }}">
+                                </div>
+
+                                <div class="col-2">
                                     <select class="form-control" name="status" style="width:100%">
                                         <option value="">All</option>
                                         <option value="CheckedOut" {{(request()->filled('status') && request()->status == "CheckedOut")? 'selected' : ''}}>CheckedOut</option>
@@ -346,6 +355,7 @@ $(document).on('click', '.cancelBooking', function(e) {
                     } else if (response.status === 'warning') {
                         toastr.warning(response.message);
                     } else {
+                         console.log(response.data);
                         toastr.error('Error cancelling booking: Already cancelled');
                     }
                 },

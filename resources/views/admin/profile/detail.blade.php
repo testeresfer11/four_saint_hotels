@@ -65,15 +65,29 @@
               </div>
               <div class="form-group">
                 <div class="row">
+                    @php
+                        // Compute the latest allowable birthdate (18 years ago)
+                        $eighteenYearsAgo = \Carbon\Carbon::today()->subYears(18)->format('Y-m-d');
+                    @endphp
+
                     <div class="col-6">
-                        <label for="dob">Date Of Birth</label>
-                        <input type="date" class="form-control @error('dob') is-invalid @enderror" id="dob"  name = "dob" value = "{{$user->userDetail ? ($user->userDetail->dob ? ($user->userDetail->dob) : '') : ''}}" max="{{ \Carbon\Carbon::yesterday()->format('Y-m-d') }}">
-                        @error('dob')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
+                      <label for="dob">Date Of Birth</label>
+                      <input
+                        type="date"
+                        class="form-control @error('dob') is-invalid @enderror"
+                        id="dob"
+                        name="dob"
+                        value="{{ old('dob', optional($user->userDetail)->dob) }}"
+                        max="{{ $eighteenYearsAgo }}"
+                      >
+                      @error('dob')
+                        <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                        </span>
+                      @enderror
                     </div>
+
+
                     <div class="col-6">
                         <label for="address">Address</label>
                         <input type="text" class="form-control @error('address') is-invalid @enderror" id="address" placeholder="Address" name = "address" value = "{{$user->userDetail ? ($user->userDetail->address ? ($user->userDetail->address) : '') : ''}}">

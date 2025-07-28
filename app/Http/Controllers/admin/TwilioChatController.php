@@ -5,7 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Twilio\Rest\Client;
-use App\Models\{User, Conversation};
+use App\Models\{User, Conversation,Message};
 use Illuminate\Support\Facades\Auth;
 
 class TwilioChatController extends Controller
@@ -22,36 +22,32 @@ class TwilioChatController extends Controller
 
     public function index()
     {
-        $conversations = Conversation::all();
+        $conversations = Conversation::with('userTwo','userTwo.userDetail')->get();
         return view('admin.chat.index', compact('conversations'));
     }
 
-    public function getMessages($sid)
-    {
-        $messages = $this->twilio->conversations->v1
-            ->conversations($sid)
-            ->messages
-            ->read();
+  
 
-        return response()->json($messages);
+    public function getMessages($conversationId)
+{
+    $conversation = Conversation::find($conversationId);
+
+    if (!$conversation) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Conversation not found',
+        ], 404);
     }
 
-    public function sendMessage(Request $request, $sid)
-    {
-        $request->validate([
-            'body' => 'required|string',
-        ]);
+    $messages = Message::where('conversation_id', $conversationId)
+        ->orderBy('created_at', 'asc')
+        ->get();
 
-        $this->twilio->conversations->v1
-            ->conversations($sid)
-            ->messages
-            ->create([
-                'author' => 'admin',
-                'body' => $request->body,
-            ]);
-
-        return back()->with('success', 'Message sent!');
-    }
+    return response()->json([
+        'status' => 'success',
+        'data' => $messages
+    ]);
+}
 
     public function listConversations()
     {

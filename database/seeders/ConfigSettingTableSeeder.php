@@ -42,7 +42,7 @@ class ConfigSettingTableSeeder extends Seeder
         ConfigSetting::updateOrCreate([
             'type' => 'smtp',
             'key' => 'password'],
-            ['value' => 'xvosirsabztdipev'
+            ['value' => ''
         ]);
         ConfigSetting::updateOrCreate([
             'type' => 'smtp',
@@ -55,12 +55,12 @@ class ConfigSettingTableSeeder extends Seeder
         ConfigSetting::updateOrCreate([
             'type' => 'stripe',
             'key' => 'STRIPE_KEY'],
-            ['value' => 'pk_test_reFxwbsm9cdCKASdTfxAR'
+            ['value' => ''
         ]); 
         ConfigSetting::updateOrCreate([
             'type' => 'stripe',
             'key' => 'STRIPE_SECRET'],
-            ['value' => 'sk_test_51HrXPGIq6Xlv2ZRLpYVG4yCQtyzA1egjGSG9B2C2RrNf6V1c8wRuAQ1sOVB45HdCWLP5whCUnZ5VWmdBT4QH5rfO001IeYkkCj'
+            ['value' => ''
         ]); 
 
 

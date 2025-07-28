@@ -160,23 +160,49 @@ class SabeeHotelService
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function hotelDetail($id)
-    {
-        $hotel = Hotel::with('roomTypes', 'ratePlans','hotelImages', 'feedbacks','categories','categories.subCategories')->where('hotel_id', $id)->first();
+   public function hotelDetail($id)
+{
+    $hotel = Hotel::with([
+        'roomTypes',
+        'ratePlans',
+        'hotelImages',
+        'feedbacks',
+        'categories',
+        'categories.subCategories'
+    ])
+    ->where('hotel_id', $id)
+    ->first();
 
-        if ($hotel) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Hotel details fetched successfully.',
-                'data' => $hotel
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Hotel not found.',
-            ], 404);
+    if ($hotel) {
+        // Format category and sub-category icons
+        foreach ($hotel->categories as $category) {
+            $category->icon = $category->icon ? asset('storage/' . ltrim($category->icon, '/')) : null;
+
+            foreach ($category->subCategories as $sub) {
+                $sub->image = $sub->image ? asset('storage/' . ltrim($sub->image, '/')) : null;
+            }
         }
+
+        // Format hotel image paths
+        foreach ($hotel->hotelImages as $image) {
+            $image->image_path = $image->image_path ? asset(ltrim($image->image_path, '/')) : null;
+        }
+
+        // Add average rating
+        $hotel->average_rating = $hotel->feedbacks->avg('rating');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Hotel details fetched successfully.',
+            'data' => $hotel
+        ], 200);
+    } else {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Hotel not found.',
+        ], 404);
     }
+}
 
      /**
      * Get room type details from local database with relations (room types and rate plans).

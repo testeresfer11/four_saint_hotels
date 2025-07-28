@@ -45,7 +45,7 @@ class SabeeBookingService
                 'start_date' => $start_date,
                 'end_date'  =>$end_date,
                 'extended_list' => $extended_list,
-                'services' => 0,
+                'services' => 1,
                 'all_status'=>1,
                 'guest_details' => $guest_details,
                 'limit' => $limit,
@@ -57,7 +57,7 @@ class SabeeBookingService
             }
 
             $data = $response->json('data');
-            //dd($data);
+        
             $reservations = $data['reservations'] ?? [];
             $pagination = $data['pagination'] ?? null;
             $totalPages = $pagination['total_pages'] ?? null;
@@ -217,48 +217,234 @@ class SabeeBookingService
      * @throws \Exception
      */
     public function createBooking($payload)
-    {
-        try {
-            $response = Http::withHeaders([
-                'api_key' => config('services.sabee.api_key'),
-                'api_version' => config('services.sabee.api_version'),
-                'Content-Type' => 'application/json',
-            ])->post(config('services.sabee.api_url') . 'booking/submit', $payload);
+{
+    try {
+        $response = Http::withHeaders([
+            'api_key' => config('services.sabee.api_key'),
+            'api_version' => config('services.sabee.api_version'),
+            'Content-Type' => 'application/json',
+        ])->post(config('services.sabee.api_url') . 'booking/submit', $payload);
 
-            if (!$response->successful()) {
-                throw new \Exception('Failed to create booking: ' . $response->body());
-            }
+         $data = $response->json();
 
-            // Get the reservation code from the response
-            $responseData = $response->json('data');
+        if (!$data['success']) {
+            return response()->json([
+                'success' => false,
+                'message' => $data['errors'][0]['ret_msg'] ?? 'Booking failed',
+                'error_code' => $data['errors'][0]['ret_code'] ?? null,
+             
+            ], 422); // Unprocessable Entity
+        }
 
 
-            $reservationCode = $responseData['reservation_code'] ?? null;
+        $responseData = $response->json('data');
 
-            if (!$reservationCode) {
-                throw new \Exception('Reservation code not found in response.');
-            }
+        $reservationCode = $responseData['reservation_code'] ?? null;
 
-            // Fetch bookings for today or the relevant date range
-            $today = now()->toDateString();
-            $bookings = $this->fetchBookings($payload['hotel_id'],$payload['rooms']['checkin_date'], $payload['rooms']['checkout_date']);
+        if (!$reservationCode) {
+            throw new \Exception("Reservation code not found in Sabee response.");
+        }
 
-            // Find the created booking from the list of fetched bookings
-            foreach ($bookings as $booking) {
-                if ($booking['reservation_code'] === $reservationCode) {
-                    // Call the method to save the detailed booking data
-                    $this->saveBookingData($booking);
-                    return $booking;
-                }
-            }
+        // Fetch created booking directly using reservation_code
+        $bookingResponse = Http::withHeaders([
+            'api_key' => config('services.sabee.api_key'),
+            'api_version' => config('services.sabee.api_version'),
+        ])->get(config('services.sabee.api_url') . '/booking/list', [
+            'hotel_id'        => $payload['hotel_id'],
+            'reservation_code'=> $reservationCode,
+            'guest_details'   => 1,
+            'services'        => 1,
+            'all_status'      => 1,
+        ]);
 
-            throw new \Exception("Created booking with reservation code '{$reservationCode}' not found in today's bookings.");
-        } catch (\Exception $e) {
-            \Log::error('Sabee createBooking error: ' . $e->getMessage());
-            throw $e; // Or return ['error' => true, 'message' => $e->getMessage()] if you prefer
+        if (!$bookingResponse->successful()) {
+            throw new \Exception("Booking fetch failed after creation.");
+        }
+
+        
+        $bookingData = $bookingResponse->json('data.reservations.0') ?? null;
+
+        if (!$bookingData) {
+            throw new \Exception("Booking with code {$reservationCode} not found in Sabee response.");
+        }
+
+        $this->saveBookingData($bookingData, $payload);
+
+        return [
+            'success' => true,
+            'message' => 'Booking created and saved successfully',
+            'reservation_code' => $reservationCode,
+        ];
+
+    } catch (\Exception $e) {
+        Log::error('Sabee createBooking error: ' . $e->getMessage());
+        return [
+            'success' => false,
+            'message' => $e->getMessage(),
+        ];
+    }
+}
+
+
+
+
+  public function saveBookingData(array $reservation, $payload)
+{
+    // Save main booking
+    $booking = Booking::updateOrCreate(
+        ['reservation_code' => $reservation['reservation_code']],
+        [
+            'hotel_id'         => $reservation['hotel_id'] ?? $payload['hotel_id'],
+            'status'           => $reservation['status'] ?? null,
+            'room_type_id'     => $reservation['room_type_id'] ?? null,
+            'room_type_name'   => $reservation['room_type_name'] ?? null,
+            'room_id'          => $reservation['room_id'] ?? null,
+            'room_name'        => $reservation['room_name'] ?? null,
+            'guest_count'      => $reservation['guest_count'] ?? 0,
+            'rateplan'         => $reservation['rateplan_applied'] ?? null,
+            'license_plate'    => $reservation['license_plate'] ?? null,
+            'channel_id'       => $reservation['channel_id'] ?? null,
+            'door_code'        => $reservation['random_generated_door_code'] ?? null,
+            'number_of_guests' => $reservation['number_of_guests'] ?? null,
+            'price'            => $reservation['rooom_price'] ?? 0,
+            'paid'             => $reservation['paid'] ?? 0,
+            'currency'         => $reservation['currency'] ?? 'EUR',
+            'checkin_date'     => $reservation['checkin_date'] ?? null,
+            'checkout_date'    => $reservation['checkout_date'] ?? null,
+            'comment'          => $reservation['comment'] ?? null,
+            'room_count'       => $payload['room_count'],
+            'updated_at_api'   => $reservation['modified_date_time'] ?? now(),
+        ]
+    );
+
+    // Save default booking payment if total_price exists
+    if (!empty($payload['rooms'][0]['total_price'])) {
+        BookingPayment::updateOrCreate(
+            ['booking_id' => $booking->id],
+            [
+                'amount'   => $payload['rooms'][0]['total_price'],
+                'currency' => $payload['rooms'][0]['currency'] ?? 'EUR',
+                'status'   => 'pending',
+            ]
+        );
+    }
+
+    // Save customer info
+    if (!empty($reservation['customer'])) {
+        $customer = $reservation['customer'];
+        BookingCustomer::updateOrCreate(
+            ['booking_id' => $booking->id],
+            [
+                'email'        => $customer['email'] ?? null,
+                'first_name'   => $customer['first_name'] ?? null,
+                'last_name'    => $customer['last_name'] ?? null,
+                'birth_date'   => $customer['birth_date'] ?? null,
+                'citizenship'  => $customer['citizenship'] ?? null,
+                'address'      => $customer['address'] ?? null,
+                'city'         => $customer['city'] ?? null,
+                'zip'          => $customer['zip'] ?? null,
+                'country_code' => $customer['country_code'] ?? null,
+                'phone_number' => $customer['phone_number'] ?? null,
+                'customer_id'  => $customer['customer_id'] ?? null,
+                'remarks'      => $customer['remarks'] ?? null,
+            ]
+        );
+    }
+
+    // Save guests
+    if (!empty($reservation['guests'])) {
+        foreach ($reservation['guests'] as $guest) {
+            BookingGuest::updateOrCreate(
+                [
+                    'booking_id' => $booking->id,
+                    'email'      => $guest['email'] ?? null,
+                ],
+                [
+                    'first_name'   => $guest['first_name'] ?? null,
+                    'last_name'    => $guest['last_name'] ?? null,
+                    'birth_date'   => $guest['birth_date'] ?? null,
+                    'citizenship'  => $guest['citizenship'] ?? null,
+                    'address'      => $guest['address'] ?? null,
+                    'phone_number' => $guest['phone_number'] ?? null,
+                    'remarks'      => $guest['remarks'] ?? null,
+                ]
+            );
         }
     }
 
+    // Save prices
+    if (!empty($reservation['prices'])) {
+        foreach ($reservation['prices'] as $price) {
+            BookingPrice::updateOrCreate(
+                [
+                    'booking_id' => $booking->id,
+                    'date'       => $price['date'],
+                ],
+                [
+                    'vat'      => $price['vat'] ?? 0,
+                    'city_tax' => $price['city_tax'] ?? 0,
+                    'amount'   => $price['amount'] ?? 0,
+                ]
+            );
+        }
+    }
+
+    // Save services
+    if (!empty($reservation['services'])) {
+        foreach ($reservation['services'] as $service) {
+            $bookingService = BookingService::updateOrCreate(
+                [
+                    'booking_id' => $booking->id,
+                    'service_id' => $service['service_id'] ?? 0,
+                ],
+                [
+                    'service_name' => $service['service_name'] ?? null,
+                    'description'  => $service['description'] ?? null,
+                    'total_price'  => $service['total_price'] ?? 0,
+                ]
+            );
+
+            // Save service prices
+            if (!empty($service['prices'])) {
+                foreach ($service['prices'] as $servicePrice) {
+                    BookingServicePrice::updateOrCreate(
+                        [
+                            'booking_service_id' => $bookingService->id,
+                            'date'               => $servicePrice['date'],
+                        ],
+                        [
+                            'quantity'  => $servicePrice['quantity'] ?? 1,
+                            'vat'       => $servicePrice['vat'] ?? 0,
+                            'city_tax'  => $servicePrice['city_tax'] ?? 0,
+                            'amount'    => $servicePrice['amount'] ?? 0,
+                        ]
+                    );
+                }
+            }
+        }
+    }
+
+    //deduct service stock (based on original payload, not reservation)
+    foreach ($payload['rooms'] as $room) {
+        foreach ($room['services'] ?? [] as $service) {
+            $serviceModel = \App\Models\OtherServiceCategory::where('id', $service['service_id'])
+                ->where('hotel_room_type_id', $room['room_id']) // Change to room_type_id if needed
+                ->lockForUpdate()
+                ->first();
+
+            if ($serviceModel) {
+                $remaining = $serviceModel->total_left - $service['quantity'];
+
+                if ($remaining < 0) {
+                    throw new \Exception("Service '{$serviceModel->name}' is overbooked.");
+                }
+
+                $serviceModel->total_left = $remaining;
+                $serviceModel->save();
+            }
+        }
+    }
+}
 
 
     /**

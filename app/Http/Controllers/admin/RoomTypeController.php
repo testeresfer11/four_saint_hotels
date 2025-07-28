@@ -97,35 +97,35 @@ class RoomTypeController extends Controller
      * createdDate  : 12-05-2025
      * purpose      : Fetch hotels from the local database
      */
-   public function getList(){
+public function getList(Request $request)
+{
     try {
-        $hotel_id = session('selected_hotel_id', 8618); // Default to 8618 if not in session
+        $hotel_id = session('selected_hotel_id', 8618);
         $today = Carbon::today()->format('Y-m-d');
 
-        // Get room types with availabilities where today is within start and end date
         $roomTypes = HotelRoomType::with(['availabilities' => function ($query) use ($today) {
             $query->whereDate('start_date', '<=', $today)
                   ->whereDate('end_date', '>=', $today);
-        }])->where('hotel_id', $hotel_id)->get();
-
-
+        }])
+        ->where('hotel_id', $hotel_id)
+        ->when($request->filled('search_keyword'), function ($query) use ($request) {
+            $query->where('room_name', 'like', '%' . $request->search_keyword . '%');
+        })
+        ->get();
 
         $hotel = Hotel::where('hotel_id', $hotel_id)->first();
-        $service_categories = [];
-        if ($hotel) {
-            $service_categories = ServiceCategory::where('hotel_id', $hotel->id)->get();
-        }
+        $service_categories = $hotel ? ServiceCategory::where('hotel_id', $hotel->id)->get() : [];
 
         return view('admin.roomtype.list', [
             'data' => $roomTypes,
             'service_categories' => $service_categories
         ]);
     } catch (\Exception $e) {
-        return $e;
         \Log::error('Error fetching roomtype: ' . $e->getMessage());
         return redirect()->back()->with('error', 'Error fetching room types. Please try again later.');
     }
 }
+
 
 
 

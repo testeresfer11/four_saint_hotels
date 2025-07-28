@@ -26,7 +26,7 @@
                     <div class="row">
                         <div class="col-12">
                             <label for="exampleInputTitle">Title</label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="exampleInputTitle" placeholder="Title" name = "title" value="{{$content_detail->title}}">
+                            <input type="text" class="form-control @error('title') is-invalid @enderror" id="exampleInputTitle" placeholder="Title" name = "title" value="{{$content_detail->title}}" readonly>
                             @error('title')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -56,39 +56,49 @@
 @section('scripts')
 <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
 <script>
-  $(document).ready(function() {
-    ClassicEditor
-    .create(document.querySelector('#editor'))
-    .catch(error => {
-        console.error(error);
-    });
-    $("#update-content").submit(function(e){
-        e.preventDefault();
-    }).validate({
-        rules: {
-            title: {
-                required: true,
-                noSpace: true,
-                minlength: 3,
-            },
-            content: {
-                required: true,
-            },
-        },
-        messages: {
-            title: {
-                required: "Title is required",
-                minlength: "Title must consist of at least 3 characters"
-            },
-            content: {
-                required: "Content is required",
-            },
-        },
-        submitHandler: function(form) {
-            form.submit();
-        }
+  let editor;
 
+  $(document).ready(function () {
+    ClassicEditor
+      .create(document.querySelector('#editor'))
+      .then(newEditor => {
+        editor = newEditor;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+    // jQuery validation
+    $("#update-content").validate({
+      ignore: [], // include hidden textarea (CKEditor replaces it)
+      rules: {
+        title: {
+          required: true,
+          noSpace: true,
+          minlength: 3,
+        },
+        content: {
+          required: function (textarea) {
+            // Update CKEditor data before checking
+            editor.updateSourceElement();
+            return true;
+          }
+        }
+      },
+      messages: {
+        title: {
+          required: "Title is required",
+          minlength: "Title must be at least 3 characters"
+        },
+        content: {
+          required: "Content is required"
+        }
+      },
+      submitHandler: function (form) {
+        editor.updateSourceElement(); // make sure CKEditor content is synced
+        form.submit();
+      }
     });
   });
-  </script>
-@stop
+</script>
+@endsection

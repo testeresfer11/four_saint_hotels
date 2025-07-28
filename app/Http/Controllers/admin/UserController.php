@@ -17,27 +17,32 @@ class UserController extends Controller
      * createdDate  : 30-05-2024
      * purpose      : Get the list for all the user
      */
-    public function getList(Request $request)
-    {
+    public function getList(Request $request){
         try {
             $users = User::where("role_id", 2)
                 ->when($request->filled('search_keyword'), function ($query) use ($request) {
                     $query->where(function ($query) use ($request) {
-                        $query->where('first_name', 'like', "%$request->search_keyword%")
-                            ->orWhere('last_name', 'like', "%$request->search_keyword%")
+                        $query->where('first_name', 'like', "%{$request->search_keyword}%")
+                            ->orWhere('last_name', 'like', "%{$request->search_keyword}%")
                             ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$request->search_keyword}%"])
-                            ->orWhere('email', 'like', "%$request->search_keyword%");
+                            ->orWhere('email', 'like', "%{$request->search_keyword}%");
                     });
                 })
-                ->when($request->filled('status'), function ($query) use ($request) {
-                    $query->where('status', $request->status);
+                ->when($request->filled('start_date'), function ($query) use ($request) {
+                    $query->whereDate('created_at', '>=', $request->start_date);
                 })
-                ->orderBy("id", "desc")->paginate(10);
+                ->when($request->filled('end_date'), function ($query) use ($request) {
+                    $query->whereDate('created_at', '<=', $request->end_date);
+                })
+                ->orderBy("id", "desc")
+                ->paginate(10);
+
             return view("admin.user.list", compact("users"));
         } catch (\Exception $e) {
             return redirect()->back()->with("error", $e->getMessage());
         }
     }
+
     /**End method getList**/
 
     /**

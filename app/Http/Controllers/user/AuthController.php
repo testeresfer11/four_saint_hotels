@@ -93,14 +93,27 @@ class AuthController extends Controller
     public function verifyOtp(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'email'                 => 'required|exists:otp_management,email',
-                'otp'                   => 'required|exists:otp_management,otp',
-                'type'                  => 'required|in:otp_verify,forget_password'
-            ]);
-            if ($validator->fails()) {
-                return $this->apiResponse('error', 422, $validator->errors()->first());
-            }
+            $validator = Validator::make(
+            $request->all(),
+            [
+                'email' => 'required|exists:otp_management,email',
+                'otp'   => 'required|exists:otp_management,otp',
+                'type'  => 'required|in:otp_verify,forget_password',
+            ],
+            [
+                // Custom messages
+                'otp.exists'  => 'Incorrect OTP.',
+                'type.in'     => 'Invalid operation requested.',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => $validator->errors()->first(), 
+                'errors'  => $validator->errors()
+            ], 422);
+        }
 
             $otp = OtpManagement::where(function ($query) use ($request) {
                 $query->where('email', $request->email)
@@ -166,7 +179,7 @@ class AuthController extends Controller
         try {
             $validate = Validator::make($request->all(), [
                 'email'         => 'required|email:rfc,dns|exists:users,email',
-                'password'      => 'required|min:8',
+                'password'      => 'required',
                 'device_token'  => 'required',
                 'device_type'   => 'required|in:android,ios'
             ], [
@@ -319,11 +332,11 @@ class AuthController extends Controller
     {
         try {
             if ($request->isMethod('get')) {
-                $user = Auth::user();
+               $user = Auth::user()->load('userDetail');
                 if (!$user)
                     return $this->apiResponse('error', 404, 'Profile' . config('constants.ERROR.NOT_FOUND'));
 
-                $data =  new UserResource($user);
+                $data =  $user;
                 return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.FETCH_DONE'), $data);
             } elseif ($request->isMethod('post')) {
                 $validator = Validator::make($request->all(), [
@@ -383,10 +396,15 @@ class AuthController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'current_password'      => 'required|min:8',
-                "password"              => "required|confirmed|min:8",
-                "password_confirmation" => "required",
+                'current_password'      => 'required',
+                'password'              => 'required|confirmed|min:8|different:current_password',
+                'password_confirmation' => 'required',
+            ], [
+                'password.different' => 'The new password must be different from your current password.',
             ]);
+
+
+
             if ($validator->fails()) {
                 return $this->apiResponse('error', 422, $validator->errors()->first());
             }

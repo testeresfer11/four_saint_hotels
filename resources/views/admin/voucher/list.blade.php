@@ -2,11 +2,11 @@
 @section('title', 'Coupans')
 @section('breadcrum')
 <div class="page-header">
-    <h3 class="page-title">Coupans</h3>
+    <h3 class="page-title">Coupons</h3>
     <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item "><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Coupans</li>
+        <li class="breadcrumb-item active" aria-current="page">Coupons</li>
     </ol>
     </nav>
 </div>
@@ -17,15 +17,13 @@
     <div class="card">
       <div class="card-body p-0">
         <div class="d-flex justify-content-between flex-column flex-md-row px-3 py-3 align-items-md-center align-items-start">
-          <h4 class="card-title m-0">Coupans Management</h4>
+          <h4 class="card-title m-0"></h4>
           <div class="d-flex align-items-center justify-content-between">
-            <div class="admin-filters">
-              <x-filter />
-            </div>
+            
             <a href="{{route('admin.vouchers.sync')}}">
               <button type="button" class="btn btn-primary btn-md">
                 <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
-                <span class="menu-text">Get Coupan</span>
+                <span class="menu-text">Get Coupons</span>
               </button>
             </a>
           </div>

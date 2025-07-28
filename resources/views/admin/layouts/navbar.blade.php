@@ -155,6 +155,11 @@
                              Sub Feature
                         </a>
                     </li>
+                    <li class="nav-item {{ request()->routeIs('admin.other_services.*') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('admin.other_services.list') }}">
+                             Other Feature
+                        </a>
+                    </li>
                 </ul>
             </div>
         </li>
@@ -272,30 +277,17 @@
         </li>
         @endcanany
 
-        <!-- Content Pages -->
-        <li class="nav-item menu-items {{ request()->routeIs('admin.contentPages.*') ? 'active' : '' }}">
-            <a class="nav-link {{ request()->routeIs('admin.contentPages.*') ? '' : 'collapsed' }}" data-toggle="collapse" href="#contentPages" aria-expanded="{{ request()->routeIs('admin.contentPages.*') ? 'true' : 'false' }}" aria-controls="contentPages">
+         <li class="nav-item menu-items {{ request()->routeIs('admin.contentPages.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.contentPages.list') }}">
                 <span class="menu-icon">
-                    {{-- <i class="mdi mdi-content-save"></i> --}}
-                    <img src="{{ asset('images/notes.png') }}" alt="logout" class="img-fluid">
+                    {{-- <i class="mdi mdi-comment-text"></i> --}}
+                    <img src="{{ asset('images/notes.png') }}" alt="" class="img-fluid">
                 </span>
                 <span class="menu-title">Content Pages</span>
-                <i class="menu-arrow"></i>
             </a>
-            <div class="collapse {{ request()->routeIs('admin.contentPages.*') ? 'show' : '' }}" id="contentPages">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.contentPages.detail') ? 'active' : '' }}" href="{{ route('admin.contentPages.detail', ['slug' => 'about-us']) }}">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.contentPages.detail') ? 'active' : '' }}" href="{{ route('admin.contentPages.detail', ['slug' => 'privacy-and-policy']) }}">Privacy And Policy</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.contentPages.detail') ? 'active' : '' }}" href="{{ route('admin.contentPages.detail', ['slug' => 'terms-and-conditions']) }}">Terms And Conditions</a>
-                    </li>
-                </ul>
-            </div>
         </li>
+
+       
         <li class="nav-item menu-items {{ request()->routeIs('admin.chat.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.chat.index') }}">
                 <span class="menu-icon">
@@ -306,18 +298,7 @@
             </a>
         </li>
 
-        <!-- Helpdesk -->
-        @can('helpdesk-list')
-        <li class="nav-item menu-items {{ request()->routeIs('admin.helpDesk.*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.helpDesk.list', ['type' => 'open']) }}">
-                <span class="menu-icon">
-                    {{-- <i class="mdi mdi-desktop-mac"></i> --}}
-                    <img src="{{ asset('images/helpdesk.png') }}" alt="" class="img-fluid">
-                </span>
-                <span class="menu-title">Helpdesk</span>
-            </a>
-        </li>
-        @endcanany
+       
 
         <!-- Log Out -->
         <li class="nav-item menu-items">

@@ -51,6 +51,11 @@ class Hotel extends Model
     {
         return $this->feedbacks()->avg('rating');
     }
+
+     public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'hotel_id', 'hotel_id');
+    }
     
 
 }
