@@ -87,4 +87,23 @@ class ContentPageController extends Controller
 
         return redirect()->back()->with('success', 'Thank you for reaching out. We will get back to you soon!');
     }
+
+
+        public function getList(Request $request){
+        try{
+            $faq = ContentPage::when($request->filled('search_keyword'),function($query) use($request){
+                $query->where(function($query) use($request){
+                    $query->where('title','like',"%$request->search_keyword%")
+                        ->orWhere('slug','like',"%$request->search_keyword%");
+                });
+            })
+            ->when($request->filled('status'),function($query) use($request){
+                $query->where('status',$request->status);
+            })
+            ->orderBy("id","desc")->paginate(10);
+            return view("admin.contentPage.list",compact("faq"));
+        }catch(\Exception $e){
+            return redirect()->back()->with("error", $e->getMessage());
+        }
+    }
 }

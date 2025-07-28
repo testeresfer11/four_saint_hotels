@@ -41,4 +41,9 @@ class HotelRoomType extends Model
     {
         return $this->hasMany(RoomAvailability::class, 'room_type_id');
     }
+
+  public function otherServiceCategories()
+{
+    return $this->hasMany(OtherServiceCategory::class, 'hotel_room_type_id', 'room_type_id');
+}
 }

@@ -42,64 +42,69 @@ class BookingController extends Controller
      * @throws \Exception If the SabeeBookingService fails to fetch bookings
      */
 
-    public function getList(Request $request)
-    {
-        $hotel_id = session('selected_hotel_id', 8618);
+   public function getList(Request $request)
+{
+    $hotel_id = session('selected_hotel_id', 8618);
 
-        // Default date range
-        $start_date = $request->query('start_date');
-        $start_date = $start_date ? Carbon::parse($start_date)->startOfMonth()->toDateString() : now()->startOfMonth()->toDateString();
+    // Default date range
+    $start_date = $request->query('start_date');
+    $start_date = $start_date ? Carbon::parse($start_date)->startOfMonth()->toDateString() : now()->startOfMonth()->toDateString();
 
-        $end_date = $request->query('end_date', now()->toDateString());
+    $end_date = $request->query('end_date', now()->toDateString());
 
-        $search = $request->query('search_keyword');
-        $status = $request->query('status');
+    $search = $request->query('search_keyword');
+    $status = $request->query('status');
+    $checkin_date = $request->query('checkin_date');
+    $checkout_date = $request->query('checkout_date');
 
-        try {
-            $bookingsQuery = Booking::with([
-                'bookingGuests',
-                'bookingPrices',
-                'bookingServices',
-                'customer',
-                'payments',
-            ])
-                ->where('hotel_id', $hotel_id)
-
-                ->when($status, fn($q) => $q->where('status', $status))
-                ->when($search, function ($query) use ($search) {
-                    $query->where(function ($q) use ($search) {
-                        $q->whereHas('customer', function ($q) use ($search) {
-                            $q->where('first_name', 'like', "%$search%")
-                                ->orWhere('last_name', 'like', "%$search%")
-                                ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
-                                ->orWhere('email', 'like', "%$search%");
-                        })
-                            ->orWhereHas('bookingGuests', function ($q) use ($search) {
-                                $q->where('first_name', 'like', "%$search%")
-                                    ->orWhere('last_name', 'like', "%$search%")
-                                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
-                                    ->orWhere('email', 'like', "%$search%");
-                            })
-                            ->orWhere('room_type_name', 'like', "%$search%")
-                            ->orWhere('reservation_code', 'like', "%$search%");
-                    });
+    try {
+        $bookingsQuery = Booking::with([
+            'bookingGuests',
+            'bookingPrices',
+            'bookingServices',
+            'customer',
+            'payments',
+        ])
+            ->where('hotel_id', $hotel_id)
+            ->when($status, fn($q) => $q->where('status', $status))
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('customer', function ($q) use ($search) {
+                        $q->where('first_name', 'like', "%$search%")
+                            ->orWhere('last_name', 'like', "%$search%")
+                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
+                            ->orWhere('email', 'like', "%$search%");
+                    })
+                    ->orWhereHas('bookingGuests', function ($q) use ($search) {
+                        $q->where('first_name', 'like', "%$search%")
+                            ->orWhere('last_name', 'like', "%$search%")
+                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
+                            ->orWhere('email', 'like', "%$search%");
+                    })
+                    ->orWhere('room_type_name', 'like', "%$search%")
+                    ->orWhere('reservation_code', 'like', "%$search%");
                 });
+            })
+            ->when($checkin_date, fn($q) => $q->whereDate('checkin_date', '>=', $checkin_date))
+            ->when($checkout_date, fn($q) => $q->whereDate('checkout_date', '<=', $checkout_date));
 
-            $bookings = $bookingsQuery->orderBy('id', 'desc')->paginate(10);
+        $bookings = $bookingsQuery->orderBy('id', 'desc')->paginate(10);
 
-            return view('admin.booking.list', [
-                'bookings' => $bookings,
-                'start_date' => $start_date,
-                'end_date' => $end_date,
-                'search_keyword' => $search,
-                'status' => $status,
-                'selected_hotel_id' => $hotel_id,
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error fetching bookings: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error fetching bookings. Please try again later.');
-        }
+        return view('admin.booking.list', [
+            'bookings' => $bookings,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            'search_keyword' => $search,
+            'status' => $status,
+            'selected_hotel_id' => $hotel_id,
+            'checkin_date' => $checkin_date,
+            'checkout_date' => $checkout_date,
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Error fetching bookings: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Error fetching bookings. Please try again later.');
     }
+}
 
 
     /**End method getList**/
@@ -222,7 +227,6 @@ class BookingController extends Controller
                     'Content-Type' => 'application/json',
                 ])->post('https://api.sabeeapp.com/connect/booking/modify', $payload);
 
-                dd($response->body());
 
                 if (!$response->successful()) {
                     throw new \Exception('SabeeApp API error: ' . $response->body());

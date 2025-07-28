@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service, HotelRoom, RoomRate};
+use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service, HotelRoom, RoomRate,OtherServiceCategory,HotelCoupon,CouponUsage,ServiceCategory,subCategories};
 use App\Traits\SendResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\{Auth, Hash, Validator};
@@ -51,9 +51,6 @@ class SabeeHotelController extends Controller
         }
     }
 
-
-
-
     /**
      * functionName : roomFetchAndStore
      * createdDate  : 28-05-2025
@@ -84,13 +81,6 @@ class SabeeHotelController extends Controller
             return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
-
-
-
-
-
-
-
 
 
     public function getRoomPrice(sabeeRoomTypeService $sabeeRoomTypeService)
@@ -200,9 +190,6 @@ class SabeeHotelController extends Controller
     }
 
 
-
-
-
     /**
      * functionName : detail
      * createdDate  : 23-04-2025
@@ -229,7 +216,6 @@ class SabeeHotelController extends Controller
             return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
-
 
 
     /**
@@ -288,35 +274,105 @@ class SabeeHotelController extends Controller
         }
     }
 
-
-
-
-
-    public function getRoomTypeByHotel($hotelId)
-    {
+    public function getHotelRoomTypes(Request $request, $hotelId)
+    { 
         try {
-            $today = Carbon::today()->toDateString();
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
 
+            // Load hotel with all necessary relations
             $hotel = Hotel::where('hotel_id', $hotelId)
-                ->with(['roomTypes', 'roomTypes.serviceCategories', 'roomTypes.images', 'roomTypes.rates' => function ($query) use ($today) {
-                    $query->select('id', 'room_id', 'number_of_guests', 'price', 'currency')
-                        ->whereDate('start_rate_date', '<=', $today)
-                        ->whereDate('end_rate_date', '>=', $today)
-                        ->where('number_of_guests', 1)
-                        ->where('rateplan_id', 0);
-                }])
+                ->with([
+                    'roomTypes',
+                    'roomTypes.serviceCategories',
+                    'roomTypes.images',
+                    'roomTypes.rates' => function ($query) {
+                        $query->select('id', 'room_id', 'number_of_guests', 'price', 'currency', 'start_rate_date')
+                            ->where('number_of_guests', 1)
+                            ->where('rateplan_id', 0)
+                            ->orderByDesc('start_rate_date')
+                            ->limit(1);
+                    },
+                    'roomTypes.rooms'
+                ])
                 ->firstOrFail();
+
+            // If no date filter, return all room types
+            if (!$startDate || !$endDate) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Room types fetched successfully.',
+                    'data' => $hotel->roomTypes
+                ]);
+            }
+
+            // Get Sabee room_type_ids (used as room_id in Sabee)
+            $sabeeRoomTypeIds = HotelRoomType::where('hotel_id', $hotelId)
+                ->pluck('room_type_id')
+                ->filter()
+                ->unique()
+                ->values();
+
+
+            $roomsForApi = $sabeeRoomTypeIds->map(fn($id) => ['room_id' => (int)$id])->toArray();
+
+            if (empty($roomsForApi)) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'No rooms found for the selected hotel.',
+                    'data' => []
+                ]);
+            }
+
+
+            // Call SabeeApp availability API
+        $response = Http::withHeaders([
+                'api_key' => config('services.sabee.api_key'),
+                'api_version' => config('services.sabee.api_version'),
+                'Content-Type' => 'application/json'
+            ])->post(config('services.sabee.api_url') . '/availabilityandrates/availability', [
+                'hotel_id'   => (int)$hotelId,
+                'start_date' => $startDate,
+                'end_date'   => $endDate,
+                'rooms'      => $roomsForApi
+            ]);
+
+           
+
+            if (!$response->ok()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to fetch room availability.',
+                    'sabee_response' => $response->body()
+                ], 500);
+            }
+           $data = $response->json(); // full response from Sabee
+          $roomsData = $response->json('data.rooms') ?? [];
+         
+            $availability = collect($roomsData)
+            ->filter(fn($r) => $r['available_rooms'] > 0)
+            ->pluck('room_id')
+            ->unique()
+            ->values();
+
+            
+
+            // Filter local roomTypes with at least one room's sabee_room_id matching availability
+            $filteredRoomTypes = $hotel->roomTypes->filter(function ($roomType) use ($availability) {
+                return $roomType->rooms->pluck('room_type_id')->intersect($availability)->isNotEmpty();
+            });
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Rooms fetched successfully.',
-                'data' => $hotel->roomTypes
+                'message' => 'Available room types fetched successfully.',
+                'data' => $filteredRoomTypes->values()
             ]);
+
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Error: ' . $e->getMessage()
-            ], 404);
+            ], 500);
         }
     }
 
@@ -324,7 +380,28 @@ class SabeeHotelController extends Controller
     public function getRoomDetails($roomId)
     {
         try {
-            $room = HotelRoom::with(['roomType.hotel'])->findOrFail($roomId);
+            $room = HotelRoomType::with([
+                'hotel',
+                'hotel.hotelImages',
+                'images',
+                'serviceCategories',
+                'rates' => function ($query) {
+                    $query->select('id', 'room_id', 'number_of_guests', 'price', 'currency', 'start_rate_date')
+                          ->where('number_of_guests', 1)
+                          ->where('rateplan_id', 0)
+                          ->orderByDesc('start_rate_date')
+                          ->limit(1);
+                },
+                'rooms',
+                'otherServiceCategories' 
+            ])->where('room_type_id', $roomId)->first();
+
+            if (!$room) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Hotel room not found.'
+                ], 404);
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -335,7 +412,304 @@ class SabeeHotelController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Error: ' . $e->getMessage()
-            ], 404);
+            ], 500);
         }
     }
+
+
+   public function calculateTotal(Request $request)
+{
+    $request->validate([
+        'hotel_id'            => 'required|integer|exists:hotels,hotel_id',
+        'room_type_id'        => 'required|integer|exists:hotel_room_types,room_type_id',
+        'guest_count'         => 'required|integer|min:1',
+        'room_count'          => 'integer|min:1',
+        'nights'              => 'required|integer|min:1',
+        'start_date'          => 'required|date',
+        'end_date'            => 'required|date|after_or_equal:start_date',
+        'addon_service_ids'   => 'array',
+        'addon_service_ids.*' => 'integer|exists:other_service_categories,id',
+        'promo_code'          => 'nullable|string|exists:hotel_coupons,coupon_code',
+    ]);
+
+    try {
+        $rateplanIds = [['rateplan_id' => 100381]];
+        $guestCount = $request->has('room_count') && is_numeric($request->room_count)
+            ? (int)$request->guest_count * (int)$request->room_count
+            : (int)$request->guest_count;
+
+        // Step 1: Fetch rate
+        $rateResponse = Http::withHeaders([
+            'api_key'      => 'febfaf24b51e25e5f7a4e0d0f8ca01a5',
+            'api_version'  => 1,
+            'Content-Type' => 'application/json',
+        ])->post('https://api.sabeeapp.com/connect/availabilityandrates/rate', [
+            'hotel_id'   => (int)$request->hotel_id,
+            'start_date' => $request->start_date,
+            'end_date'   => $request->end_date,
+            'rooms'      => [
+                [
+                    'room_id'   => (int)$request->room_type_id,
+                    'rateplans' => $rateplanIds
+                ]
+            ]
+        ]);
+
+        if (!$rateResponse->ok()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch room rates.',
+                'sabee_message' => $rateResponse->body(),
+            ], 500);
+        }
+
+        $roomsData = $rateResponse->json('data.rooms') ?? [];
+        $perDayPrices = [];
+
+            $addedDates = [];
+
+            foreach ($roomsData as $roomBlock) {
+                $start = Carbon::parse($roomBlock['start_date']);
+                $end = Carbon::parse($roomBlock['end_date']); // Do not subtract here
+
+                $blockRates = $roomBlock['rateplan']['rates'];
+                $rateForGuests = collect($blockRates)
+                    ->filter(fn($r) => $r['number_of_guests'] <= $guestCount)
+                    ->sortByDesc('number_of_guests')
+                    ->first();
+
+                if (!$rateForGuests || !isset($rateForGuests['amount'])) continue;
+
+                $amount = $rateForGuests['amount'];
+
+                while ($start->lt(Carbon::parse($request->end_date))) { // ✅ Use request's end_date to limit range
+                    $dateStr = $start->toDateString();
+                    if (!in_array($dateStr, $addedDates)) {
+                        $perDayPrices[] = [
+                            'date'  => $dateStr,
+                            'price' => $amount
+                        ];
+                        $addedDates[] = $dateStr;
+                    }
+                    $start->addDay();
+                }
+            }
+
+
+
+        $rateplanObj = collect($roomsData)
+            ->pluck('rateplan')
+            ->filter()
+            ->firstWhere('rateplan_id', 100381);
+
+        if (!$rateplanObj || empty($rateplanObj['rates'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rateplan or rates found in Sabee response.',
+            ], 404);
+        }
+
+        $rates = $rateplanObj['rates'];
+        $rateCollection = collect($rates);
+        $bestRate = $rateCollection
+            ->filter(fn($rate) => $rate['number_of_guests'] <= $guestCount)
+            ->sortByDesc('number_of_guests')
+            ->first() ?? $rateCollection->sortByDesc('number_of_guests')->first();
+
+        if (!$bestRate || !isset($bestRate['amount'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "No usable rate found for guest count {$guestCount}.",
+            ], 404);
+        }
+
+        $rateGuests = $bestRate['number_of_guests'];
+        $pricePerUnit = $bestRate['amount'];
+        $units = ceil($guestCount / $rateGuests);
+
+        // Step 2: Check availability
+        $availabilityResponse = Http::withHeaders([
+            'api_key'      => 'febfaf24b51e25e5f7a4e0d0f8ca01a5',
+            'api_version'  => 1,
+            'Content-Type' => 'application/json',
+        ])->post('https://api.sabeeapp.com/connect/availabilityandrates/availability', [
+            'hotel_id'   => (int)$request->hotel_id,
+            'start_date' => $request->start_date,
+            'end_date'   => $request->end_date,
+            'rooms'      => [
+                ['room_id' => (int)$request->room_type_id]
+            ]
+        ]);
+
+        if (!$availabilityResponse->ok()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to check room availability.',
+                'details' => $availabilityResponse->body()
+            ], 500);
+        }
+
+        $availabilityData = $availabilityResponse->json('data.rooms');
+        $datesWithInsufficientRooms = [];
+        foreach ($availabilityData as $day) {
+            $available = (int)($day['available_rooms'] ?? 0);
+            if ($available < $units) {
+                $datesWithInsufficientRooms[] = [
+                    'date' => $day['start_date'],
+                    'available' => $available,
+                    'required' => $units
+                ];
+            }
+        }
+
+        if (!empty($datesWithInsufficientRooms)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Not enough rooms available on some dates.',
+                'conflicts' => $datesWithInsufficientRooms,
+            ], 422);
+        }
+
+        // Step 3: Calculate totals
+        $roomTotal = $pricePerUnit * $units * $request->nights;
+       
+
+        $addonTotal = 0;
+        if (!empty($request->addon_service_ids)) {
+            $addonTotal = OtherServiceCategory::whereIn('id', $request->addon_service_ids)->sum('price');
+        }
+
+        $totalBeforeDiscount = $roomTotal + $addonTotal;
+        $discount = 0;
+
+        if ($request->promo_code) {
+            $promo = HotelCoupon::where('coupon_code', $request->promo_code)->first();
+            if ($promo) {
+                $usageCount = CouponUsage::where('user_id', Auth::id())
+                    ->where('coupon_id', $promo->id)
+                    ->count();
+
+                if ($promo->available === 'Once' && $usageCount >= 1) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Coupon already used.',
+                    ], 403);
+                }
+
+                if ($promo->available === 'Limited' && $usageCount >= $promo->limit_count) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Coupon usage limit reached.',
+                    ], 403);
+                }
+
+                $discount = $promo->type === 'percentage'
+                    ? ($promo->value / 100) * $totalBeforeDiscount
+                    : $promo->value;
+
+                if ($discount > 0) {
+                    CouponUsage::create([
+                        'user_id'   => Auth::id(),
+                        'coupon_id' => $promo->id,
+                    ]);
+                }
+            }
+        }
+
+        $finalTotal = $totalBeforeDiscount - $discount;
+        $subTotal = collect($perDayPrices)->sum('price');
+
+        return response()->json([
+            'status' => 'success',
+            'data'   => [
+                'rate_per_unit'     => $pricePerUnit,
+                'unit_guest_count'  => $rateGuests,
+                'required_units'    => $units,
+                'guest_count'       => $guestCount,
+                'nights'            => $request->nights,
+                'room_total'        => round($roomTotal, 2),
+                'sub_total'         => round($subTotal, 2),
+                'addon_total'       => round($addonTotal, 2),
+                'promo_discount'    => round($discount, 2),
+                'total_price'       => round($finalTotal, 2),
+                'raw_rates'         => $rates,
+                'room_rates'        => $roomsData,
+                'calculated_room_count' => $guestCount,
+                'request_room_count'    => $request->room_count ?? 0,
+                'per_day_prices'    => $perDayPrices
+            ]
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+
+
+
+    public function getHotelCoupons($hotelId)
+    {
+        try {
+            $userId = auth()->id(); // or pass user ID if not using auth()
+            $today = now()->toDateString();
+
+            $coupons = HotelCoupon::where('hotel_id', $hotelId)
+                ->whereDate('expiration_date', '>=', $today)
+                ->get()
+                ->filter(function ($coupon) use ($userId) {
+                    if ($coupon->available === 'Once') {
+                        return !CouponUsage::where('user_id', $userId)->where('coupon_id', $coupon->id)->exists();
+                    }
+
+                    if ($coupon->available === 'Limited') {
+                        $usedCount = CouponUsage::where('coupon_id', $coupon->id)->count();
+                        return $usedCount < $coupon->max_uses;
+                    }
+
+                    return true; // NotLimited
+                })
+                ->values(); // Re-index the collection
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $coupons
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch coupons: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+     public function getOtheServices(Request $request)
+    {
+       try {
+            $hotels = OtherServiceCategory::where('hotel_id',$request->hotel_id)->get();
+            return $this->apiResponse('success', 200, 'Other Service ' . config('constants.SUCCESS.FETCH_DONE'), ['other_services' => $hotels]);
+        } catch (\Exception $e) {
+            return $this->apiResponse('error', 400, $e->getMessage());
+        }
+    }
+
+
+         public function getFacilities(Request $request)
+    {
+       try {
+            $hotels = ServiceCategory::with('subCategories')->where('hotel_id',$request->hotel_id)->get();
+            foreach ($hotels as $image) {
+            $image->icon = $image->icon ? asset(ltrim($image->icon, '/')) : null;
+        }
+            return $this->apiResponse('success', 200, 'Other Service ' . config('constants.SUCCESS.FETCH_DONE'), ['other_services' => $hotels]);
+        } catch (\Exception $e) {
+            return $this->apiResponse('error', 400, $e->getMessage());
+        }
+    }
+
+
+
+
 }

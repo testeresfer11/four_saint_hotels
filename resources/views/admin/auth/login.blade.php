@@ -108,17 +108,17 @@
             },
             password: {
               required: true,
-              minlength: 8
+             
             },
           },
           messages: {
             email: {
-              required: 'Please enter Email Address.',
-              email: 'Please enter a valid Email Address.',
+              required: 'Please enter Email .',
+              email: 'Please enter a valid Email .',
             },
             password: {
               required: 'Please enter Password.',
-              minlength: 'Password must be at least 8 characters long.',
+              
             },
           },
           submitHandler: function (form) {

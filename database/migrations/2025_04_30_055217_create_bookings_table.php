@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('currency');
             $table->json('rateplan')->nullable();
             $table->text('comment')->nullable();
+            $table->integer('room_count')->default(1);
             $table->dateTime('created_at_api')->nullable();
             $table->dateTime('updated_at_api')->nullable();
             

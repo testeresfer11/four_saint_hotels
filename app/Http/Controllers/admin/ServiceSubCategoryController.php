@@ -14,11 +14,24 @@ use Illuminate\Support\Facades\Log;
 class ServiceSubCategoryController extends Controller
 {
     // List all subcategories
-    public function getList()
-    {
-        $subCategories = ServiceSubCategory::with('category')->paginate(15);
-        return view('admin.sub_category.list', compact('subCategories'));
-    }
+public function getList(Request $request)
+{
+    $subCategories = ServiceSubCategory::with('category')
+        ->when($request->filled('search_keyword'), function ($query) use ($request) {
+            $query->where('name', 'like', '%' . $request->search_keyword . '%');
+        })
+        ->when($request->filled('start_date'), function ($query) use ($request) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        })
+        ->when($request->filled('end_date'), function ($query) use ($request) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        })
+        ->orderBy('id', 'DESC')
+        ->paginate(15);
+
+    return view('admin.sub_category.list', compact('subCategories'));
+}
+
 
     public function add(Request $request)
     {
@@ -31,6 +44,7 @@ class ServiceSubCategoryController extends Controller
                     'description' => 'nullable|string',
                     'image' => 'nullable|image|max:2048',
                 ]);
+
 
                 // Handle image upload if present
                 if ($request->hasFile('image')) {

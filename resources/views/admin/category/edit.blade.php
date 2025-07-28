@@ -90,7 +90,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Update Category</button>
+                    <button type="submit" class="btn btn-primary mt-3">Update Feature</button>
                 </form>
             </div>
         </div>

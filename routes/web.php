@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController,PaymentController,RoomTypeController};
+use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController,PaymentController,RoomTypeController,OtherServiceController};
 use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController,HotelController,TwilioChatController,CategoryController,ServiceSubCategoryController};
 use Illuminate\Support\Facades\Route;
 use App\Models\{ContentPage, ManagefAQ};
@@ -175,6 +175,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::group(['prefix' => 'contentPages'], function () {
             Route::name('contentPages.')->controller(ContentPageController::class)->group(function () {
                 Route::match(['get', 'post'], '{slug}', 'contentPageDetail')->name('detail');
+                  Route::get('/', 'getList')->name('list');
             });
         });
 
@@ -249,19 +250,30 @@ Route::group(['prefix' => 'admin'], function () {
         });
 
 
-        Route::group(['prefix' => 'chat'], function () {
-            Route::name('chat.')->controller(TwilioChatController::class)->group(function () {
-              Route::get('/','index')->name('index');
-                Route::get('/{sid}/messages','getMessages')->name('messages');
-                Route::post('/{sid}/send','sendMessage')->name('send');
-                Route::get('/conversations', 'listConversations');
+       Route::group(['prefix' => 'chat'], function () {
+        Route::name('chat.')->controller(TwilioChatController::class)->group(function () {
+          Route::get('/','index')->name('index');
+            Route::get('/{sid}/messages','getMessages')->name('messages');
+            Route::post('/{sid}/send','sendMessage')->name('send');
+            Route::get('/conversations', 'listConversations');
+            Route::get('conversation/{id}/messages','getMessages');
 
-            });
         });
+    });
 
 
         Route::group(['prefix' => 'category'], function () {
             Route::name('category.')->controller(CategoryController::class)->group(function () {
+               Route::get('/', 'getList')->name('list');
+                Route::match(['get', 'post'], 'add', 'add')->name('add');
+                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'delete')->name('delete');
+
+            });
+        });
+
+        Route::group(['prefix' => 'other_services'], function () {
+            Route::name('other_services.')->controller(OtherServiceController::class)->group(function () {
                Route::get('/', 'getList')->name('list');
                 Route::match(['get', 'post'], 'add', 'add')->name('add');
                 Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');

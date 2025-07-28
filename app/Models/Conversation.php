@@ -6,14 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Conversation extends Model
 {
-    protected $fillable = [
-        'twilio_sid',
-        'friendly_name',
-        'created_by',
-    ];
+    protected $fillable = ['user_one_id', 'user_two_id'];
 
-    public function creator()
+    public function messages()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->hasMany(Message::class);
+    }
+
+    public function userOne()
+    {
+        return $this->belongsTo(User::class, 'user_one_id');
+    }
+
+    public function userTwo()
+    {
+        return $this->belongsTo(User::class, 'user_two_id');
     }
 }

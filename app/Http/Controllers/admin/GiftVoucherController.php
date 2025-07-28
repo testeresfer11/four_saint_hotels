@@ -27,12 +27,28 @@ class GiftVoucherController extends Controller
      * 
      */
     public function index(Request $request)
-    {
-        $hotelId = session('selected_hotel_id', 8618);
-        $coupons = HotelCoupon::where('hotel_id', $hotelId)->get();
+{
+    $hotelId = session('selected_hotel_id', 8618);
 
-        return view('admin.voucher.list', compact('coupons'));
-    }
+    $coupons = HotelCoupon::where('hotel_id', $hotelId)
+        ->when($request->filled('search_keyword'), function ($query) use ($request) {
+            $query->where(function ($query) use ($request) {
+                $query->where('coupon_code', 'like', "%{$request->search_keyword}%")
+                      ->orWhere('coupon_name', 'like', "%{$request->search_keyword}%");
+            });
+        })
+        ->when($request->filled('start_date'), function ($query) use ($request) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        })
+        ->when($request->filled('end_date'), function ($query) use ($request) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        })
+        ->orderBy('id', 'desc')
+        ->get();
+
+    return view('admin.voucher.list', compact('coupons'));
+}
+
 
     public function sync(Request $request)
     {
