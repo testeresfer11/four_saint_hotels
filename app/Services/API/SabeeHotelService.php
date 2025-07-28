@@ -167,6 +167,7 @@ class SabeeHotelService
         'ratePlans',
         'hotelImages',
         'feedbacks',
+        'feedbacks.user',
         'categories',
         'categories.subCategories'
     ])

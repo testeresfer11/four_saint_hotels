@@ -15,7 +15,7 @@ class NotificationController extends Controller
      * createdDate  : 22-08-2025
      * purpose      : Get the list of notification
      */
-    public function getList(Request $request)
+    public function getNotifications(Request $request)
     {
         try {
             auth()->user()->notifications()->update(['read_at' => date('Y-m-d H:i:s')]);

@@ -21,7 +21,6 @@ class Admin
             Auth::logout();
             return redirect()->route('login')->with("error",config('constants.ERROR.AUTHORIZATION'));
         }
-        return $next($request);
         
         return $next($request);
     }
