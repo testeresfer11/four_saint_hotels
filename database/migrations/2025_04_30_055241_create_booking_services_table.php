@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('billing_type')->nullable();
             $table->string('unit')->nullable();
             $table->decimal('total_price', 10, 2);
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
         });
     }

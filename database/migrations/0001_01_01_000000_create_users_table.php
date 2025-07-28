@@ -22,6 +22,8 @@ return new class extends Migration
             $table->tinyInteger('status')->default(1);
             $table->boolean('two_factor_enabled')->default(false);
             $table->string('two_factor_code')->nullable();
+            $table->string('provider')->nullable();
+            $table->string('provider_id')->nullable();
             $table->timestamp('two_factor_expires_at')->nullable();
             $table->softDeletes();
             $table->rememberToken();
