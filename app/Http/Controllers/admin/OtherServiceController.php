@@ -30,26 +30,28 @@ class OtherServiceController extends Controller
 
 
 
-   public function add(Request $request)
+public function add(Request $request)
 {
     if ($request->isMethod('post')) {
         $request->validate([
-            'hotel_room_id' => 'required',
+            'hotel_room_id' => 'required|array|min:1',
+            'hotel_room_id.*' => 'exists:hotel_room_types,room_type_id',
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
             'total_quantity' => 'required|numeric',
             'icon' => 'nullable|image|mimes:jpg,jpeg,png,svg|max:2048',
             'description' => 'nullable|string',
         ]);
-         $hotel = HotelRoomType::where('room_type_id',$request->hotel_room_id)->first();
-        // dd($hotel);
+
+        // Pick first room to fetch hotel_id (assuming all selected rooms belong to same hotel)
+        $firstRoom = HotelRoomType::where('room_type_id', $request->hotel_room_id[0])->first();
+
         $category = new OtherServiceCategory();
         $category->name = $request->name;
         $category->price = $request->price;
         $category->total_quantity = $request->total_quantity;
-        $category->hotel_room_type_id = $request->hotel_room_id;
         $category->description = $request->description;
-         $category->hotel_id = $hotel->hotel_id;
+        $category->hotel_id = $firstRoom->hotel_id;
 
         if ($request->hasFile('icon')) {
             $iconPath = $request->file('icon')->store('uploads/icons', 'public');
@@ -58,11 +60,13 @@ class OtherServiceController extends Controller
 
         $category->save();
 
-        // Save relation in pivot table
-        HotelRoomOtherServiceCategory::create([
-            'hotel_room_id' => $request->hotel_room_id,
-            'other_service_category_id' => $category->id,
-        ]);
+        // Save pivot relations for each selected room
+        foreach ($request->hotel_room_id as $roomTypeId) {
+            HotelRoomOtherServiceCategory::create([
+                'hotel_room_id' => $roomTypeId,
+                'other_service_category_id' => $category->id,
+            ]);
+        }
 
         return redirect()->route('admin.other_services.list')
                          ->with('success', 'Other service added successfully.');
@@ -73,29 +77,37 @@ class OtherServiceController extends Controller
 }
 
 
+
 public function edit(Request $request, $id)
 {
     try {
         $category = OtherServiceCategory::findOrFail($id);
-        //dd($category);
 
         if ($request->isMethod('post')) {
             $request->validate([
-                'hotel_room_id' => 'required',
-                'name' => 'required|string|max:255',
-                'price' => 'required|numeric',
-                'total_quantity' => 'required|numeric',
-
-                'description' => 'nullable|string',
+                'hotel_room_id'   => 'required|array',
+                'hotel_room_id.*' => 'exists:hotel_rooms,room_type_id',
+                'name'            => 'required|string|max:255',
+                'price'           => 'required|numeric|min:0',
+                'total_quantity'  => 'required|integer|min:0',
+                'description'     => 'nullable|string',
+                'icon'            => 'nullable|image|max:2048'
             ]);
-            $hotel = HotelRoomType::where('room_type_id',$request->hotel_room_id)->first();
+
+            // Use the first room type to set `hotel_id` and `hotel_room_type_id`
+            $firstRoomType = HotelRoomType::where('room_type_id', $request->hotel_room_id[0])->first();
+
+            if (!$firstRoomType) {
+                return back()->withInput()->with('error', 'Invalid hotel room selected.');
+            }
+
+            // Update category
             $category->name = $request->name;
             $category->price = $request->price;
             $category->description = $request->description;
             $category->total_quantity = $request->total_quantity;
-
-            $category->hotel_room_type_id = $request->hotel_room_id;
-            $category->hotel_id = $hotel->hotel_id;
+            $category->hotel_room_type_id = $request->hotel_room_id[0];
+            $category->hotel_id = $firstRoomType->hotel_id;
 
             if ($request->hasFile('icon')) {
                 $iconPath = $request->file('icon')->store('uploads/icons', 'public');
@@ -104,20 +116,31 @@ public function edit(Request $request, $id)
 
             $category->save();
 
-            // Update pivot table
-            HotelRoomOtherServiceCategory::updateOrCreate(
-                ['other_service_category_id' => $category->id],
-                ['hotel_room_id' => $request->hotel_room_id]
-            );
+            // 🔁 Remove old links & add new ones in the pivot table
+            HotelRoomOtherServiceCategory::where('other_service_category_id', $category->id)->delete();
+
+            foreach ($request->hotel_room_id as $roomTypeId) {
+                $room = HotelRoomType::where('room_type_id', $roomTypeId)->first();
+
+                if ($room) {
+                    HotelRoomOtherServiceCategory::create([
+                        'other_service_category_id' => $category->id,
+                        'hotel_room_id'             => $roomTypeId,
+                    ]);
+                }
+            }
 
             return redirect()->route('admin.other_services.list')
                              ->with('success', 'Other service updated successfully.');
         }
 
         $hotel_rooms = HotelRoom::all();
-        return view('admin.other_services.edit', compact('category', 'hotel_rooms'));
+        $selectedRoomIds = HotelRoomOtherServiceCategory::where('other_service_category_id', $category->id)
+                                                        ->pluck('hotel_room_id')
+                                                        ->toArray();
+
+        return view('admin.other_services.edit', compact('category', 'hotel_rooms', 'selectedRoomIds'));
     } catch (\Exception $e) {
-        
         return redirect()->back()
                          ->withInput()
                          ->with('error', 'An error occurred: ' . $e->getMessage());

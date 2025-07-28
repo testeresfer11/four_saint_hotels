@@ -4,7 +4,7 @@ namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
-use App\Models\{NotificationPreference, OtpManagement, Role, User, UserDetail, NotificationPreferencePermission, Plan, Subscription};
+use App\Models\{NotificationPreference, OtpManagement, Role, User, UserDetail, NotificationPreferencePermission, Plan, Subscription ,Conversation};
 use App\Notifications\{AccountDeleteNotification, UserNotification};
 use App\Traits\SendResponseTrait;
 use Carbon\Carbon;
@@ -157,6 +157,7 @@ class AuthController extends Controller
                     'dob'               => ($user->userDetail && $user->userDetail->dob) ? $user->userDetail->dob : null,
                     'country_short_code' => ($user->userDetail && $user->userDetail->country_short_code) ? $user->userDetail->country_short_code : null,
 
+
                 ];
 
                 return $this->apiResponse('success', 200, config('constants.SUCCESS.LOGIN'), $data);
@@ -220,6 +221,11 @@ class AuthController extends Controller
             $user->device_type    = $request->device_type;
             $user->save();
 
+            $conversationIds = Conversation::where('user_one_id', $user->id)
+                ->orWhere('user_two_id', $user->id)
+                ->pluck('id')
+                ->toArray();
+
             $data = [
                 'access_token'      => $user->createToken('AuthToken')->plainTextToken,
                 'id'                => $user->id,
@@ -234,6 +240,7 @@ class AuthController extends Controller
                 'gender'            => ($user->userDetail && $user->userDetail->gender) ? $user->userDetail->gender : null,
                 'dob'               => ($user->userDetail && $user->userDetail->dob) ? $user->userDetail->dob : null,
                 'country_short_code' => ($user->userDetail && $user->userDetail->country_short_code) ? $user->userDetail->country_short_code : null,
+                 'conversation_ids'    => $conversationIds,
             ];
 
             return $this->apiResponse('success', 200, config('constants.SUCCESS.LOGIN'), $data);
@@ -264,11 +271,17 @@ class AuthController extends Controller
                 return $this->apiResponse('error', 400, config('constants.ERROR.DELETED_ACCOUNT'));
             }
 
-            $this->sendOtp($request->email);
-            if ($request->type == 'resend_otp')
-                return $this->apiResponse('success', 200, 'OTP ' . config('constants.SUCCESS.SENT_DONE'));
+           
+            if ($request->type == 'resend_otp'){
+                 $this->sendOtpResend($request->email);
 
-            return $this->apiResponse('success', 200, 'Password reset email ' . config('constants.SUCCESS.SENT_DONE'));
+                return $this->apiResponse('success', 200, 'OTP ' . config('constants.SUCCESS.SENT_DONE'));
+            }else{
+                 $this->sendOtp($request->email);
+                  return $this->apiResponse('success', 200, 'Password reset email ' . config('constants.SUCCESS.SENT_DONE'));
+            }
+
+           
         } catch (\Exception $e) {
             return $this->apiResponse('error', 400, $e->getMessage());
         }
@@ -300,6 +313,65 @@ class AuthController extends Controller
         }
     }
     /*end method changePassword */
+
+
+   public function handleSocialLogin(Request $request)
+{
+    // Validate the incoming request
+    $validator = Validator::make($request->all(), [
+        'full_name'   => 'required|string',
+        'email'       => 'required|string|email',
+        'provider'    => 'required|string',
+        'provider_id' => 'required|string',
+    ]);
+
+    if ($validator->fails()) {
+        return $this->apiResponse('error', 422, $validator->errors()->first());
+    }
+
+    // Check if user already exists
+    $user = User::where('email', $request->email)->first();
+
+    if ($user) {
+        // Update provider info
+        $user->update([
+            'provider'    => $request->provider,
+            'provider_id' => $request->provider_id,
+        ]);
+
+        $accessToken = $user->createToken('AuthToken')->plainTextToken;
+
+        return $this->apiResponse('success', 200, 'Login successful', [
+            'access_token'        => $accessToken,
+            'id'                  => $user->id,
+            'full_name'           => $user->full_name,
+            'email'               => $user->email,
+            'is_email_verified'   => 1,
+            'email_verified_at'   => Carbon::now(),
+        ]);
+    }
+
+    // Create a new user
+    $user = User::create([
+        'full_name'         => $request->full_name,
+        'email'             => $request->email,
+        'email_verified_at' => Carbon::now(),
+        'is_email_verified' => 1,
+        'password'          => Hash::make('password'),
+        'provider'          => $request->provider,
+        'provider_id'       => $request->provider_id,
+    ]);
+
+    $accessToken = $user->createToken('AuthToken')->plainTextToken;
+
+    return $this->apiResponse('success', 200, 'Registration successful', [
+        'access_token' => $accessToken,
+        'id'           => $user->id,
+        'full_name'    => $user->full_name,
+        'email'        => $user->email,
+        'is_verified'  => 1,
+    ]);
+}
 
     /**
      * functionName : logOut
@@ -337,6 +409,7 @@ class AuthController extends Controller
                     return $this->apiResponse('error', 404, 'Profile' . config('constants.ERROR.NOT_FOUND'));
 
                 $data =  $user;
+
                 return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.FETCH_DONE'), $data);
             } elseif ($request->isMethod('post')) {
                 $validator = Validator::make($request->all(), [
@@ -350,8 +423,8 @@ class AuthController extends Controller
                     return $this->apiResponse('error', 422, $validator->errors()->first());
                 }
 
-                User::where('id', authId())->update([
-                    'full_name'        => $request->first_name,
+                User::where('id', Auth::id())->update([
+                    'full_name'        => $request->full_name,
 
                 ]);
 
@@ -376,7 +449,24 @@ class AuthController extends Controller
                 ]);
 
 
-                $data =  new UserResource(User::find(authId()));
+                $data =  new UserResource(User::find(Auth::id()));
+
+                $user_id =  Auth::id(); // Replace with the actual driver user to notify
+
+                $notificationData = [
+                    'title' => 'profile updated',
+                    'body' => 'Your profile is updated successfully',
+                    'type' => 'profile_updated',
+                    
+                ];
+
+
+               /* $this->sendPushNotification(
+                    $notificationData['title'],
+                    $notificationData['body'],
+                    $notificationData['type'],
+                    $user_id
+                );*/
 
                 return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.UPDATE_DONE'), $data);
             }
@@ -414,6 +504,22 @@ class AuthController extends Controller
                     "password" => Hash::make($request->password_confirmation)
                 ]);
                 if ($chagePassword) {
+                    $user_id =  authId(); // Replace with the actual driver user to notify
+
+                $notificationData = [
+                    'title' => 'password changed',
+                    'body' => 'Your password changed successfully',
+                    'type' => 'password_changed',
+                    
+                ];
+
+
+                /*$this->sendPushNotification(
+                    $notificationData['title'],
+                    $notificationData['body'],
+                    $notificationData['type'],
+                    $user_id
+                );*/
                     return $this->apiResponse('success', 200, "Password " . config('constants.SUCCESS.CHANGED_DONE'));
                 }
             } else {
@@ -446,6 +552,32 @@ class AuthController extends Controller
                 $stringReplaceWith  = [$user->full_name, $otp];
                 $newval             = str_replace($stringToReplace, $stringReplaceWith, $template->template);
                 $emailData          = $this->mailData($user->email, $template->subject, $newval, 'Forget_password', $template->id);
+                $this->mailSend($emailData);
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            return $this->apiResponse('error', 400, $e->getMessage());
+        }
+    }
+
+
+     public function sendOtpResend($email)
+    {
+        try {
+            $user = User::where('email', $email)->first();
+            do {
+                $otp  = rand(1000, 9999);
+            } while (OtpManagement::where('otp', $otp)->count());
+
+            OtpManagement::updateOrCreate(['email' => $user->email], ['otp'   => $otp,]);
+
+            $template = $this->getTemplateByName('resend_otp');
+            if ($template) {
+                $stringToReplace    = ['{{$name}}', '{{$otp}}'];
+                $stringReplaceWith  = [$user->full_name, $otp];
+                $newval             = str_replace($stringToReplace, $stringReplaceWith, $template->template);
+                $emailData          = $this->mailData($user->email, $template->subject, $newval, 'resend_otp', $template->id);
                 $this->mailSend($emailData);
             }
 

@@ -65,8 +65,8 @@ class SabeeBookingService
             if (empty($reservations)) {
                 break;
             }
-
-            foreach ($reservations as $reservation) {
+            collect($reservations)->chunk(10)->each(function ($chunk) use ($hotel_id) {
+            foreach ($chunk as $reservation) {
                 // Create or update the booking
                 $bookingModel = Booking::updateOrCreate(
                     ['reservation_code' => $reservation['reservation_code']],
@@ -198,6 +198,7 @@ class SabeeBookingService
                     ]);
                 }
             }
+            });
 
             $allReservations = array_merge($allReservations, $reservations);
             $page++;
@@ -269,6 +270,8 @@ class SabeeBookingService
         }
 
         $this->saveBookingData($bookingData, $payload);
+
+        
 
         return [
             'success' => true,

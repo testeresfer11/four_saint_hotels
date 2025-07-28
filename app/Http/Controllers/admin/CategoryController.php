@@ -50,7 +50,7 @@ class CategoryController extends Controller
             }
 
             ServiceCategory::create($data);
-            return redirect()->route('admin.category.list')->with('success', 'Category added successfully.');
+            return redirect()->route('admin.category.list')->with('success', 'Feature added successfully.');
         }
 
         $hotels = Hotel::all();
@@ -79,7 +79,7 @@ class CategoryController extends Controller
             }
 
             $category->save();
-            return redirect()->route('admin.category.list')->with('success', 'Category updated successfully.');
+            return redirect()->route('admin.category.list')->with('success', 'Feature updated successfully.');
         }
 
         $hotels = Hotel::all();
@@ -90,6 +90,6 @@ class CategoryController extends Controller
     {
         $category = ServiceCategory::findOrFail($id);
         $category->delete();
-        return redirect()->route('admin.category.list')->with('success', 'Category deleted successfully.');
+        return redirect()->route('admin.category.list')->with('success', 'Feature deleted successfully.');
     }
 }

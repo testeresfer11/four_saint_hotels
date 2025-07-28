@@ -20,15 +20,39 @@ class TwilioChatController extends Controller
         );
     }
 
-    public function index()
-    {
-        $conversations = Conversation::with('userTwo','userTwo.userDetail')->get();
-        return view('admin.chat.index', compact('conversations'));
-    }
+
+public function index()
+{
+    $adminId = Auth::id();
+
+    $conversations = Conversation::with([
+        'userTwo',
+        'userTwo.userDetail',
+        'messages' => function ($query) {
+            $query->latest(); // Load latest message first
+        }
+    ])->get()->map(function ($conversation) use ($adminId) {
+        // Only the latest message
+        $conversation->latest_message = $conversation->messages->first();
+
+        // Count unread messages for the current user (admin)
+        $conversation->unread_count = $conversation->messages()
+            ->where('sender_id','<>', $adminId)
+            ->where('is_read', false)
+            ->count();
+
+        return $conversation;
+    });
+
+
+
+    return view('admin.chat.index', compact('conversations'));
+}
+
 
   
 
-    public function getMessages($conversationId)
+public function getMessages($conversationId)
 {
     $conversation = Conversation::find($conversationId);
 
@@ -38,6 +62,10 @@ class TwilioChatController extends Controller
             'message' => 'Conversation not found',
         ], 404);
     }
+      Message::where('conversation_id', $conversationId)
+        ->where('sender_id','<>', auth()->id())
+        ->where('is_read', false)
+        ->update(['is_read' => true]);
 
     $messages = Message::where('conversation_id', $conversationId)
         ->orderBy('created_at', 'asc')
@@ -48,6 +76,7 @@ class TwilioChatController extends Controller
         'data' => $messages
     ]);
 }
+
 
     public function listConversations()
     {
