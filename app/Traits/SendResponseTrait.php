@@ -114,7 +114,10 @@ trait SendResponseTrait
 
 
     
-  public function sendPushNotification($title, $body, $type,$user_id) {
+
+  public function sendPushNotification($title, $body, $type,$notification_type,$user_id) {
+
+
         $topic = 'userId_'.$user_id;
 
         $firebase = (new Factory)
@@ -125,7 +128,11 @@ trait SendResponseTrait
         $data = [
             'type' => $type,
             'body' => $body,
-            'title' => $title
+
+
+            'title' => $title,
+            'type' => $type,
+            'notification_type'=>$notification_type
         ];
 
         // Create the message

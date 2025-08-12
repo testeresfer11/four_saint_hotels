@@ -221,6 +221,19 @@ class AuthController extends Controller
             $user->device_type    = $request->device_type;
             $user->save();
 
+
+
+            $userOne = min($user->id, 1);
+            $userTwo = max($user->id, 1);
+
+            $conversation = Conversation::firstOrCreate([
+                'user_one_id' => $userOne,
+                'user_two_id' => $userTwo,
+            ]);
+
+        $conversationId = $conversation->id;
+
+
             $conversationIds = Conversation::where('user_one_id', $user->id)
                 ->orWhere('user_two_id', $user->id)
                 ->pluck('id')
@@ -230,7 +243,6 @@ class AuthController extends Controller
                 'access_token'      => $user->createToken('AuthToken')->plainTextToken,
                 'id'                => $user->id,
                 'full_name'         => $user->full_name,
-
                 'email'             => $user->email,
                 'is_verified'       => $user->is_email_verified,
                 'phone_number'      => ($user->userDetail && $user->userDetail->phone_number) ? $user->userDetail->phone_number : null,
@@ -240,7 +252,13 @@ class AuthController extends Controller
                 'gender'            => ($user->userDetail && $user->userDetail->gender) ? $user->userDetail->gender : null,
                 'dob'               => ($user->userDetail && $user->userDetail->dob) ? $user->userDetail->dob : null,
                 'country_short_code' => ($user->userDetail && $user->userDetail->country_short_code) ? $user->userDetail->country_short_code : null,
+
+
+                'conversation_id'    => $conversationId,
+                'profile'           => ($user->userDetail && $user->userDetail->profile) ? $user->userDetail->profile : null,
+
                  'conversation_ids'    => $conversationIds,
+
             ];
 
             return $this->apiResponse('success', 200, config('constants.SUCCESS.LOGIN'), $data);
@@ -341,13 +359,28 @@ class AuthController extends Controller
 
         $accessToken = $user->createToken('AuthToken')->plainTextToken;
 
+        $userOne = min($user->id, 1);
+        $userTwo = max($user->id, 1);
+
+        $conversation = Conversation::firstOrCreate([
+                'user_one_id' => $userOne,
+                'user_two_id' => $userTwo,
+        ]);
+        $conversationId = $conversation->id;
+
         return $this->apiResponse('success', 200, 'Login successful', [
             'access_token'        => $accessToken,
             'id'                  => $user->id,
             'full_name'           => $user->full_name,
             'email'               => $user->email,
             'is_email_verified'   => 1,
+
+             'profile'           => ($user->userDetail && $user->userDetail->profile) ? $user->userDetail->profile : null,
+             'conversation_id'    => $conversationId,
             'email_verified_at'   => Carbon::now(),
+
+
+
         ]);
     }
 
@@ -364,12 +397,29 @@ class AuthController extends Controller
 
     $accessToken = $user->createToken('AuthToken')->plainTextToken;
 
+        $userOne = min($user->id, 1);
+        $userTwo = max($user->id, 1);
+
+        $conversation = Conversation::firstOrCreate([
+                'user_one_id' => $userOne,
+                'user_two_id' => $userTwo,
+        ]);
+        $conversationId = $conversation->id;
+
+
+
     return $this->apiResponse('success', 200, 'Registration successful', [
         'access_token' => $accessToken,
         'id'           => $user->id,
         'full_name'    => $user->full_name,
         'email'        => $user->email,
         'is_verified'  => 1,
+
+
+         'conversation_id'    => $conversationId,
+        'profile'           => ($user->userDetail && $user->userDetail->profile) ? $user->userDetail->profile : null,
+
+
     ]);
 }
 
@@ -400,6 +450,15 @@ class AuthController extends Controller
      * createdDate  : 12-04-2025
      * purpose      : get and update the logged in user profile
      */
+
+   public function profile(Request $request)
+{
+    try {
+        if ($request->isMethod('get')) {
+            $user = Auth::user()->load('userDetail');
+            if (!$user) {
+                return $this->apiResponse('error', 404, 'Profile ' . config('constants.ERROR.NOT_FOUND'));
+
     public function profile(Request $request)
     {
         try {
@@ -469,11 +528,65 @@ class AuthController extends Controller
                 );*/
 
                 return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.UPDATE_DONE'), $data);
+
             }
-        } catch (\Exception $e) {
-            return $this->apiResponse('error', 400, $e->getMessage());
+
+            return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.FETCH_DONE'), $user);
         }
+
+        if ($request->isMethod('post')) {
+            $validator = Validator::make($request->all(), [
+                'full_name'  => 'required|string|max:255',
+                'profile'    => 'nullable|image|max:2048',
+                'gender'     => 'in:Male,Female,Other'
+            ]);
+
+            if ($validator->fails()) {
+                return $this->apiResponse('error', 422, $validator->errors()->first());
+            }
+
+            // Update basic user info
+            User::where('id', Auth::id())->update([
+                'full_name' => $request->full_name,
+            ]);
+
+            $user = User::find(authId());
+            $ImgName = $user->userDetail?->profile ?? null;
+            $fullUrl = $ImgName; // fallback if no new image uploaded
+
+            if ($request->hasFile('profile')) {
+                // Delete old file
+                if ($ImgName) {
+                    deleteFile(basename($ImgName), 'images/');
+                }
+
+                // Upload new file
+                $newFileName = uploadFile($request->file('profile'), 'images/');
+                $fullUrl = asset('storage/images/' . $newFileName);
+            }
+
+            // Save UserDetails
+            UserDetail::updateOrCreate(['user_id' => authId()], [
+                'phone_number'        => $request->phone_number ?? '',
+                'address'             => $request->address ?? '',
+                'zip_code'            => $request->zip_code ?? '',
+                'country_code'        => $request->country_code ?? '',
+                'dob'                 => $request->dob ?? '',
+                'country_short_code'  => $request->country_short_code ?? '',
+                'profile'             => $fullUrl,
+                'gender'              => $request->gender ?? '',
+            ]);
+
+            $data = new UserResource(User::find(Auth::id()));
+
+            // Notification logic can go here (optional)
+            return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.UPDATE_DONE'), $data);
+        }
+    } catch (\Exception $e) {
+        return $this->apiResponse('error', 400, $e->getMessage());
     }
+}
+
     /*end method profile */
 
     /**

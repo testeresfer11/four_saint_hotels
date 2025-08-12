@@ -201,6 +201,15 @@ Route::group(['prefix' => 'admin'], function () {
             });
         });
 
+        Route::group(['prefix' => 'pushnotification'], function () {
+            Route::name('pushnotification.')->controller(NotificationController::class)->group(function () {
+                Route::get('/', 'getPushNotificationList')->name('list');
+                 Route::match(['get', 'post'], 'add', 'add')->name('add');
+                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'deletePushNotification')->name('delete');
+            });
+        });
+
         //Manage newsletter routes
         Route::group(['prefix' => 'newsletter'], function () {
             Route::name('newsletter.')->controller(NewsletterSubscriberController::class)->group(function () {
@@ -223,7 +232,10 @@ Route::group(['prefix' => 'admin'], function () {
          // Manage help vouchers routes
             Route::group(['prefix' => 'vouchers'], function () {
                 Route::name('vouchers.')->controller(GiftVoucherController::class)->group(function () {
-                     Route::get('/', 'index')->name('index');
+                    Route::get('/', 'index')->name('index');
+                    Route::match(['get', 'post'], 'add', 'add')->name('add');
+                    Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                    Route::get('delete/{id}', 'delete')->name('delete');
                     Route::get('/sync','sync')->name('sync');
                 });
             });
