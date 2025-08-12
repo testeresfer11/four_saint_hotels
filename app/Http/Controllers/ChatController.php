@@ -82,12 +82,41 @@ class ChatController extends Controller
 
        ]);
 
+
+        if($request->type == 'text'){
+            $type = 'new_message';
+        }else{
+            $type = 'image';
+        }
+
+
+         $notificationData = [
+            'title' => 'New Message',
+            'body' => $finalMessage,
+            'type' => $type,
+            'notification_type' => 'message'  
+        ];
+
+
+       $y= $this->sendPushNotification(
+            $notificationData['title'],
+            $notificationData['body'],
+            $notificationData['type'],
+            $notificationData['notification_type'],
+            $request->receiver_id
+        );
+
+
+
         return response()->json([
             'status' => 'success',
             'message' => 'Message stored successfully',
             'data' => [
                 'conversation_id' => $conversation->id,
                 'message' => $message,
+
+
+                'jshfs'   => $y,
             ],
         ]);
 

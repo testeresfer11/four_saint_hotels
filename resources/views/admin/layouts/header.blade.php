@@ -38,7 +38,10 @@
 
       <!-- Notifications -->
       <li class="nav-item dropdown">
-  <a class="nav-link count-indicator dropdown-toggle notifi read-notification" id="notificationDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+
+  <a class="nav-link count-indicator dropdown-toggle notifi read-notification" id="notificationDropdown" href="{{ route('admin.notification.list') }}" data-toggle="dropdown" aria-expanded="false">
+
+  
     <i class="fa-regular fa-bell"></i>
     @if($notification_count)
       <span class="noti-count">{{ $notification_count }}</span>

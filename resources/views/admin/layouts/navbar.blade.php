@@ -1,10 +1,10 @@
 <!-- partial:partials/_sidebar.html -->
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-        <a class="sidebar-brand brand-logo" href="{{ route('admin.dashboard') }}">
+        <a class="sidebar-brand brand-logo text-center" href="{{ route('admin.dashboard') }}">
             <img src="{{ asset('images/logo.jpg') }}" alt="logo" />
         </a>
-        <a class="sidebar-brand brand-logo-mini" href="{{ route('admin.dashboard') }}">
+        <a class="sidebar-brand brand-logo-mini text-center" href="{{ route('admin.dashboard') }}">
             <img src="{{ asset('images/logo.jpg') }}" alt="logo" />
         </a>
     </div>
@@ -211,7 +211,7 @@
         {{-- @endcanany--}}
         <!-- Vouchers -->
         {{-- @canany(['vouchers-list', 'vouchers-add', 'vouchers-edit', 'vouchers-delete', 'vouchers-change-status'])--}}
-        <li class="nav-item menu-items {{ request()->routeIs('admin.service.*') ? 'active' : '' }}">
+        <!-- <li class="nav-item menu-items {{ request()->routeIs('admin.service.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.service.list') }}">
                 <span class="menu-icon">
                     {{-- <i class="fa-solid fa-archive"></i> --}}
@@ -219,24 +219,36 @@
                 </span>
                 <span class="menu-title">Service Management</span>
             </a>
-        </li>
+        </li> -->
 
        
 
         {{-- @endcanany--}}
 
         <!-- Notifications -->
-        @canany(['notification-list', 'notification-read', 'notification-delete'])
-        <li class="nav-item menu-items {{ request()->routeIs('admin.notification.*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.notification.list') }}">
-                <span class="menu-icon">
-                    {{-- <i class="mdi mdi-bell"></i> --}}
-                    <img src="{{ asset('images/notification.png') }}" alt="" class="img-fluid">
-                </span>
-                <span class="menu-title">Notifications</span>
-            </a>
-        </li>
-        @endcanany
+
+      @canany(['notification-list', 'notification-read', 'notification-delete'])
+    <li class="nav-item menu-items {{ request()->routeIs('admin.notification.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.notification.list') }}">
+            <span class="menu-icon">
+                <img src="{{ asset('images/notification.png') }}" alt="" class="img-fluid">
+            </span>
+            <span class="menu-title">Notifications</span>
+        </a>
+    </li>
+@endcanany
+
+
+    <li class="nav-item menu-items {{ request()->routeIs('admin.notification.send') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.pushnotification.list') }}">
+            <span class="menu-icon">
+                <img src="{{ asset('images/send-notification.png') }}" alt="" class="img-fluid">
+            </span>
+            <span class="menu-title">Send Push Notification</span>
+        </a>
+    </li>
+
+
 
         <!-- Newsletter -->
         @canany(['newsletter-index', 'newsletter-delete', 'newsletter-change-status'])

@@ -18,6 +18,11 @@ use App\Models\OtherServiceCategory;
 use Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 
+
+use App\Notifications\{BookingCreatedNotification,BookingCreated};
+
+
+
 class BookingController extends Controller
 {
     use SendResponseTrait;
@@ -182,12 +187,23 @@ class BookingController extends Controller
                         if ($template) {
                             // Replace placeholders with actual data
                             $stringToReplace = ['{{$name}}', '{{$download}}'];
+
+                            $stringReplaceWith = [$validated['customer']['first_name'], $download];
+                            $emailBody = str_replace($stringToReplace, $stringReplaceWith, $template->template);
+
+                            // Prepare email payload using customer email, not auth user
+                            $emailData = $this->mailData(
+                                $validated['customer']['email'], // send to customer
+
+
                             $stringReplaceWith = [$user->full_name, $download];
                             $emailBody = str_replace($stringToReplace, $stringReplaceWith, $template->template);
 
                             // Prepare email payload
                             $emailData = $this->mailData(
                                 $user->email,
+
+
                                 $template->subject,
                                 $emailBody,
                                 'create_booking_invoice',
@@ -197,6 +213,7 @@ class BookingController extends Controller
                             // Send the email
                             $this->mailSend($emailData);
                         }
+
                     } 
                 $user_id = auth()->id(); // Replace with the actual driver user to notify
 
@@ -206,6 +223,10 @@ class BookingController extends Controller
                     'type' => 'new_booking',
                     
                 ];
+
+
+                 User::find(auth()->id())->notify(new BookingCreatedNotification($booking));
+
 
 
               /*  $this->sendPushNotification(
@@ -592,6 +613,16 @@ class BookingController extends Controller
     // Calculate total price
     $priceTotal = $booking->bookingPrices->sum('amount');
 
+
+
+   $booking->bookingServices->map(function ($service) use (&$serviceTotal) {
+        $quantityTotal = collect($service->bookingServicePrices)->sum('quantity');
+        $service->total_quantity = $quantityTotal;
+
+        $serviceTotal += collect($service->bookingServicePrices)->sum('amount');
+        return $service;
+
+
     $serviceTotal = $booking->bookingServices->sum(function ($service) {
         return collect($service->bookingServicePrices)->sum('amount');
     });
@@ -602,6 +633,103 @@ class BookingController extends Controller
         'status' => 'success',
         'data' => $booking,
     ]);
+}
+
+
+
+  public function saveBookingServices(Request $request, $id)
+{
+    $user = Auth::user();
+
+    try {
+        $booking = Booking::find($id);
+
+        if (!$booking) {
+            return response()->json(['message' => 'Booking not found'], 404);
+        }
+
+        $serviceData = collect($request->input('services', []));
+
+        $serviceIds = $serviceData->pluck('id')->toArray();
+        $services = OtherServiceCategory::whereIn('id', $serviceIds)->get()->keyBy('id');
+
+        foreach ($serviceData as $item) {
+            $serviceId = $item['id'];
+            $quantity = $item['quantity'] ?? 1;
+            $start_date = $item['start_date'] ?? null;
+            $end_date = $item['end_date'] ?? null;
+
+            if (!isset($services[$serviceId])) {
+                continue;
+            }
+
+            $service = $services[$serviceId];
+            $totalAmount = $quantity * ($service->price ?? 0);
+
+            $bookingService = BookingService::updateOrCreate(
+                [
+                    'booking_id' => $booking->id,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'service_name' => $service->name,
+                    'description'  => $service->description,
+                    'total_price'  => $totalAmount,
+                    'start_date'   => $start_date ?? null,
+                    'end_date'     => $end_date ?? null
+                ]
+            );
+
+            // Increment quantity and amount if record exists
+            $bookingServicePrice = BookingServicePrice::where([
+                'booking_service_id' => $bookingService->id,
+                'date' => now()->toDateString(),
+            ])->first();
+
+            if ($bookingServicePrice) {
+                $bookingServicePrice->quantity += $quantity;
+                $bookingServicePrice->amount += $totalAmount;
+                $bookingServicePrice->save();
+            } else {
+                BookingServicePrice::create([
+                    'booking_service_id' => $bookingService->id,
+                    'date'               => now()->toDateString(),
+                    'quantity'           => $quantity,
+                    'vat'                => 0,
+                    'city_tax'           => 0,
+                    'amount'             => $totalAmount,
+                ]);
+            }
+        }
+
+        // Generate secure invoice download URL
+        $download = url('api/booking/invoice/' . $booking->id);
+
+        // Get email template by name
+        $template = $this->getTemplateByName('ad_service_template');
+
+        if ($template) {
+            $stringToReplace = ['{{$name}}', '{{$download}}'];
+            $stringReplaceWith = [$user->full_name, $download];
+            $emailBody = str_replace($stringToReplace, $stringReplaceWith, $template->template);
+
+            $emailData = $this->mailData(
+                $user->email,
+                $template->subject,
+                $emailBody,
+                'ad_service_template',
+                $template->id
+            );
+
+            $this->mailSend($emailData);
+            User::find(auth()->id())->notify(new BookingCreated($booking));
+        }
+
+        return response()->json(['message' => 'Services saved successfully.'], 200);
+
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
 }
 
 
@@ -703,6 +831,9 @@ class BookingController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+
+
 
 
     public function downloadPdf($id)
