@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController};
+use App\Http\Controllers\admin\{AuthController, BookingController, ConfigSettingController, DashboardController, HelpDeskController, TransactionController, UserController, ManageFAQController, ContentPageController, NotificationController,LanguageController, ContactController, AnnouncementController,StaffController,ServiceController,PaymentController,RoomTypeController,OtherServiceController};
 use App\Http\Controllers\admin\{GiftVoucherController,FeedbackController,RoleController,HotelController,TwilioChatController,CategoryController,ServiceSubCategoryController};
 use Illuminate\Support\Facades\Route;
 use App\Models\{ContentPage, ManagefAQ};
@@ -21,7 +21,14 @@ Route::get('/', function () {
 Route::get('/contentPage/{slug}', [App\Http\Controllers\admin\ContentPageController::class, 'contentPage'])->name('contentPage');
 Route::post('/contact-us', [App\Http\Controllers\admin\ContentPageController::class, 'storeContact'])->name('contact-us');
 
+Route::group(['prefix' => 'roomtype'], function () {
+    Route::name('roomtype.')->controller(RoomTypeController::class)->group(function () {
+           Route::get('checkRoomAvailability','checkRoomAvailability')->name('checkRoomAvailability');
 
+
+
+    });
+});
 Route::controller(AuthController::class)->group(function () {
     Route::match(['get', 'post'], 'login', 'login')->name('login');
     Route::match(['get', 'post'], 'register', 'register')->name('register');
@@ -120,10 +127,14 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::match(['get', 'post'], 'add', 'add')->name('add');
                 Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
                 Route::get('view/{id}','view')->name('view');
+                Route::get('get-rooms','getRooms')->name('get-rooms');
+                Route::post('/cancel','cancel');
+
+
             });
         });
 
-        // Manage booking routes
+        // Manage hotel routes
         Route::group(['prefix' => 'hotel'], function () {
             Route::name('hotel.')->controller(HotelController::class)->group(function () {
                 Route::get('list', 'getList')->name('list');
@@ -131,6 +142,19 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::post('upload-images', [HotelController::class, 'uploadImages'])->name('upload.images');
                 Route::get('{hotelId}/images', [HotelController::class, 'getHotelImages']);
                 Route::delete('/image/delete/{id}', [HotelController::class, 'deleteHotelImage'])->name('image.delete');
+
+
+            });
+        });
+
+         // Manage roomtypes routes
+         Route::group(['prefix' => 'roomtype'], function () {
+            Route::name('roomtype.')->controller(RoomTypeController::class)->group(function () {
+                Route::get('list', 'getList')->name('list');
+                Route::get('view/{id}','detail')->name('view');
+                Route::post('upload-images', 'uploadImages')->name('upload.images');
+                Route::get('{room_type_id}/images', 'getHotelImages');
+                Route::delete('/image/delete/{id}', 'deleteHotelImage')->name('image.delete');
 
 
             });
@@ -151,6 +175,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::group(['prefix' => 'contentPages'], function () {
             Route::name('contentPages.')->controller(ContentPageController::class)->group(function () {
                 Route::match(['get', 'post'], '{slug}', 'contentPageDetail')->name('detail');
+                  Route::get('/', 'getList')->name('list');
             });
         });
 
@@ -176,6 +201,15 @@ Route::group(['prefix' => 'admin'], function () {
             });
         });
 
+        Route::group(['prefix' => 'pushnotification'], function () {
+            Route::name('pushnotification.')->controller(NotificationController::class)->group(function () {
+                Route::get('/', 'getPushNotificationList')->name('list');
+                 Route::match(['get', 'post'], 'add', 'add')->name('add');
+                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'deletePushNotification')->name('delete');
+            });
+        });
+
         //Manage newsletter routes
         Route::group(['prefix' => 'newsletter'], function () {
             Route::name('newsletter.')->controller(NewsletterSubscriberController::class)->group(function () {
@@ -198,7 +232,10 @@ Route::group(['prefix' => 'admin'], function () {
          // Manage help vouchers routes
             Route::group(['prefix' => 'vouchers'], function () {
                 Route::name('vouchers.')->controller(GiftVoucherController::class)->group(function () {
-                     Route::get('/', 'index')->name('index');
+                    Route::get('/', 'index')->name('index');
+                    Route::match(['get', 'post'], 'add', 'add')->name('add');
+                    Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                    Route::get('delete/{id}', 'delete')->name('delete');
                     Route::get('/sync','sync')->name('sync');
                 });
             });
@@ -225,19 +262,30 @@ Route::group(['prefix' => 'admin'], function () {
         });
 
 
-        Route::group(['prefix' => 'chat'], function () {
-            Route::name('chat.')->controller(TwilioChatController::class)->group(function () {
-              Route::get('/','index')->name('index');
-                Route::get('/{sid}/messages','getMessages')->name('messages');
-                Route::post('/{sid}/send','sendMessage')->name('send');
-                Route::get('/conversations', 'listConversations');
+       Route::group(['prefix' => 'chat'], function () {
+        Route::name('chat.')->controller(TwilioChatController::class)->group(function () {
+          Route::get('/','index')->name('index');
+            Route::get('/{sid}/messages','getMessages')->name('messages');
+            Route::post('/{sid}/send','sendMessage')->name('send');
+            Route::get('/conversations', 'listConversations');
+            Route::get('conversation/{id}/messages','getMessages');
 
-            });
         });
+    });
 
 
         Route::group(['prefix' => 'category'], function () {
             Route::name('category.')->controller(CategoryController::class)->group(function () {
+               Route::get('/', 'getList')->name('list');
+                Route::match(['get', 'post'], 'add', 'add')->name('add');
+                Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
+                Route::get('delete/{id}', 'delete')->name('delete');
+
+            });
+        });
+
+        Route::group(['prefix' => 'other_services'], function () {
+            Route::name('other_services.')->controller(OtherServiceController::class)->group(function () {
                Route::get('/', 'getList')->name('list');
                 Route::match(['get', 'post'], 'add', 'add')->name('add');
                 Route::match(['get', 'post'], 'edit/{id}', 'edit')->name('edit');
@@ -261,6 +309,13 @@ Route::group(['prefix' => 'admin'], function () {
          // Manage service routes
         Route::group(['prefix' => 'service'], function () {
             Route::name('service.')->controller(ServiceController::class)->group(function () {
+                Route::get('list', 'getList')->name('list');
+                Route::get('view/{id}', 'view')->name('view');
+            });
+        });
+
+         Route::group(['prefix' => 'payment'], function () {
+            Route::name('payment.')->controller(PaymentController::class)->group(function () {
                 Route::get('list', 'getList')->name('list');
                 Route::get('view/{id}', 'view')->name('view');
             });

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{Hotel, HotelRoomType, HotelRatePlan};
 use App\Traits\SendResponseTrait;
-use App\Services\API\SabeeServiceListService;  
+use App\Services\API\SabeeServiceListService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\{Auth, Hash, Validator};
 
@@ -28,7 +28,7 @@ class SabeeServiceController extends Controller
      */
     public function fetchAndStore(Request $request)
     {
-        
+
 
         $hotel_id = session('selected_hotel_id', 8618);
 
@@ -76,7 +76,6 @@ class SabeeServiceController extends Controller
                 'message' => 'Service submitted successfully',
                 'data' => $response
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',

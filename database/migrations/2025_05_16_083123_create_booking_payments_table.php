@@ -14,11 +14,14 @@ return new class extends Migration
         Schema::create('booking_payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('booking_id')->constrained()->onDelete('cascade');
-            $table->string('payment_type');
-            $table->float('amount');
-            $table->string('currency');
-            $table->dateTime('payment_date');
+            $table->string('payment_type')->nullable();
+            $table->float('amount')->nullable();
+            $table->float('booking_amount')->nullable();
+            $table->float('service_amount')->nullable();
+            $table->string('currency')->nullable();
+            $table->dateTime('payment_date')->nullable();
             $table->string('payment_status')->nullable();
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
         

@@ -55,9 +55,9 @@
                   <a href="{{ route('admin.sub_category.edit', $subCategory->id) }}" class="text-success me-2">
                     <i class="mdi mdi-pencil"></i>
                   </a>
-                  <a href="{{ route('admin.sub_category.delete', $subCategory->id) }}" 
-                     class="text-danger deleteSubCategory" 
-                     onclick="return confirm('Are you sure to delete this sub-category?')">
+                  <a href="javascript:void(0);" 
+                    class="text-danger deleteSubCategory" 
+                    data-id="{{ $subCategory->id }}">
                     <i class="mdi mdi-delete"></i>
                   </a>
                 </td>
@@ -83,11 +83,43 @@
 
 @section('scripts')
 <script>
-  $('.deleteSubCategory').on('click', function(e) {
+  $(document).on('click', '.deleteSubCategory', function(e) {
     e.preventDefault();
-    if(confirm('Are you sure you want to delete this sub-category?')) {
-      window.location.href = $(this).attr('href');
-    }
+    var id = $(this).data('id');
+   
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this sub-category?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#B46326",
+      cancelButtonColor: "#fff",
+      confirmButtonText: "Yes, delete it!",
+      customClass: {
+        cancelButton: 'swal-cancel-custom'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: "/admin/sub_category/delete/" + id,
+          type: "GET",
+          success: function(response) {
+            if (response.status === "success") {
+              $(`tr[data-id="${id}"]`).remove();
+              toastr.success(response.message || "Sub-category deleted successfully.");
+            } else {
+              toastr.error(response.message || "Something went wrong.");
+            }
+          },
+          error: function() {
+            toastr.error("Server error. Please try again.");
+          }
+        });
+      }
+    });
   });
 </script>
+
+
 @endsection

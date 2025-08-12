@@ -11,11 +11,25 @@ class CategoryController extends Controller
 {
 
 
-    
-   public function getList(){
-    $categories = ServiceCategory::orderBy('id', 'DESC')->paginate(10);
+
+   public function getList(Request $request)
+{
+    $categories = ServiceCategory::query()
+        ->when($request->filled('search_keyword'), function ($query) use ($request) {
+            $query->where('title', 'like', '%' . $request->search_keyword . '%');
+        })
+        ->when($request->filled('start_date'), function ($query) use ($request) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        })
+        ->when($request->filled('end_date'), function ($query) use ($request) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        })
+        ->orderBy('id', 'DESC')
+        ->paginate(10);
+
     return view('admin.category.list', compact('categories'));
-    }
+}
+
 
 
     public function add(Request $request)
@@ -36,7 +50,7 @@ class CategoryController extends Controller
             }
 
             ServiceCategory::create($data);
-            return redirect()->route('admin.category.list')->with('success', 'Category added successfully.');
+            return redirect()->route('admin.category.list')->with('success', 'Feature added successfully.');
         }
 
         $hotels = Hotel::all();
@@ -65,7 +79,7 @@ class CategoryController extends Controller
             }
 
             $category->save();
-            return redirect()->route('admin.category.list')->with('success', 'Category updated successfully.');
+            return redirect()->route('admin.category.list')->with('success', 'Feature updated successfully.');
         }
 
         $hotels = Hotel::all();
@@ -76,6 +90,6 @@ class CategoryController extends Controller
     {
         $category = ServiceCategory::findOrFail($id);
         $category->delete();
-        return redirect()->route('admin.category.list')->with('success', 'Category deleted successfully.');
+        return redirect()->route('admin.category.list')->with('success', 'Feature deleted successfully.');
     }
 }

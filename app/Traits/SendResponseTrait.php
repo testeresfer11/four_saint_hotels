@@ -114,52 +114,47 @@ trait SendResponseTrait
 
 
     
-    public function sendPushNotification($deviceToken, $title, $body, $type, $user_id, $redirect_data) {
-        try {
-            $firebase = (new Factory)
-                ->withServiceAccount(public_path('firebase-service.json'));
-            $messaging = $firebase->createMessaging();
-    
-            $data = [
-                'type' => $type,
-                'redirect_data' => $redirect_data
-            ];
-    
-            $message = CloudMessage::fromArray([
-                'notification' => [
-                    'title' => $title,
-                    'body' => $body,
-                ],
-                'token' => $deviceToken,
-            ])->withData([
-                'type' => $type,
-                'redirect_data' => json_encode($redirect_data),
-            ]);
-    
-            $response = $messaging->send($message);
-            Log::info('Push notification sent successfully.', ['response' => $body]);
-    
-            FirebaseNotification::create([
-                'user_id'   => $user_id,
-                'title'     => $title,
-                'body'      => $body,
-                'data'      => json_encode($data),
-            ]);
-    
-            return true;
-        } catch (NotFound $e) {
-            Log::warning('FCM token not found or invalid: ' . $e->getMessage());
-            return true;
-        } catch (InvalidArgument $e) {
-            Log::warning('Invalid FCM token provided: ' . $e->getMessage());
-            return true;
-        } catch (\MessagingException $e) {
-            Log::error('Messaging error occurred: ' . $e->getMessage());
-            return true;
-            // throw new \Exception($e->getMessage());
-        } catch( Exception $e){
-            Log::error('Exception : ' . $e->getMessage());
-            return true;
+
+  public function sendPushNotification($title, $body, $type,$notification_type,$user_id) {
+
+
+        $topic = 'userId_'.$user_id;
+
+        $firebase = (new Factory)
+            ->withServiceAccount(public_path('firebase-service.json'));
+        $messaging = $firebase->createMessaging();
+
+        // Prepare the data payload
+        $data = [
+            'type' => $type,
+            'body' => $body,
+
+
+            'title' => $title,
+            'type' => $type,
+            'notification_type'=>$notification_type
+        ];
+
+        // Create the message
+        $message = CloudMessage::fromArray([
+            'notification' => [
+                'title' => $title,
+                'body' => $body,
+            ],
+            'data' => $data, // Include your data here
+            'topic' => $topic,
+
+        ]);
+
+        // Send the message
+        $response = $messaging->send($message);
+
+        if ($response) {
+            Log::info('Push notification sent successfully------.', ['response' => $response]);
+            return $response;
         }
+
+        // Return false if the response is empty or unsuccessful
+        return false;
     }
 }

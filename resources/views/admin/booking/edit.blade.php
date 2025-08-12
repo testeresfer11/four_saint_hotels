@@ -1,262 +1,417 @@
 @extends('admin.layouts.app')
-@section('title', 'Edit User')
+@section('title', 'Edit Reservation')
 @section('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/css/intlTelInput.css">
+<style>
+    .reservation-timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+    .timeline-item {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+    .timeline-dot {
+        position: absolute;
+        left: -2rem;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 2px #ddd;
+    }
+    .timeline-dot.completed {
+        background-color: #28a745;
+        box-shadow: 0 0 0 2px #28a745;
+    }
+    .timeline-dot.current {
+        background-color: #17a2b8;
+        box-shadow: 0 0 0 2px #17a2b8;
+    }
+    .timeline-dot.pending {
+        background-color: #6c757d;
+        box-shadow: 0 0 0 2px #6c757d;
+    }
+    .timeline-line {
+        position: absolute;
+        left: -1.5rem;
+        top: 20px;
+        width: 2px;
+        height: calc(100% - 20px);
+        background-color: #ddd;
+    }
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    .status-confirmed {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    .status-option {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    .status-cancelled {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    .form-section {
+        background: #fff;
+        border: 1px solid #e3e6f0;
+        border-radius: 0.35rem;
+        margin-bottom: 1.5rem;
+    }
+    .form-section-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+        padding: 1rem 1.25rem;
+        font-weight: 600;
+        color: #5a5c69;
+    }
+    .form-section-body {
+        padding: 1.25rem;
+    }
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    .form-control {
+        border: 1px solid #d1d3e2;
+        border-radius: 0.35rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+    .form-control:focus {
+        border-color: #5a9bd4;
+        box-shadow: 0 0 0 0.2rem rgba(90, 155, 212, 0.25);
+    }
+    .btn-save {
+        background-color: #5cb85c;
+        border-color: #5cb85c;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 0.35rem;
+        font-weight: 500;
+    }
+    .btn-cancel {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 0.35rem;
+        font-weight: 500;
+        margin-right: 1rem;
+    }
+    .time-format-note {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+    .external-id-field {
+        background-color: #f8f9fa;
+    }
+    .add-btn {
+        background-color: #28a745;
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+    }
+    .reservation-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+    .res-code {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .res-id {
+        opacity: 0.9;
+        font-size: 0.9rem;
+    }
+</style>
 @endsection
+
 @section('breadcrum')
 <div class="page-header">
-    <h3 class="page-title"> Users</h3>
+    <h3 class="page-title">Reservation Management</h3>
     <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item "><a href="{{route('admin.dashboard')}}">Dashboard</a></li>  
-        <li class="breadcrumb-item"><a href="{{route('admin.user.list')}}">Users</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Edit</li>
-      </ol>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{route('admin.booking.list')}}">Reservations</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Reservation</li>
+        </ol>
     </nav>
 </div>
 @endsection
-@section('content')
-<div>
-    <div class="row">
-      <div class="col-12 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Edit User</h4>
-             
-            <form class="forms-sample" id="Edit-User" action="{{route('admin.user.edit',['id' => $user->id])}}" method="POST" enctype="multipart/form-data">
-              @csrf
-              
-              <div class="form-group">
-                <div class="row">
-                    <div class="col-6">
-                        <label for="exampleInputFirstName">Profile</label>
-                        <img 
-                            class=" img-lg  rounded-circle"
-                            @if(isset($user->userDetail) && !is_null($user->userDetail->profile))
-                                src="{{ asset('storage/images/' . $user->userDetail->profile) }}"
-                            @else
-                                src="{{ asset('admin/images/faces/face15.jpg') }}"
-                            @endif
-                            onerror="this.src = '{{ asset('admin/images/faces/face15.jpg') }}'"
-                            alt="User profile picture">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <label for="exampleInputFirstName">First Name</label>
-                        <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="First Name" name="first_name" value="{{$user->first_name ?? ''}}">
-                        @error('first_name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                    <div class="col-6">
-                        <label for="exampleInputLastName">Last Name</label>
-                        <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="exampleInputLastName" placeholder="Last Name" name="last_name" value="{{$user->last_name ?? ''}}">
-                        @error('last_name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                    <div class="col-6">
-                        <label for="exampleInputEmail">Email address</label>
-                        <input type="email" class="form-control  @error('email') is-invalid @enderror" id="exampleInputEmail" placeholder="Email" name="email" value="{{$user->email ?? ''}}" readonly>
-                        @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                    <div class="col-6">
-                        <label for="exampleInputGender">Gender</label>
-                        <select name="gender" id="exampleInputGender" class="form-control  @error('gender') is-invalid @enderror" >
-                            <option value="">Select Gender</option>
-                            <option value="Male" {{$user->userDetail ? (($user->userDetail->gender == 'Male' ) ? 'selected': '') : ''}}>Male</option>
-                            <option value="Female" {{$user->userDetail ? (($user->userDetail->gender == 'Female' ) ? 'selected': '') : ''}}>Female</option>
-                            <option value="Other" {{$user->userDetail ? (($user->userDetail->gender == 'Other' ) ? 'selected': '') : ''}}>Other</option>
-                        </select>
-                        @error('gender')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                   
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                    <div class="col-6">
-                        <label for="dob">Date Of Birth</label>
-                        <input type="date" class="form-control @error('dob') is-invalid @enderror" id="dob"  name = "dob" value = "{{$user->userDetail ? ($user->userDetail->dob ? ($user->userDetail->dob) : '') : ''}}" max="{{ \Carbon\Carbon::yesterday()->format('Y-m-d') }}">
-                        @error('dob')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                    <div class="col-6 select_country_code">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" class="form-control @error('phone_number') is-invalid @enderror" id="phone" placeholder="Phone Number" name="phone_number" value="{{$user->userDetail ? ($user->userDetail->phone_number ?? '') : ''}}">
-                        <input type="hidden" name="country_code" value="">
-                        <input type="hidden" name="country_short_code" value="{{$user->userDetail ? ($user->userDetail->country_short_code ?? 'us') : 'us'}}">
-                        @error('phone_number')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                </div> 
-              </div>
 
-              <div class="form-group">
-                <div class="row">
-                    <div class="col-6">
-                        <label for="address">Address</label>
-                        <input type="text" class="form-control @error('address') is-invalid @enderror" id="address" placeholder="Address" name = "address" value = {{$user->userDetail ? ($user->userDetail->address ?? '') : ''}}>
-                        @error('address')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
+@section('content')
+<div class="container-fluid">
+    <form method="POST" action="{{ route('admin.booking.edit', $booking->id) }}">
+        @csrf
+        
+        <div class="row">
+            <!-- Left Column - Status Timeline -->
+            <div class="col-md-3">
+                <div class="form-section">
+                    <div class="form-section-header">Reservation Status</div>
+                    <div class="form-section-body">
+                        <div class="mb-3">
+                            <span class="status-badge status-{{ strtolower($booking->status ?? 'confirmed') }}">
+                                {{ $booking->status ?? 'Confirmed' }}
                             </span>
-                        @enderror
-                    </div>
-                    <div class="col-6">
-                        <label for="exampleInputPinCode">Pin Code</label>
-                        <input type="text" class="form-control @error('zip_code') is-invalid @enderror" id="exampleInputPinCode" placeholder="Pin Code" name="zip_code" value = {{$user->userDetail ?($user->userDetail->zip_code ?? '') : ''}}>
-                        @error('zip_code')
-                          <span class="invalid-feedback" role="alert">
-                              <strong>{{ $message }}</strong>
-                          </span>
-                        @enderror
+                        </div>
+                        
+                        <div class="reservation-timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot completed"></div>
+                                <div class="timeline-line"></div>
+                                <div>
+                                    <strong>Reserved</strong><br>
+                                    <small class="text-muted">{{ $booking->created_at ? $booking->created_at->format('d-m-Y H:i') : '21-05-2025 10:56' }}</small>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot current"></div>
+                                <div class="timeline-line"></div>
+                                <div>
+                                    <strong>Check-In</strong>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot pending"></div>
+                                <div>
+                                    <strong>Check-Out</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div class="res-code">{{ $booking->reservation_code ?? '62MYR8V' }}</div>
+                            <div class="res-id">ResID: {{ $booking->id ?? '32666231' }} <small>(internal use only)</small></div>
+                        </div>
                     </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <div class="row">
-                    <div class="col-12">
-                        <label>Profile upload</label>
-                          <input type="file" name="profile" class="form-control file-upload-info" placeholder="Upload Image" accept="image/*">
+            </div>
+
+            <!-- Right Column - Main Form -->
+            <div class="col-md-9">
+                <!-- Room and Dates Section -->
+                <div class="form-section">
+                    <div class="form-section-header">Room & Stay Details</div>
+                    <div class="form-section-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Room type:</label>
+                                    <select class="form-control" name="room_type_id" id="room_type_select">
+                                        <option value="">--select room type--</option>
+                                        @foreach($roomTypes as $roomType)
+                                            <option value="{{ $roomType->room_type_id }}" 
+                                                {{ ($booking->room_type_id ?? '') == $roomType->room_type_id ? 'selected' : '' }}>
+                                                {{ $roomType->room_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Arrival date:</label>
+                                    <input type="date" class="form-control" name="checkin_date" value="{{ $booking->checkin_date ?? '2025-06-10' }}">
+                                    <div class="time-format-note">use 24 hour format</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Room Name:</label>
+                                    <select class="form-control" name="room_id" id="room_name_select">
+                                        <option value="">--select from list--</option>
+                                        @if(isset($booking->room_type_id))
+                                            @foreach($rooms as $room)
+                                                @if($room->room_type_id == $booking->room_type_id)
+                                                    <option value="{{ $room->room_id }}" 
+                                                        {{ ($booking->room_id ?? '') == $room->room_id ? 'selected' : '' }}>
+                                                        {{ $room->room_id }} - {{ $room->room_name }}
+                                                    </option>
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Departure Date:</label>
+                                    <input type="date" class="form-control" name="checkout_date" value="{{ $booking->checkout_date ?? '2025-06-12' }}">
+                                    <div class="time-format-note">use 24 hour format</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Source:</label>
+                                    <input type="text" class="form-control" name="booking_source" value="{{ $booking->booking_source ?? 'SabeeApp Connect API' }}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Nr. of nights:</label>
+                                    <input type="number" class="form-control" name="nights" value="{{ $booking->nights ?? '2' }}" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                  
+
+                        <div class="row">
+                          
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Reservation Date:</label>
+                                    <input type="text" class="form-control" name="reservation_date" value="{{ $booking->created_at ? $booking->created_at->format('d-m-Y H:i') : '21-05-2025 10:56' }}" readonly>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-              </div>
-              <button type="submit" class="btn btn-primary mr-2" >Update</button>
-            </form>
-          </div>
+
+            
+                <!-- Status Update Section -->
+                <div class="form-section">
+                    <div class="form-section-header">Reservation Status</div>
+                    <div class="form-section-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Status:</label>
+                                    <select class="form-control" name="status">
+                                        <option value="Confirmed" {{ ($booking->status ?? 'Confirmed') === 'Confirmed' ? 'selected' : '' }}>Confirmed</option>
+                                       
+                                        <option value="Cancelled" {{ ($booking->status ?? '') === 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                        
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+       
+              
+
+                <!-- Action Buttons -->
+                <div class="text-right mb-4">
+                    <button type="button" class="btn btn-cancel" onclick="window.history.back()">Cancel</button>
+                    <button type="submit" class="btn btn-save"> Update Reservation</button>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-</div>    
+    </form>
+</div>
 @endsection
+
 @section('scripts')
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ09dtOd8YHF_ZCbfbaaMHJKiOr26noY8&libraries=places" ></script>
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/js/intlTelInput.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const input = document.querySelector("#phone");
-        const countryShortCode = document.querySelector("input[name='country_short_code']").value;
-        const iti = window.intlTelInput(input, {
-            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/js/utils.js",
-            initialCountry: countryShortCode,
-            formatOnDisplay: false,  
-            nationalMode: false,    
+    $(document).ready(function() {
+        // Dynamic room loading based on room type selection
+        $('#room_type_select').change(function() {
+            const roomTypeId = $(this).val();
+            const roomSelect = $('#room_name_select');
+            
+            // Clear current room options
+            roomSelect.html('<option value="">--select from list--</option>');
+            
+            if (roomTypeId) {
+                // Show loading state
+                roomSelect.html('<option value="">Loading rooms...</option>');
+                
+                // Make AJAX request to get rooms for selected room type
+                $.ajax({
+                    url: '{{ route("admin.booking.get-rooms") }}',
+                    type: 'GET',
+                    data: {
+                        room_type_id: roomTypeId
+                    },
+                    success: function(response) {
+                        roomSelect.html('<option value="">--select from list--</option>');
+                        
+                        if (response.rooms && response.rooms.length > 0) {
+                            $.each(response.rooms, function(index, room) {
+                                roomSelect.append(
+                                    '<option value="' + room.room_id + '">' + 
+                                    room.room_id + ' - ' + room.room_name + 
+                                    '</option>'
+                                );
+                            });
+                        } else {
+                            roomSelect.append('<option value="">No rooms available</option>');
+                        }
+                    },
+                    error: function() {
+                        roomSelect.html('<option value="">Error loading rooms</option>');
+                    }
+                });
+            }
         });
 
-        
-        document.querySelector("#phone").addEventListener("change", function(event) {
-            const countryData = iti.getSelectedCountryData();
+        // Auto-calculate nights when dates change
+        function calculateNights() {
+            const checkinDate = new Date($('input[name="checkin_date"]').val());
+            const checkoutDate = new Date($('input[name="checkout_date"]').val());
             
-            let phoneNumber = iti.getNumber("e164");
-            phoneNumber = phoneNumber.replace(/\D/g, '');
-           
-            document.querySelector("input[name='country_code']").value = countryData.dialCode;
-            document.querySelector("input[name='country_short_code']").value = countryData.iso2;
+            if (checkinDate && checkoutDate && checkoutDate > checkinDate) {
+                const timeDiff = checkoutDate.getTime() - checkinDate.getTime();
+                const nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                $('input[name="nights"]').val(nights);
+            }
+        }
 
-            input.value = phoneNumber;
+        $('input[name="checkin_date"], input[name="checkout_date"]').change(calculateNights);
+
+        // Form validation
+        $('form').submit(function(e) {
+            const checkinDate = new Date($('input[name="checkin_date"]').val());
+            const checkoutDate = new Date($('input[name="checkout_date"]').val());
+            
+            if (checkoutDate <= checkinDate) {
+                e.preventDefault();
+                alert('Check-out date must be after check-in date');
+                return false;
+            }
+
+            const adults = parseInt($('input[name="adults"]').val());
+            if (adults < 1) {
+                e.preventDefault();
+                alert('At least one adult is required');
+                return false;
+            }
+        });
+
+        // Status change confirmation
+        $('select[name="status"]').change(function() {
+            const newStatus = $(this).val();
+            if (newStatus === 'Cancelled' || newStatus === 'NoShow') {
+                if (!confirm('Are you sure you want to change the status to ' + newStatus + '?')) {
+                    $(this).val('{{ $booking->status ?? "Confirmed" }}');
+                }
+            }
         });
     });
 </script>
-
-<script>
-  $(document).ready(function() {
-
-    var err = false;
-    var autocomplete = new google.maps.places.Autocomplete(
-        document.getElementById('address'), {
-            types: ['geocode']
-        }
-    );
-    autocomplete.addListener('place_changed', function() {
-        var place = autocomplete.getPlace();
-        var postalCode = '';
-        if (place.address_components) {
-            for (var i = 0; i < place.address_components.length; i++) {
-                var component = place.address_components[i];
-                if (component.types.includes('postal_code')) {
-                    postalCode = component.long_name;
-                    break;
-                }
-            }
-            $('#exampleInputPinCode').val(postalCode);
-        }
-    });
-
-    $("#Edit-User").submit(function(e){
-        e.preventDefault();
-    }).validate({
-        rules: {
-            first_name: {
-                required: true,
-                noSpace: true,
-                minlength: 3,
-                maxlength:25,
-            },
-            last_name: {
-                required: true,
-                noSpace: true,
-                minlength: 3,
-                maxlength:25,
-            },
-            email: {
-                required: true,
-                email: true
-            },
-            phone_number: {
-                number: true,
-                // minlength:10,
-                maxlength: 12,
-            },
-        },
-        messages: {
-            first_name: {
-                required: "First name is required",
-                minlength: "First name must consist of at least 3 characters",
-                maxlength: "First name must not contains more then 25 characters."
-            },
-            last_name: {
-                required: "Last name is required",
-                minlength: "Last name must consist of at least 3 characters",
-                maxlength: "Last name must not contains more then 25 characters."
-            },
-            email: {
-                email: "Please enter a valid email address"
-            },
-            phone_number: {
-                number: 'Only numeric value is acceptable',
-                minlength:  'Phone number must be 10 digits',
-                maxlength:  'Phone number must be 10 digits'
-            },
-        },
-        submitHandler: function(form) {
-          form.submit();
-      }
-
-    });
-  });
-  </script>
-@stop
+@endsection

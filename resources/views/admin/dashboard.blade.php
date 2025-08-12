@@ -65,7 +65,7 @@
                             <i class="fa-solid fa-check"></i>
                         </div>
                          <h3 class="my-2 count-text">{{$responseData['total_Option'] ?? 0}}</h3>
-                        <h6 class="glove-text  font-weight-normal">Option Booking</h6>
+                        <h6 class="glove-text  font-weight-normal">Cancelled Booking</h6>
                     </div>
                 </a>
             </div>
@@ -195,7 +195,7 @@
     
   };
   const doughnutPieData = {
-    labels: ["Option", "Confirmed", "CheckedIn", "Onboard", "CheckedOut"],
+    labels: ["Cancelled", "Confirmed", "CheckedIn", "Onboard", "CheckedOut"],
     datasets: [{
       data: [
       bookingStatusData.option,
@@ -270,26 +270,5 @@
     }
   });
 
-  const doughnutCanvas = document.getElementById("chartjs-doughnut").getContext("2d");
-  new Chart(doughnutCanvas, {
-    type: "doughnut",
-    data: {
-      labels: ["Social", "Search Engines", "Direct", "Other"],
-      datasets: [{
-        data: [260, 125, 54, 146],
-        backgroundColor: [
-          window.theme.primary || "#007bff",
-          window.theme.success || "#28a745",
-          window.theme.warning || "#ffc107",
-          "#dee2e6"
-        ],
-        borderColor: "transparent"
-      }]
-    },
-    options: {
-      maintainAspectRatio: false,
-      cutout: "65%",
-    }
-  });
 </script>
 @endsection

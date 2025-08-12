@@ -30,6 +30,54 @@ class ReviewController extends Controller
             return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
+
+
+
+    public function getFeedbackByType(Request $request)
+{
+    try {
+        $type = $request->input('type'); // hotel or room
+        $id = $request->input('id'); // hotel_id or room_id
+
+        if (!in_array($type, ['hotel', 'room']) || !$id) {
+            return $this->apiResponse('error', 400, 'Invalid type or ID provided.');
+        }
+
+        // Fetch feedbacks based on type
+        if ($type === 'hotel') {
+            $feedbacks = Feedback::where('hotel_id', $id)->latest()->get();
+            $averageRating = Feedback::where('hotel_id', $id)->avg('rating');
+            $ratings = Feedback::where('hotel_id', $id)
+                ->selectRaw('rating, COUNT(*) as total')
+                ->groupBy('rating')
+                ->pluck('total', 'rating')
+                ->toArray();
+        } else {
+            $feedbacks = Feedback::where('room_id', $id)->latest()->get();
+            $averageRating = Feedback::where('room_id', $id)->avg('rating');
+            $ratings = Feedback::where('room_id', $id)
+                ->selectRaw('rating, COUNT(*) as total')
+                ->groupBy('rating')
+                ->pluck('total', 'rating')
+                ->toArray();
+        }
+
+        // Ensure all ratings from 1 to 5 are represented
+        $ratingBreakdown = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $ratingBreakdown[$i] = $ratings[$i] ?? 0;
+        }
+
+        return $this->apiResponse('success', 200, 'Feedback ' . config('constants.SUCCESS.FETCH_DONE'), [
+            'average_rating' => round($averageRating, 2),
+            'rating_counts' => $ratingBreakdown,
+            'feedbacks' => $feedbacks,
+        ]);
+    } catch (\Exception $e) {
+        return $this->apiResponse('error', 400, $e->getMessage());
+    }
+}
+
     /**End method index**/
 
     /**
@@ -57,29 +105,33 @@ class ReviewController extends Controller
      * purpose      : add review
      */
     public function store(Request $request)
-    {
-        try {
-            $validator = Validator::make($request->all(), [
-                'message' => 'required|string|max:1000',
-                'rating' => 'nullable|integer|min:1|max:5'
-            ]);
+{
+    try {
+        $validator = Validator::make($request->all(), [
+            'hotel_id' => 'required|exists:hotels,id',
+            'room_id'  => 'nullable|exists:rooms,id',
+            'message'  => 'required|string|max:1000',
+            'rating'   => 'nullable|integer|min:1|max:5',
+        ]);
 
-            if ($validator->fails()) {
-                return $this->apiResponse('error', 422, $validator->errors()->first());
-            }
-
-            $feedback = Feedback::create([
-                'user_id' => authId(),
-                'hotel_id' => $request->hotel_id,
-                'message' => $request->message,
-                'rating' => $request->rating,
-            ]);
-
-            return $this->apiResponse('success', 200, 'Feedback ' . config('constants.SUCCESS.ADD_DONE'), $feedback);
-        } catch (\Exception $e) {
-            return $this->apiResponse('error', 400, $e->getMessage());
+        if ($validator->fails()) {
+            return $this->apiResponse('error', 422, $validator->errors()->first());
         }
+
+        $feedback = Feedback::create([
+            'user_id'  => authId(),
+            'hotel_id' => $request->hotel_id,
+            'room_id'  => $request->room_id,
+            'message'  => $request->message,
+            'rating'   => $request->rating,
+        ]);
+
+        return $this->apiResponse('success', 200, 'Feedback ' . config('constants.SUCCESS.ADD_DONE'), $feedback);
+    } catch (\Exception $e) {
+        return $this->apiResponse('error', 400, $e->getMessage());
     }
+}
+
 
     /**End method store**/
 

@@ -10,6 +10,13 @@
                 <li class="breadcrumb-item active" aria-current="page">Service List</li>
             </ol>
         </nav>
+        <a href="{{ url('/api/sabee/service/fetch') }}">
+            <button type="button" class="btn btn-primary btn-md">
+                <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
+                <span class="menu-text">Get Services</span>
+            </button>
+        </a>
+
     </div>
 @endsection
 

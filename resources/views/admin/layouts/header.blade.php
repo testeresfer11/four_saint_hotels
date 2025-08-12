@@ -8,61 +8,70 @@
   <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
     <ul class="navbar-nav navbar-nav-right">
 
-      <!-- Hotel Dropdown (Corrected Position) -->
-      <li class="nav-item dropdown hotel_status">
-        <a class="nav-link dropdown-toggle" href="#" id="hotelDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-          Select Hotel
-        </a>
-        <div class="dropdown-menu" aria-labelledby="hotelDropdown">
-        <form method="POST" action="{{ route('admin.hotel.select') }}">
-            @csrf
-            <select name="hotel_id" onchange="this.form.submit()">
-                <option value="">All Hotels</option>
-                @foreach($hotels as $hotel)
-                    <option value="{{ $hotel->hotel_id }}" @selected(session('selected_hotel_id') == $hotel->hotel_id)>
-                      {{ $hotel->name }}
-                  </option>
+      @php
+    $selectedHotelId = session('selected_hotel_id');
 
-                @endforeach
-            </select>
-        </form>
+   
+    @endphp
+
+  <form method="POST" action="{{ route('admin.hotel.select') }}">
+      @csrf
+      <select name="hotel_id" class="form-control hotel_status" onchange="this.form.submit()">
+          <option value="">Select Hotel</option>
+          @foreach($hotels as $hotel)
+              <option value="{{ $hotel->hotel_id }}" {{ $selectedHotelId == $hotel->hotel_id ? 'selected' : '' }}>
+                  {{ $hotel->name }}
+              </option>
+          @endforeach
+      </select>
+  </form>
 
 
-        </div>
-      </li>
+
+
+
 
 
       @php
-          $notification_count = auth()->user()->unreadNotifications()->count();
+      $notification_count = auth()->user()->unreadNotifications()->count();
       @endphp
 
       <!-- Notifications -->
       <li class="nav-item dropdown">
-        <a class="nav-link count-indicator dropdown-toggle notifi read-notification" id="notificationDropdown" href="#" data-toggle="dropdown">
-          <i class="mdi mdi-bell"></i>
-          <span class="noti-count">2</span>
-          @if ($notification_count)
-            <span class="count bg-danger"></span>
-          @endif
-        </a>
-        @if($notification_count)
-          <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
-            <h6 class="p-3 mb-0">Notifications</h6>
-            @foreach (auth()->user()->unreadNotifications()->take(5)->get() as $notification)
-              <div class="dropdown-divider m-0"></div>
-              <a href="{{ route('admin.notification.list') }}">
-                <p class="preview-subject p-3 mb-0">{{ ($notification->data)['description'] }}</p>
-              </a>
-            @endforeach
-            @if(auth()->user()->unreadNotifications()->count() > 5)
-              <div class="dropdown-divider"></div>
-              <a href="{{ route('admin.notification.list') }}">
-                <p class="p-3 mb-0 text-center">See all notifications</p>
-              </a>
-            @endif
-          </div>
-        @endif
-      </li>
+
+  <a class="nav-link count-indicator dropdown-toggle notifi read-notification" id="notificationDropdown" href="{{ route('admin.notification.list') }}" data-toggle="dropdown" aria-expanded="false">
+
+  
+    <i class="fa-regular fa-bell"></i>
+    @if($notification_count)
+      <span class="noti-count">{{ $notification_count }}</span>
+      <span class="count bg-danger"></span>
+    @endif
+  </a>
+
+  @if($notification_count)
+  <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+    <h6 class="p-3 mb-0">Notifications</h6>
+
+    @foreach (auth()->user()->unreadNotifications()->take(5)->get() as $notification)
+      <div class="dropdown-divider m-0"></div>
+      <a class="dropdown-item preview-item" href="{{ route('admin.notification.list') }}">
+        <div class="preview-item-content">
+          <p class="preview-subject mb-0">{{ ($notification->data)['description'] }}</p>
+        </div>
+      </a>
+    @endforeach
+
+    @if(auth()->user()->unreadNotifications()->count() > 5)
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item text-center" href="{{ route('admin.notification.list') }}">
+        See all notifications
+      </a>
+    @endif
+  </div>
+  @endif
+</li>
+
 
       <!-- Profile -->
       <li class="nav-item dropdown">
@@ -78,7 +87,7 @@
           <a class="dropdown-item preview-item" href="{{ route('admin.profile') }}">
             <div class="preview-thumbnail">
               <div class="preview-icon bg-dark rounded-circle">
-                <i class="mdi mdi-account"></i>
+                <i class="fa-regular fa-user"></i>
               </div>
             </div>
             <div class="preview-item-content">
@@ -86,10 +95,10 @@
             </div>
           </a>
           {{-- <div class="dropdown-divider"></div> --}}
-          <a class="dropdown-item preview-item" href="{{ route('admin.logout') }}">
+          <a class="dropdown-item preview-item" href="javascript:void(0);" data-toggle="modal" data-target="#logoutModal1">
             <div class="preview-thumbnail">
               <div class="preview-icon bg-dark rounded-circle">
-                <i class="mdi mdi-logout"></i>
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
               </div>
             </div>
             <div class="preview-item-content">
@@ -105,3 +114,23 @@
     </button>
   </div>
 </nav>
+<div class="modal fade" id="logoutModal1" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content px-4 py-3">
+      <div class="icon-box text-center pb-3">
+        <span>
+          <img src="{{ asset('images/logout-img.png') }}" alt="logout" class="img-fluid">
+        </span>
+      </div>
+      <div class="modal-body text-center">
+        <h3 class="modal-title" id="logoutModalLabel">Are you sure you want to logout?</h3>
+      </div>
+      <div class="text-center modal-footer-btn pt-2">
+        <!-- Cancel Button -->
+        <a href="javascript:void(0);" class="btn btn-secondary mr-3" data-dismiss="modal">Cancel</a>
+        <!-- Logout Button -->
+        <a class="btn btn-logout" href="{{ route('admin.logout') }}">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>

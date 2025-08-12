@@ -2,7 +2,7 @@
 
 namespace App\Services\API;
 
-use App\Models\{Hotel, HotelRoomType, HotelRatePlan, HotelRatePlanRoomType};
+use App\Models\{Hotel, HotelRoomType, HotelRatePlan, Service, HotelRoom, HotelImage, RoomTypeImage,RoomAvailability};
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
@@ -41,7 +41,6 @@ class SabeeHotelService
     public function fetchAndStoreHotels()
     {
         $hotels = $this->fetchHotelInventory();
-       
 
         foreach ($hotels as $hotel) {
             // Save or update hotel data
@@ -63,6 +62,7 @@ class SabeeHotelService
 
             // Fetch and save room types by hotel ID
             $roomTypes = $this->fetchRoomTypesByHotelId($hotel['hotel_id']);
+
 
             foreach ($roomTypes as $roomType) {
                 // Save or update room type
@@ -160,21 +160,138 @@ class SabeeHotelService
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function hotelDetail($id)
+   public function hotelDetail($id)
+{
+    $hotel = Hotel::with([
+        'roomTypes',
+        'ratePlans',
+        'hotelImages',
+        'feedbacks',
+        'feedbacks.user',
+        'categories',
+        'categories.subCategories'
+    ])
+    ->where('hotel_id', $id)
+    ->first();
+
+    if ($hotel) {
+        // Format category and sub-category icons
+        foreach ($hotel->categories as $category) {
+            $category->icon = $category->icon ? asset('storage/' . ltrim($category->icon, '/')) : null;
+
+            foreach ($category->subCategories as $sub) {
+                $sub->image = $sub->image ? asset('storage/' . ltrim($sub->image, '/')) : null;
+            }
+        }
+
+        // Format hotel image paths
+        foreach ($hotel->hotelImages as $image) {
+            $image->image_path = $image->image_path ? asset(ltrim($image->image_path, '/')) : null;
+        }
+
+        // Add average rating
+        $hotel->average_rating = $hotel->feedbacks->avg('rating');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Hotel details fetched successfully.',
+            'data' => $hotel
+        ], 200);
+    } else {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Hotel not found.',
+        ], 404);
+    }
+}
+
+     /**
+     * Get room type details from local database with relations (room types and rate plans).
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+
+    public function RoomDetail($id)
     {
-        $hotel = Hotel::with('roomTypes', 'ratePlans','hotelImages', 'feedbacks','categories','categories.subCategories')->where('hotel_id', $id)->first();
+        $hotel = HotelRoomType::with('rooms', 'images','rates', 'serviceCategories','hotel')->where('room_type_id', $id)->first();
 
         if ($hotel) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Hotel details fetched successfully.',
+                'message' => 'Room type details fetched successfully.',
                 'data' => $hotel
             ], 200);
         } else {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Hotel not found.',
+                'message' => 'Room type not found.',
             ], 404);
         }
     }
+
+
+     /**
+     * Get room type avlability from local database with relations (room types and rate plans).
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAvailabilityByRoomType($hotelId, $startDate = null, $endDate = null)
+    {
+        $startDate = $startDate ?? Carbon::now()->format('Y-m-d');
+        $endDate = $endDate ?? Carbon::now()->addDays(30)->format('Y-m-d');
+
+        $roomTypes = HotelRoomType::where('hotel_id', $hotelId)->get();
+        if ($roomTypes->isEmpty()) {
+            return ['status' => false, 'message' => 'No room types found.'];
+        }
+
+        $rooms = $roomTypes->map(function ($type) {
+            return ['room_id' => $type->room_type_id]; 
+        })->toArray();
+
+        $response = Http::withHeaders([
+            'api_key' => config('services.sabee.api_key'),
+            'api_version' => config('services.sabee.api_version'),
+            'Content-Type' => 'application/json',
+        ])->post(config('services.sabee.api_url') . 'availabilityandrates/availability', [
+            'hotel_id' => $hotelId,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'rooms' => $rooms
+        ]);
+
+        if (!$response->successful()) {
+            return ['status' => false, 'message' => 'Failed to fetch availability.'];
+        }
+
+        $apiData = $response->json()['data']['rooms'] ?? [];
+
+        foreach ($apiData as $availability) {
+            $roomId = $availability['room_id'];
+            $roomType = $roomTypes->firstWhere('room_type_id', $roomId); // match with Sabee room_id
+
+            if (!$roomType) continue;
+
+            RoomAvailability::updateOrCreate(
+                [
+                    'room_type_id' => $roomType->room_type_id,
+                    
+                ],
+                [
+                    'start_date' => $availability['start_date'],
+                    'end_date' => $availability['end_date'],
+                    'available_rooms' => $availability['available_rooms']
+                ]
+            );
+        }
+
+        return ['status' => true, 'message' => 'Availability synced successfully.'];
+    }
+
+
+
+
+    
 }

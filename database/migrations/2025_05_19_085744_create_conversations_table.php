@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('conversations', function (Blueprint $table) {
+       Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->string('twilio_sid')->unique();
-            $table->string('friendly_name')->nullable();
-            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('user_one_id');
+            $table->unsignedBigInteger('user_two_id');
             $table->timestamps();
 
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            $table->unique(['user_one_id', 'user_two_id']);
+            $table->foreign('user_one_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_two_id')->references('id')->on('users')->onDelete('cascade');
         });
+
     }
 
     /**

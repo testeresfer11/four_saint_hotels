@@ -26,6 +26,7 @@ class Booking extends Model
         'paid',
         'currency',
         'rateplan',
+        'room_count',
         'comment',
         'created_at_api',
         'updated_at_api'
@@ -64,6 +65,16 @@ class Booking extends Model
 
     public function payments(){
     return $this->hasMany(BookingPayment::class, 'booking_id');
+    }
+
+      public function hotel()
+    {
+        return $this->belongsTo(Hotel::class, 'hotel_id', 'hotel_id');
+    }
+
+     public function roomType()
+    {
+        return $this->belongsTo(HotelRoomType::class, 'room_type_id', 'room_type_id');
     }
 
 }

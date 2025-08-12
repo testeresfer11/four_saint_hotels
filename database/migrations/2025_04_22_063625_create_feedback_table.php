@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable(); 
             $table->unsignedBigInteger('hotel_id')->nullable(); 
+            $table->unsignedBigInteger('room_id')->nullable();
+
             $table->text('message');
             $table->tinyInteger('rating')->nullable(); 
             $table->tinyInteger('status')->default(1); 

@@ -26,10 +26,19 @@
                     <div class="admin-filters">
                         <form id="filter">
                             <div class="row align-items-center justify-content-end">
-                                <div class="col-6 d-flex gap-2">
+                                <div class="col-3 d-flex gap-2">
                                     <input type="text" class="form-control"  placeholder="Search" name="search_keyword" value="{{request()->filled('search_keyword') ? request()->search_keyword : ''}}">            
                                 </div>
-                                <div class="col-3">
+
+                                 <div class="col-md-2">
+                                    <input type="date" class="form-control" name="checkin_date" value="{{ request()->checkin_date }}">
+                                </div>
+
+                                <div class="col-md-2">
+                                    <input type="date" class="form-control" name="checkout_date" value="{{ request()->checkout_date }}">
+                                </div>
+
+                                <div class="col-2">
                                     <select class="form-control" name="status" style="width:100%">
                                         <option value="">All</option>
                                         <option value="CheckedOut" {{(request()->filled('status') && request()->status == "CheckedOut")? 'selected' : ''}}>CheckedOut</option>
@@ -114,7 +123,13 @@
                 <span class="menu-icon">
                         <a href="{{route('admin.booking.view',['id' => $booking->id])}}" title="View" class="text-primary"><i class="mdi mdi-eye"></i></a>
                       </span>&nbsp;&nbsp;&nbsp;
+                       {{--<a href="{{ route('admin.booking.edit', ['id' => $booking->id]) }}" ><i class="mdi mdi-pencil"></i></a>&nbsp;&nbsp;&nbsp;--}}
+                   <a href="#" title="Cancel Booking" class="text-danger cancelBooking" data-id="{{ $booking->reservation_code }}" data-hotel="{{ $booking->hotel_id }}"><i class="mdi mdi-cancel"></i></a>
+
                 </td>
+
+               
+
             </tr>
         @empty
             <tr>
@@ -250,23 +265,27 @@
 
 </script>
 <script>
+document.addEventListener("DOMContentLoaded", function () {
     const fetchBookingsUrl = @json(route('admin.booking.get'));
 
-    document.getElementById('fetchBookingsBtn').addEventListener('click', function () {
-        const fetchText = document.getElementById('fetchBookingBtnText');
-        const fetchLoader = document.getElementById('fetchBookingBtnLoader');
+    const fetchBtn = document.getElementById('fetchBookingsBtn');
+    const fetchText = document.getElementById('fetchBookingBtnText');
+    const fetchLoader = document.getElementById('fetchBookingBtnLoader');
 
+    fetchBtn.addEventListener('click', function () {
         // Show loader, hide text
-        // fetchText.classList.add('d-none');
-        // fetchLoader.classList.remove('d-none');
+        fetchText.classList.add('d-none');
+        fetchLoader.classList.remove('d-none');
 
-        // Get today's date in YYYY-MM-DD format
         const today = new Date().toISOString().split('T')[0];
+        const endDateObj = new Date();
+        endDateObj.setDate(endDateObj.getDate() + 30);
+        const end = endDateObj.toISOString().split('T')[0];
 
         const params = new URLSearchParams({
-            hotel_id: 8618, // change this if dynamic
-            start_date: today, // you can change this if needed
-            end_date: today,
+            hotel_id: 8618,
+            start_date: today,
+            end_date: end,
             extended_list: 1,
             services: 1,
             guest_details: 1
@@ -275,11 +294,11 @@
         fetch(`${fetchBookingsUrl}?${params.toString()}`)
             .then(response => response.json())
             .then(data => {
-                // Show text, hide loader
-                fetchText.classList.remove('d-none');   
+                // Restore UI
+                fetchText.classList.remove('d-none');
                 fetchLoader.classList.add('d-none');
 
-                if (data.status_code ==200) {
+                if (data.status_code == 200) {
                     toastr.success(data.message);
                     setTimeout(() => {
                         location.reload();
@@ -294,7 +313,62 @@
                 toastr.error("Something went wrong: " + error.message);
             });
     });
+});
 </script>
+
+
+
+
+<script>
+$(document).on('click', '.cancelBooking', function(e) {
+    e.preventDefault();
+
+    let reservationCode = $(this).data('id');
+    let hotelId = $(this).data('hotel');
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you really want to cancel this booking?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#B46326',
+        cancelButtonColor: '#fff',
+        confirmButtonText: 'Yes, cancel it!',
+        cancelButtonText: 'No, keep it',
+        customClass: {
+            cancelButton: 'swal-cancel-custom'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '{{ route("admin.booking.cancel") }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    reservation_code: reservationCode,
+                    hotel_id: hotelId,
+                },
+                success: function(response) {
+                    console.log(response.data);
+                    if (response.data.success === true) {
+                        toastr.success(response.message);
+                    } else if (response.status === 'warning') {
+                        toastr.warning(response.message);
+                    } else {
+                         console.log(response.data);
+                        toastr.error('Error cancelling booking: Already cancelled');
+                    }
+                },
+                error: function() {
+                    toastr.error('An error occurred while cancelling booking.');
+                }
+            });
+        }
+    });
+});
+
+</script>
+
 
 @endsection
 

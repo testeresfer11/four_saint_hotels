@@ -39,7 +39,7 @@
 
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" id="title" placeholder="Enter title">
+                        <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" id="title" placeholder="Enter title" maxlength="20">
                         @error('title')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                         @enderror
@@ -54,7 +54,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="icon">Icon (optional)</label>
+                        <label for="icon">Icon </label>
                         <input type="file" name="icon" class="form-control @error('icon') is-invalid @enderror" id="icon" accept="image/*" onchange="previewIcon(event)">
                         @error('icon')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
@@ -64,7 +64,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Add Category</button>
+                    <button type="submit" class="btn btn-primary mt-3">Add Feature</button>
                 </form>
             </div>
         </div>
@@ -96,6 +96,7 @@
                     maxlength: 255
                 },
                 icon: {
+                    required: true,
                     extension: "jpg|jpeg|png|svg",
                     filesize: 2097152 // 2MB in bytes
                 }
@@ -110,6 +111,7 @@
                     maxlength: "Title must not exceed 255 characters."
                 },
                 icon: {
+                    required: "Icon is required.",
                     extension: "Only jpg, jpeg, png, svg files are allowed.",
                 }
             },

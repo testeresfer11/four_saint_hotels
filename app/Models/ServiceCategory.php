@@ -24,4 +24,9 @@ class ServiceCategory extends Model
     {
         return $this->belongsTo(Hotel::class);
     }
+
+    public function hotelRoomTypes(){
+     return $this->belongsToMany(HotelRoomType::class);
+    }
+    
 }

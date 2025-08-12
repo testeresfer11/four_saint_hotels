@@ -16,4 +16,10 @@ class HotelImage extends Model
     {
         return $this->belongsTo(Hotel::class);
     }
+    protected function imagePath(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => url($value) // full URL
+        );
+    }
 }

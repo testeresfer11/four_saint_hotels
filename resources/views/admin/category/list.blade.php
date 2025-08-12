@@ -45,7 +45,7 @@
                   @if ($category->icon && file_exists(public_path('storage/' . $category->icon)))
                       <img src="{{ asset('storage/' . $category->icon) }}" alt="Category Icon" width="50" height="50">
                   @else
-                      <img src="{{ asset('admin/images/default-icon.png') }}" alt="Default Icon" width="50" height="50">
+                      <img src="{{ asset('admin/images/new-features.png') }}" alt="Default Icon" width="50" height="50">
                   @endif
               </td>
 
@@ -76,12 +76,15 @@
     var category_id = $(this).data('id');
     Swal.fire({
       title: "Are you sure?",
-      text: "You want to delete the Category?",
+      text: "You want to delete this Feature?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#2ea57c",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonColor: '#B46326',
+      cancelButtonColor: '#fff',
+      confirmButtonText: "Yes, delete it!",
+      customClass: {
+            cancelButton: 'swal-cancel-custom'
+        }
     }).then((result) => {
       if (result.isConfirmed) {
         $.ajax({
@@ -117,7 +120,7 @@
 
     Swal.fire({
       title: "Are you sure?",
-      text: "Do you want to change the status of the category?",
+      text: "Do you want to change the status of the Feature?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#2ea57c",

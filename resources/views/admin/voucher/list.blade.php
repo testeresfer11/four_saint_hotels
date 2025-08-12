@@ -2,11 +2,11 @@
 @section('title', 'Coupans')
 @section('breadcrum')
 <div class="page-header">
-    <h3 class="page-title">Coupans</h3>
+    <h3 class="page-title">Coupons</h3>
     <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item "><a href="{{route('admin.dashboard')}}">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Coupans</li>
+        <li class="breadcrumb-item active" aria-current="page">Coupons</li>
     </ol>
     </nav>
 </div>
@@ -17,17 +17,18 @@
     <div class="card">
       <div class="card-body p-0">
         <div class="d-flex justify-content-between flex-column flex-md-row px-3 py-3 align-items-md-center align-items-start">
-          <h4 class="card-title m-0">Coupans Management</h4>
+          <h4 class="card-title m-0"></h4>
           <div class="d-flex align-items-center justify-content-between">
-            <div class="admin-filters">
-              <x-filter />
-            </div>
-            <a href="{{route('admin.vouchers.sync')}}">
+            
+
+
+            <a href="{{route('admin.vouchers.add')}}">
               <button type="button" class="btn btn-primary btn-md">
                 <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
-                <span class="menu-text">Get Coupan</span>
-              </button>
+                <span class="menu-text">Add Coupons</span>
+
             </a>
+
           </div>
         </div>
         <div class="table-responsive">
@@ -40,17 +41,27 @@
                     <th>Value</th>
                     <th>Available</th>
                     <th>Expiration Date</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($coupons as $coupon)
-                    <tr>
+                    <tr data-id="{{$coupon->id}}">
+
                         <td>{{ $coupon->coupon_code }}</td>
                         <td>{{ $coupon->coupon_name }}</td>
                         <td>{{ $coupon->type }}</td>
                         <td>{{ $coupon->value }}</td>
                         <td>{{ $coupon->available }}</td>
                         <td>{{ $coupon->expiration_date ?? 'N/A' }}</td>
+                        <td> 
+                      <span class="menu-icon">
+                        <a href="{{route('admin.vouchers.edit',['id' => $coupon->id])}}" title="Edit" class="text-success"><i class="mdi mdi-pencil"></i></a>
+                      </span>&nbsp;&nbsp;
+                      <span class="menu-icon">
+                        <a href="#" title="Delete" class="text-danger deleteRole" data-id="{{$coupon->id}}"><i class="mdi mdi-delete"></i></a>
+                      </span> 
+                    </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -64,11 +75,11 @@
 @endsection
 @section('scripts')
 <script>
-  $('.deleteBanner').on('click', function() {
+  $('.deleteRole').on('click', function() {
     var category_id = $(this).data('id');
     Swal.fire({
         title: "Are you sure?",
-        text: "You want to delete the Banner?",
+        text: "You want to delete the Coupon?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#2ea57c",

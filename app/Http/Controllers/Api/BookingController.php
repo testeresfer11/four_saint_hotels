@@ -6,9 +6,21 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\API\SabeeBookingService;
 use App\Traits\SendResponseTrait;
-use App\Notifications\BookingCreatedNotification;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+use App\Models\Booking;
+use App\Models\BookingCustomer;
+use App\Models\BookingGuest;
+use App\Models\BookingPrice;
+use App\Models\BookingService;
+use App\Models\BookingServicePrice;
+use App\Models\BookingPayment;
+use App\Models\OtherServiceCategory;
+use Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+
+use App\Notifications\{BookingCreatedNotification,BookingCreated};
+
 
 
 class BookingController extends Controller
@@ -40,22 +52,20 @@ class BookingController extends Controller
         // Retrieve query parameters
         $hotel_id = session('selected_hotel_id', 8618);
         $start_date = $request->query('start_date');
+        $end_date = $request->query('end_date');
 
-        $start_date = $request->query('start_date');
         if ($start_date) {
-            $start_date = Carbon::parse($start_date)->startOfMonth()->toDateString(); // Use given date, reset to start of its month
+            $start_date = $request->query('start_date'); 
         } else {
-            $start_date = now()->startOfMonth()->toDateString(); // Default to start of current month
+            $end_date = $request->query('end_date');
         }
 
-        $end_date = $request->query('end_date', now()->toDateString());
 
-        $extended_list = $request->query('extended_list', 1); // Default to 1
-        $services = $request->query('services', 1); // Default to 1
+        $extended_list = $request->query('extended_list', 1);
+        $services = "0"; // Default to 1
         $guest_details = $request->query('guest_details', 1); // Default to 1
-
         try {
-            // Fetch bookings using SabeeBookingService
+
             $bookings = $this->sabeeBookingService->fetchBookings(
                 $hotel_id,
                 $start_date,
@@ -65,9 +75,32 @@ class BookingController extends Controller
                 $guest_details
             );
 
-             return $this->apiResponse('success', 200, 'Bookings ' . config('constants.SUCCESS.FETCH_DONE'), ['bookings' => $bookings]);
+            return $this->apiResponse('success', 200, 'Bookings ' . config('constants.SUCCESS.FETCH_DONE'), ['bookings' => $bookings]);
         } catch (\Exception $e) {
-           return $this->apiResponse('error', 400, $e->getMessage());
+            return $this->apiResponse('error', 400, $e->getMessage());
+        }
+    }
+
+
+    public function getTodayCreatedBookings(Request $request)
+    {
+        $hotel_id = $request->query('hotel_id', session('selected_hotel_id', 8618));
+        $today = now()->format('Y-m-d');
+
+        try {
+            $bookings = $this->sabeeBookingService->fetchBookings(
+                $hotel_id,
+                $today,         // start_date
+                $today,         // end_date
+                2,              // extended_list = 2 → created/modified today
+                0,              // services
+                1,              // guest_details
+                1               // all_status
+            );
+
+            return $this->apiResponse('success', 200, 'Bookings created today fetched successfully.', ['bookings' => $bookings]);
+        } catch (\Exception $e) {
+            return $this->apiResponse('error', 400, $e->getMessage());
         }
     }
 
@@ -86,9 +119,9 @@ class BookingController extends Controller
 
     public function create(Request $request)
     {
-        
         $validated = $request->validate([
             'hotel_id' => 'required|integer',
+            'room_count' => 'required|integer',
             'customer.first_name' => 'required|string',
             'customer.last_name' => 'required|string',
             'customer.email' => 'required|email',
@@ -111,40 +144,109 @@ class BookingController extends Controller
             // Build payload directly from validated input
             $payload = [
                 'hotel_id' => $validated['hotel_id'],
+                'room_count' =>$validated['room_count'],
                 'reference_id' => uniqid(),
                 'customer' => $validated['customer'],
                 'rooms' => [],
             ];
 
-            foreach ($validated['rooms'] as $room) {
-                $payload['rooms'][] = [
-                    'checkin_date' => $room['checkin_date'],
-                    'checkout_date' => $room['checkout_date'],
-                    'checkedin_time' => $room['checkedin_time'] ?? null,
-                    'checkedout_time' => $room['checkedout_time'] ?? null,
-                    'room_id' => $room['room_id'],
-                    'rateplan_id' => $room['rateplan_id'] ?? 0,
-                    'name' => $room['name'] ?? '',
-                    'guests' => $room['guests'] ?? [],
-                    'guest_count' => $room['guest_count'],
-                    'rate_type' => $room['rate_type'] ?? 'BaseRate',
-                    'prices' => $room['prices'],
-                    'currency' => $room['currency'],
-                    'total_price' => $room['total_price'],
-                    'services' => $room['services'] ?? [],
-                ];
-            }
+           foreach ($validated['rooms'] as $room) {
+            $payload['rooms'][] = [
+                'checkin_date' => $room['checkin_date'] ?? null,
+                'checkout_date' => $room['checkout_date'] ?? null,
+                'checkedin_time' => $room['checkedin_time'] ?? null,
+                'checkedout_time' => $room['checkedout_time'] ?? null,
+                'room_id' => $room['room_id'] ?? null,
+                'rateplan_id' => $room['rateplan_id'] ?? 0,
+                'name' => $room['name'] ?? '',
+                'guests' => $room['guests'] ?? [],
+                'guest_count' => $room['guest_count'] ?? [],
+                'rate_type' => $room['rate_type'] ?? 'BaseRate',
+                'prices' => $room['prices'] ?? [],
+                'currency' => $room['currency'] ?? '',
+                'total_price' => $room['total_price'] ?? 0,
+                'services' => $room['services'] ?? [],
+            ];
+        }
 
             $response = $this->sabeeBookingService->createBooking($payload);
-            $user = Auth::user();
 
-            $user->notify(new BookingCreatedNotification($booking));
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Booking created successfully.',
-                'data' => $response,
-            ]);
+             if ($response['success'] == true) {
+                $booking = Booking::where("reservation_code", $response['reservation_code'])->first();
+
+                    if ($booking) {
+                        $user = Auth::user();
+
+                        // Generate secure invoice download URL
+                        $download = url('booking/invoice/' . $booking->id);
+
+                        // Get email template by name
+                        $template = $this->getTemplateByName('create_booking_invoice');
+
+                        if ($template) {
+                            // Replace placeholders with actual data
+                            $stringToReplace = ['{{$name}}', '{{$download}}'];
+
+                            $stringReplaceWith = [$validated['customer']['first_name'], $download];
+                            $emailBody = str_replace($stringToReplace, $stringReplaceWith, $template->template);
+
+                            // Prepare email payload using customer email, not auth user
+                            $emailData = $this->mailData(
+                                $validated['customer']['email'], // send to customer
+
+
+                            $stringReplaceWith = [$user->full_name, $download];
+                            $emailBody = str_replace($stringToReplace, $stringReplaceWith, $template->template);
+
+                            // Prepare email payload
+                            $emailData = $this->mailData(
+                                $user->email,
+
+
+                                $template->subject,
+                                $emailBody,
+                                'create_booking_invoice',
+                                $template->id
+                            );
+
+                            // Send the email
+                            $this->mailSend($emailData);
+                        }
+
+                    } 
+                $user_id = auth()->id(); // Replace with the actual driver user to notify
+
+                $notificationData = [
+                    'title' => 'New Booking created',
+                    'body' => 'Your booking is created successfully ',
+                    'type' => 'new_booking',
+                    
+                ];
+
+
+                 User::find(auth()->id())->notify(new BookingCreatedNotification($booking));
+
+
+
+              /*  $this->sendPushNotification(
+                    $notificationData['title'],
+                    $notificationData['body'],
+                    $notificationData['type'],
+                    $user_id
+                );*/
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Booking created successfully.',
+                    'data' => $response,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $response['message'] ?? 'Something went wrong.',
+                ], 422);
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -287,32 +389,494 @@ class BookingController extends Controller
      */
     public function cancel(Request $request)
     {
-        $validated = $request->validate([
-            'hotel_id' => 'required|integer',
-            'reservation_code' => 'required|string',
-        ]);
-
+        $reservationCode = $request->reservation_code;
+        $hotelId = $request->hotel_id ?? 8618;
 
         try {
-            // Build payload directly from validated input
-            $payload = [
-                'hotel_id' => $validated['hotel_id'],
-                'reservation_code' => $validated['reservation_code'],
+            $response = Http::withHeaders([
+                'api_key' => config('services.sabee.api_key'),
+                'api_version' => config('services.sabee.api_version'),
+                'Content-Type' => 'application/json',
+            ])->post('https://api.sabeeapp.com/connect/booking/cancel', [
+                'hotel_id' => $hotelId,
+                'reservation_code' => $reservationCode,
+            ]);
 
-            ];
+            $responseData = $response->json();
 
-            $response = $this->sabeeBookingService->cancelBooking($payload);
+            if ($response->successful() && isset($responseData['success']) && $responseData['success'] === true) {
+                // Update local booking status
+                $booking = Booking::where('reservation_code', $reservationCode)->first();
 
+
+
+                if ($booking) {
+                    $booking->status = 'Cancelled';
+                    $booking->save();
+                }
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Booking cancelled successfully.',
+                    'reservation_code' => $reservationCode
+                ]);
+            } else {
+                // Extract and process errors
+                $errorMessages = collect($responseData['errors'] ?? [])
+                    ->pluck('ret_msg')
+                    ->implode('; ');
+
+                // Detect "Already cancelled" scenario
+                $alreadyCancelled = str_contains(strtolower($errorMessages), 'already cancelled');
+
+                return response()->json([
+                    'status' => $alreadyCancelled ? 'warning' : 'error',
+                    'message' => $alreadyCancelled
+                        ? 'This booking is already cancelled.'
+                        : ($errorMessages ?: 'Unknown error from Sabee API'),
+                    'data' => $responseData
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Exception: ' . $e->getMessage(),
+            ]);
+        }
+    }
+
+
+
+    public function checkAvailability(Request $request)
+    {
+
+
+        $validated = $request->validate([
+            'hotel_id' => 'required|integer',
+            'start_date' => 'required|date_format:Y-m-d',
+            'end_date' => 'required|date_format:Y-m-d|after:start_date',
+            'rooms' => 'required|array',
+            'rooms.*.room_id' => 'required|integer',
+            'rooms.*.guest_count.adults' => 'required|integer|min:1',
+            'rooms.*.guest_count.children_ages' => 'nullable|array',
+        ]);
+
+        try {
+            $response = Http::withHeaders([
+                'api_key' => config('services.sabee.api_key'),
+                'api_version' => config('services.sabee.api_version'),
+            ])->post('https://api.sabeeapp.com/connect/booking/availability', $validated);
             return response()->json([
                 'status' => 'success',
-                'message' => 'Booking cancel successfully.',
-                'data' => $response,
+                'data' => $response->json()
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 400);
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
+
+
+
+    public function getOngoingBookings(){
+        $user = Auth::user();
+
+        $customer = BookingCustomer::where('email', $user->email)->first();
+
+        if (! $customer) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No bookings found for this user.'
+            ], 404);
+        }
+
+        // Get all booking IDs for this customer
+        $bookingIds = BookingCustomer::where('email', $user->email)
+            ->pluck('booking_id');
+
+        // Fetch bookings that are ongoing (today is between checkin and checkout)
+        $today = now()->toDateString();
+
+        $bookings = Booking::with([
+            'customer',
+            'bookingGuests',
+            'bookingPrices',
+            'payments',
+            'hotel',
+            'roomType.images'
+        ])
+        ->whereIn('id', $bookingIds)
+        ->where('status','!=','CheckedOut')
+        ->get();
+
+         $bookings = $bookings->map(function ($booking) {
+        $priceTotal = $booking->bookingPrices->sum('amount');
+
+        $serviceTotal = $booking->bookingServices->sum(function ($service) {
+            return collect($service->booking_service_prices)->sum('amount');
+        });
+
+        $booking->total_amount = $priceTotal + $serviceTotal;
+
+        return $booking;
+    });
+
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $bookings
+        ]);
+    }
+
+
+
+
+
+    public function getCompleteBookings(){
+        $user = Auth::user();
+
+        $customer = BookingCustomer::where('email', $user->email)->first();
+
+        if (! $customer) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No bookings found for this user.'
+            ], 404);
+        }
+
+        // Get all booking IDs for this customer
+        $bookingIds = BookingCustomer::where('email', $user->email)
+            ->pluck('booking_id');
+
+        // Fetch bookings that are ongoing (today is between checkin and checkout)
+        $today = now()->toDateString();
+
+        $bookings = Booking::with([
+            'customer',
+            'bookingGuests',
+            'bookingPrices',
+            'payments',
+            'hotel',
+            'roomType.images'
+        ])
+        ->whereIn('id', $bookingIds)
+        ->whereIn('status',['CheckedOut','Cancelled'])
+        ->get();
+
+         $bookings = $bookings->map(function ($booking) {
+        $priceTotal = $booking->bookingPrices->sum('amount');
+
+        $serviceTotal = $booking->bookingServices->sum(function ($service) {
+            return collect($service->booking_service_prices)->sum('amount');
+        });
+
+        $booking->total_amount = $priceTotal + $serviceTotal;
+
+        return $booking;
+    });
+
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $bookings
+        ]);
+    }
+
+
+   
+
+ 
+   public function getBookingDetailById($id)
+{
+    $user = Auth::user();
+
+    $booking = Booking::with([
+        'customer',
+        'bookingGuests',
+        'bookingPrices',
+        'payments',
+        'hotel',
+        'roomType',
+        'roomType.images',
+        'bookingServices.bookingServicePrices', // ensure this is eager loaded
+    ])->find($id);
+
+    if (!$booking) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Booking not found.',
+        ], 404);
+    }
+
+    // Calculate total price
+    $priceTotal = $booking->bookingPrices->sum('amount');
+
+
+
+   $booking->bookingServices->map(function ($service) use (&$serviceTotal) {
+        $quantityTotal = collect($service->bookingServicePrices)->sum('quantity');
+        $service->total_quantity = $quantityTotal;
+
+        $serviceTotal += collect($service->bookingServicePrices)->sum('amount');
+        return $service;
+
+
+    $serviceTotal = $booking->bookingServices->sum(function ($service) {
+        return collect($service->bookingServicePrices)->sum('amount');
+    });
+
+    $booking->total_amount = $priceTotal + $serviceTotal;
+
+    return response()->json([
+        'status' => 'success',
+        'data' => $booking,
+    ]);
+}
+
+
+
+  public function saveBookingServices(Request $request, $id)
+{
+    $user = Auth::user();
+
+    try {
+        $booking = Booking::find($id);
+
+        if (!$booking) {
+            return response()->json(['message' => 'Booking not found'], 404);
+        }
+
+        $serviceData = collect($request->input('services', []));
+
+        $serviceIds = $serviceData->pluck('id')->toArray();
+        $services = OtherServiceCategory::whereIn('id', $serviceIds)->get()->keyBy('id');
+
+        foreach ($serviceData as $item) {
+            $serviceId = $item['id'];
+            $quantity = $item['quantity'] ?? 1;
+            $start_date = $item['start_date'] ?? null;
+            $end_date = $item['end_date'] ?? null;
+
+            if (!isset($services[$serviceId])) {
+                continue;
+            }
+
+            $service = $services[$serviceId];
+            $totalAmount = $quantity * ($service->price ?? 0);
+
+            $bookingService = BookingService::updateOrCreate(
+                [
+                    'booking_id' => $booking->id,
+                    'service_id' => $service->id,
+                ],
+                [
+                    'service_name' => $service->name,
+                    'description'  => $service->description,
+                    'total_price'  => $totalAmount,
+                    'start_date'   => $start_date ?? null,
+                    'end_date'     => $end_date ?? null
+                ]
+            );
+
+            // Increment quantity and amount if record exists
+            $bookingServicePrice = BookingServicePrice::where([
+                'booking_service_id' => $bookingService->id,
+                'date' => now()->toDateString(),
+            ])->first();
+
+            if ($bookingServicePrice) {
+                $bookingServicePrice->quantity += $quantity;
+                $bookingServicePrice->amount += $totalAmount;
+                $bookingServicePrice->save();
+            } else {
+                BookingServicePrice::create([
+                    'booking_service_id' => $bookingService->id,
+                    'date'               => now()->toDateString(),
+                    'quantity'           => $quantity,
+                    'vat'                => 0,
+                    'city_tax'           => 0,
+                    'amount'             => $totalAmount,
+                ]);
+            }
+        }
+
+        // Generate secure invoice download URL
+        $download = url('api/booking/invoice/' . $booking->id);
+
+        // Get email template by name
+        $template = $this->getTemplateByName('ad_service_template');
+
+        if ($template) {
+            $stringToReplace = ['{{$name}}', '{{$download}}'];
+            $stringReplaceWith = [$user->full_name, $download];
+            $emailBody = str_replace($stringToReplace, $stringReplaceWith, $template->template);
+
+            $emailData = $this->mailData(
+                $user->email,
+                $template->subject,
+                $emailBody,
+                'ad_service_template',
+                $template->id
+            );
+
+            $this->mailSend($emailData);
+            User::find(auth()->id())->notify(new BookingCreated($booking));
+        }
+
+        return response()->json(['message' => 'Services saved successfully.'], 200);
+
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
+
+    public function saveBookingServices(Request $request, $id)
+    {
+          $user = Auth::user();
+
+        try {
+            $booking = Booking::find($id);
+
+            if (!$booking) {
+                return response()->json(['message' => 'Booking not found'], 404);
+            }
+
+         
+            $serviceData = collect($request->input('services', []));
+
+            $serviceIds = $serviceData->pluck('id')->toArray();
+            $services = OtherServiceCategory::whereIn('id', $serviceIds)->get()->keyBy('id');
+
+            foreach ($serviceData as $item) {
+                $serviceId = $item['id'];
+                $quantity = $item['quantity'] ?? 1;
+                $start_date = $item['start_date'] ?? null;
+                $end_date = $item['end_date'] ?? null;
+
+
+
+                if (!isset($services[$serviceId])) {
+                    continue; 
+                }
+
+                $service = $services[$serviceId];
+                $totalAmount = $quantity * ($service->price ?? 0);
+
+                $bookingService = BookingService::updateOrCreate(
+                    [
+                        'booking_id' => $booking->id,
+                        'service_id' => $service->id,
+                    ],
+                    [
+                        'service_name' => $service->name,
+                        'description'  => $service->description,
+                        'total_price'  => $totalAmount,
+                        'start_date'   =>$start_date ?? null,
+                        'end_date'     =>$end_date ?? null
+                    ]
+                );
+
+                // Save service price
+                BookingServicePrice::updateOrCreate(
+                    [
+                        'booking_service_id' => $bookingService->id,
+                        'date'               => now()->toDateString(),
+                    ],
+                    [
+                        'quantity' => $quantity,
+                        'vat'      => 0,
+                        'city_tax' => 0,
+                        'amount'   => $totalAmount,
+                    ]
+                );
+            }
+
+
+
+               $user = Auth::user();
+
+                // Generate secure invoice download URL
+                $download = url('api/booking/invoice/' . $booking->id);
+
+                // Get email template by name
+                $template = $this->getTemplateByName('ad_service_template');
+
+                if ($template) {
+                    // Replace placeholders with actual data
+                    $stringToReplace = ['{{$name}}', '{{$download}}'];
+                    $stringReplaceWith = [$user->full_name, $download];
+                    $emailBody = str_replace($stringToReplace, $stringReplaceWith, $template->template);
+
+                    // Prepare email payload
+                    $emailData = $this->mailData(
+                        $user->email,
+                        $template->subject,
+                        $emailBody,
+                        'ad_service_template',
+                        $template->id
+                    );
+
+                    // Send the email
+                    $this->mailSend($emailData);
+                }
+                
+                    
+
+            return response()->json(['message' => 'Services saved successfully.'], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
+
+
+
+    public function downloadPdf($id)
+    {
+        $booking = Booking::with([
+            'bookingServices.bookingServicePrices',
+            'customer',
+            'hotel',
+            'roomType',
+            'bookingPrices'
+        ])->findOrFail($id);
+
+        // Load image from public folder and convert to base64
+        $logoPath = public_path('images/logo.jpg');
+        $logoBase64 = 'data:image/' . pathinfo($logoPath, PATHINFO_EXTENSION) . ';base64,' . base64_encode(file_get_contents($logoPath));
+
+        $pdf = PDF::loadView('pdf.booking_invoice', compact('booking', 'logoBase64'));
+
+        return $pdf->download('invoice_' . $booking->reservation_code . '.pdf');
+    }
+
+
+      public function getInvoiveDataPdf($id)
+    {
+        $booking = Booking::with([
+            'bookingServices.bookingServicePrices',
+            'customer',
+            'hotel',
+            'roomType',
+            'bookingPrices'
+        ])->findOrFail($id);
+
+       
+        return response()->json([
+            'status' => 'success',
+            'data' => $booking,
+        ]);
+    }
+
+
+
+
+
+
+
 }

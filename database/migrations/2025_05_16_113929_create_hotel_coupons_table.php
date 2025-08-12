@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('value', 8, 2);
             $table->string('available')->nullable(); // Once, Limited, NotLimited
             $table->date('expiration_date')->nullable();
+            $table->integer('max_uses')->nullable();
             $table->timestamps();
         });
     }
