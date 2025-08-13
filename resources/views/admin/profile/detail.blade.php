@@ -20,10 +20,11 @@
     <div class="row">
       <div class="col-12 grid-margin stretch-card">
         <div class="card">
-          <div class="card-body">
-            <h4 class="card-title">Personal Information</h4>
+          <div class="card-body p-0">
+            <h4 class="card-title semi-bold px-3 mb-0 pt-3">Personal Information</h4>
+            <hr>
              
-            <form class="forms-sample" id="profile-setting" action="{{route('admin.profile')}}" method="POST" enctype="multipart/form-data">
+            <form class="forms-sample p-3" id="profile-setting" action="{{route('admin.profile')}}" method="POST" enctype="multipart/form-data">
               @csrf
               <div class="form-group">
                 <div class="row">

@@ -34,7 +34,7 @@
             <textarea name="message" rows="5" class=" summernote form-control d-block" required></textarea>
           </div>
           <div class="text-end">
-          <button type="submit" class="btn btn-success">Send Announcement</button>
+          <button type="submit" class="btn btn-primary">Send Announcement</button>
         </div>
         </form>
       </div>

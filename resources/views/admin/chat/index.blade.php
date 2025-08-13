@@ -8,7 +8,7 @@
 
   .chat-message {
     max-width: 75%;
-    padding: 10px 15px;
+    padding: 4px 12px;
     border-radius: 15px;
     margin-bottom: 10px;
     display: inline-block;
@@ -28,7 +28,9 @@
     border-top-right-radius: 0;
     text-align: right;
   }
-
+..chat-right>P{
+  color: #f1f1f1
+}
   .hede {
     background-color: #b46326 !important;
   }
@@ -74,7 +76,7 @@
               data-name="{{ $fullName }}"
               data-receiver-id="{{ $user->id }}">
 
-              <img src="{{ $profileImage }}" alt="User" class="rounded-circle" width="45" height="45">
+              <img src="{{ $profileImage }}" alt="User" class="rounded-circle mr-2" width="45" height="45">
 
               <div class="flex-grow-1">
                   <div class="fw-semibold d-flex justify-content-between">
@@ -115,24 +117,24 @@
       <div class="card-header hede text-white">
         <strong id="conversation-title">Chat</strong>
       </div>
-      <div class="card-body" id="chat-box" style="height: 400px; overflow-y: auto;">
+      <div class="card-body" id="chat-box" style="height: 500px; overflow-y: auto;">
         <div class="d-flex justify-content-center align-items-center h-100 text-muted" id="empty-chat-msg">
           <p class="text-center">Start a conversation by clicking on a contact from the left.</p>
         </div>
       </div>
       <div class="card-footer">
-        <form id="message-form" class="d-flex align-items-center gap-2 mt-2">
+        <form id="message-form" class="d-flex align-items-stretch gap-2 mt-2">
             <input type="hidden" id="sender_id" value="{{ auth()->id() }}">
             <input type="hidden" id="receiver_id">
             <input type="hidden" id="conversation_id">
 
             <input type="file" id="attachment-input" accept="image/*,video/*,application/pdf" style="display: none;">
 
-            <button type="button" id="attach-btn" class="btn btn-outline-secondary">
-                📎
+            <button type="button" id="attach-btn" class="btn btn-outline-secondary attach-upload">
+              <i class="fa-solid fa-paperclip"></i>
             </button>
 
-            <input type="text" id="message-input" class="form-control" placeholder="Type a message..." required>
+            <input type="text" id="message-input" class="form-control h-auto mr-2" placeholder="Type a message..." required>
             <button type="submit" class="btn btn-primary">Send</button>
         </form>
       </div>
@@ -178,8 +180,8 @@ $(document).ready(function () {
                 const timeAgo = moment(msg.created_at).fromNow();
                 messages += `
                     <div class="${messageClass}">
-                        ${renderMessageContent(msg.message, msg.type)}
-                        <div class="text-muted small mt-1">${timeAgo}</div>
+                        <h5 class="m-0">${renderMessageContent(msg.message, msg.type)}</h5>
+                        <p class="text-muted small mt-1 mb-2">${timeAgo}</p>
                     </div>
                     <div class="clearfix"></div>
                 `;
@@ -260,8 +262,8 @@ $(document).ready(function () {
         if (parseInt(conversationId) === parseInt($('#conversation_id').val())) {
             const messageHtml = `
                 <div class="${messageClass}">
-                    ${renderMessageContent(msg, msgType)}
-                    <div class="text-muted small mt-1">${timeAgo}</div>
+                    <h5 class="m-0">${renderMessageContent(msg, msgType)}</h5>
+                    <p class="text-muted small mt-1 mb-2">${timeAgo}</p>
                 </div>
                 <div class="clearfix"></div>
             `;

@@ -25,7 +25,7 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="admin-filters">
                         <form id="filter">
-                            <div class="row align-items-center justify-content-end">
+                            <div class="row align-items-center justify-content-end mr-2">
                                 <div class="col-3 d-flex gap-2">
                                     <input type="text" class="form-control"  placeholder="Search" name="search_keyword" value="{{request()->filled('search_keyword') ? request()->search_keyword : ''}}">            
                                 </div>
@@ -47,12 +47,12 @@
 
                                     </select>
                                 </div>
-                                <div class="col-3">
+                                
                                     <button type="submit" class="btn btn-primary">Filter</button>
                                     @if(request()->filled('search_keyword') || request()->filled('status') || request()->filled('category_id'))
                                         <button class="btn btn-danger" id="clear_filter">Clear Filter</button>
                                     @endif
-                                </div>
+                                
                             </div>
                         </form>
                     </div>

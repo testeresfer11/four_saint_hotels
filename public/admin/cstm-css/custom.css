@@ -105,6 +105,9 @@ table thead {
 .sidebar .nav li.nav-item.menu-items{
   margin: 5px 0;
 }
+.semi-bold{
+  font-weight: 500;
+}
 .main-title{
   font-size: 32px;
   font-weight: 700;
@@ -143,19 +146,24 @@ table thead {
   height: 14px;
   font-weight: 600;
 }
-.hotel_status {
+.navbar-menu-wrapper .hotel_status {
   background: #B46326;
   border-radius: 19px;
   color: #fff !important;
   border: none;
   padding: 8px 10px;
   font-size: 14px;
+  width: auto;
 }
 .hotel_status>a{
   color: #fff !important;
 }
 .hotel_status>a::after{
   color: #fff !important;
+}
+/*header*/
+.nav-header {
+  box-shadow: 13px 4px 18px #b4632640;
 }
 /*notification page*/
 .btn-box button.btn{
@@ -184,6 +192,46 @@ table thead {
 }
 .status h5{
   font-weight: 600;
+}
+.card-title{
+  font-size: 20px;
+}
+table span.menu-icon i {
+  font-size: 21px;
+  background: #f5f5f5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 7px;
+}
+.forms-sample .form-group {
+  margin-bottom: 20px;
+}
+.btn.btn-secondary {
+  background-color: #fff;
+  border: 1px solid #B46326;
+  padding: 13px 30px;
+  border-radius: 5px;
+}
+#conversation-list>.conversation-item:last-child{
+  border-bottom: none;
+}
+.attach-upload {
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin: 0 5px;
+  background: #ffffff;
+}
+.select_country_code .iti__country-container{
+  top: 14px;
+  bottom: auto;
+}
+.attach-upload>i{
+  color: #000;
+}
+.conversation-item{
+  border-bottom: 1px solid #d1d1d1;
 }
 .notifi-icon{
   display: inline-block;
@@ -639,6 +687,10 @@ label.error {
 color: #dc3545;
 position: relative;
 padding-top: 11px;
+margin: 0;
+}
+button.btn.btn-primary>a{
+  color: #fff !important;
 }
 /* New css 04-06-2024 */
 .text-end {

@@ -9,7 +9,7 @@
         </a>
     </div>
 
-    <ul class="nav ml-3">
+    <ul class="nav mx-3">
         {{-- <li class="nav-item profile">
             <div class="profile-desc">
                 <a href="{{ route('admin.profile') }}">
@@ -228,25 +228,41 @@
         <!-- Notifications -->
 
       @canany(['notification-list', 'notification-read', 'notification-delete'])
-    <li class="nav-item menu-items {{ request()->routeIs('admin.notification.*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('admin.notification.list') }}">
+      <li class="nav-item menu-items">
+        <a class="nav-link" data-bs-toggle="collapse" href="#notificationSubmenu" role="button" aria-expanded="{{ request()->routeIs('admin.notification.*') ? 'true' : 'false' }}" aria-controls="notificationSubmenu">
             <span class="menu-icon">
                 <img src="{{ asset('images/notification.png') }}" alt="" class="img-fluid">
             </span>
             <span class="menu-title">Notifications</span>
+            <i class="menu-arrow"></i>
         </a>
+        <div class="collapse {{ request()->routeIs('admin.notification.*') ? 'show' : '' }}" id="notificationSubmenu">
+            <ul class="nav flex-column sub-menu">
+                <li class="nav-item {{ request()->routeIs('admin.notification.list') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('admin.notification.list') }}">
+                        Notification List
+                    </a>
+                </li>
+                <li class="nav-item {{ request()->routeIs('admin.notification.send') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('admin.pushnotification.list') }}">
+                        Send Push Notification
+                    </a>
+                </li>
+            </ul>
+        </div>
     </li>
+
 @endcanany
 
 
-    <li class="nav-item menu-items {{ request()->routeIs('admin.notification.send') ? 'active' : '' }}">
+    {{-- <li class="nav-item menu-items {{ request()->routeIs('admin.notification.send') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('admin.pushnotification.list') }}">
             <span class="menu-icon">
                 <img src="{{ asset('images/send-notification.png') }}" alt="" class="img-fluid">
             </span>
             <span class="menu-title">Send Push Notification</span>
         </a>
-    </li>
+    </li> --}}
 
 
 

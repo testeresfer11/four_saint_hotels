@@ -20,7 +20,7 @@
           <div class="d-flex justify-content-between flex-column flex-md-row px-3 row-gap-3 py-3 align-items-md-center align-items-start">
             <h4 class="card-title m-0">Announcements Management</h4>
             <div class="d-flex align-items-center justify-content-between">
-              <div class="admin-filters">
+              <div class="admin-filters mr-2">
                 <x-filter />
               </div>
               @can('announcements-create')

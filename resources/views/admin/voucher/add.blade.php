@@ -24,7 +24,8 @@
 
           <form class="forms-sample" id="add-coupon" action="{{ route('admin.vouchers.add') }}" method="POST">
             @csrf
-
+<div class="row">
+  <div class="col-12 col-md-6">
             {{-- Hotel ID --}}
             <div class="form-group">
               <label for="hotel_id">Hotel</label>
@@ -40,7 +41,8 @@
               <span class="invalid-feedback">{{ $message }}</span>
               @enderror
             </div>
-
+          </div>
+          <div class="col-12 col-md-6">
             {{-- Coupon Code --}}
             <div class="form-group">
               <label for="coupon_code">Coupon Code</label>
@@ -50,7 +52,8 @@
               <span class="invalid-feedback">{{ $message }}</span>
               @enderror
             </div>
-
+          </div>
+          <div class="col-12 col-md-6">
             {{-- Coupon Name --}}
             <div class="form-group">
               <label for="coupon_name">Coupon Name</label>
@@ -60,7 +63,8 @@
               <span class="invalid-feedback">{{ $message }}</span>
               @enderror
             </div>
-
+          </div>
+          <div class="col-12 col-md-6">
             {{-- Type --}}
             <div class="form-group">
               <label for="type">Type</label>
@@ -73,7 +77,8 @@
               <span class="invalid-feedback">{{ $message }}</span>
               @enderror
             </div>
-
+          </div>
+          <div class="col-12 col-md-6">
             {{-- Value --}}
             <div class="form-group">
               <label for="value">Value</label>
@@ -83,7 +88,8 @@
               <span class="invalid-feedback">{{ $message }}</span>
               @enderror
             </div>
-
+          </div>
+          <div class="col-12 col-md-6">
             {{-- Available --}}
            <div class="form-group">
               <label for="available">Available</label>
@@ -98,7 +104,8 @@
               <span class="invalid-feedback">{{ $message }}</span>
               @enderror
           </div>
-
+        </div>
+        <div class="col-12 col-md-6">
             {{-- Expiration Date --}}
             <div class="form-group">
               <label for="expiration_date">Expiration Date</label>
@@ -108,7 +115,8 @@
               <span class="invalid-feedback">{{ $message }}</span>
               @enderror
             </div>
-
+          </div>
+          <div class="col-12 col-md-6">
             {{-- Max Uses --}}
             <div class="form-group">
               <label for="max_uses">Max Uses</label>
@@ -118,7 +126,8 @@
               <span class="invalid-feedback">{{ $message }}</span>
               @enderror
             </div>
-
+          </div>
+</div>
             <div class="form-group text-end">
               <button type="submit" class="btn btn-primary">Add Coupon</button>
             </div>

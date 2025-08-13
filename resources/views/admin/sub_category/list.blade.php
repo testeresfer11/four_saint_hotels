@@ -15,10 +15,10 @@
 <div class="row">
   <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
-      <div class="card-body">
+      <div class="card-body p-0">
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="card-title">Sub Feature Management</h4>
+        <div class="d-flex justify-content-between flex-column flex-md-row px-3 py-3 align-items-md-center align-items-start">
+          <h4 class="card-title m-0">Sub Feature Management</h4>
           <a href="{{ route('admin.sub_category.add') }}" class="btn btn-primary btn-md">
             + Add Sub Feature
           </a>

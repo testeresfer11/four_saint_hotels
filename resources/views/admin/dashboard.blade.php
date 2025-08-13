@@ -129,7 +129,7 @@
         <div class="col-lg-6 grid-margin stretch-card">
             <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Booking chart</h4>
+                <h4 class="card-title semi-bold">Booking chart</h4>
                 <canvas id="pieChart" style="height:250px"></canvas>
             </div>
             </div>
@@ -137,7 +137,7 @@
         <div class="col-lg-6 grid-margin stretch-card">
             <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Earning chart</h4>
+                <h4 class="card-title semi-bold">Earning chart</h4>
                 <canvas id="lineChart1" style="height:250px"></canvas>
             </div>
             </div>
@@ -146,36 +146,39 @@
    
 <div class="row">
   <div class="col-12 grid-margin">
-    <h5 class="mb-3 page-title">Recent Bookings</h5>
-    <table class="table">
-  <thead>
-    <tr>
-      <th>Res. Code</th>
-      <th>Guest Name</th>
-      <th>Guest Email</th>
-      <th>Check‑In</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    @forelse($bookings as $booking)
-      @foreach($booking->bookingGuests as $guest)
-        <tr>
-          <td>{{ $booking->reservation_code }}</td>
-          <td>{{ $guest->first_name }} {{ $guest->last_name }}</td>
-          <td>{{ $guest->email }}</td>
-          <td>{{ \Carbon\Carbon::parse($booking->checkin_date)->format('d M Y') }}</td>
-          <td>{{ $booking->status }}</td>
-        </tr>
-      @endforeach
-    @empty
-      <tr>
-        <td colspan="5" class="text-center">No bookings found.</td>
-      </tr>
-    @endforelse
-  </tbody>
-</table>
-
+    <div class="card">
+      <div class="card-body p-0">
+          <h5 class="mb-3 page-title p-3 semi-bold">Recent Bookings</h5>
+          <table class="table">
+          <thead>
+            <tr>
+              <th>Res. Code</th>
+              <th>Guest Name</th>
+              <th>Guest Email</th>
+              <th>Check‑In</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @forelse($bookings as $booking)
+              @foreach($booking->bookingGuests as $guest)
+                <tr>
+                  <td>{{ $booking->reservation_code }}</td>
+                  <td>{{ $guest->first_name }} {{ $guest->last_name }}</td>
+                  <td>{{ $guest->email }}</td>
+                  <td>{{ \Carbon\Carbon::parse($booking->checkin_date)->format('d M Y') }}</td>
+                  <td>{{ $booking->status }}</td>
+                </tr>
+              @endforeach
+            @empty
+              <tr>
+                <td colspan="5" class="text-center">No bookings found.</td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
