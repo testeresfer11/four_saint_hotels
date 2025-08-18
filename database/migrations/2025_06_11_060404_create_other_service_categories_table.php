@@ -18,7 +18,6 @@ return new class extends Migration
             $table->decimal('price', 10, 2)->default(0.00);
             $table->integer('total_quantity')->default(0);
             $table->integer('total_left')->default(0);
-            $table->decimal('price', 10, 2)->default(0.00);
             $table->boolean('is_active')->default(true);
             $table->text('icon')->nullable();
             $table->integer('hotel_id')->default(8618);

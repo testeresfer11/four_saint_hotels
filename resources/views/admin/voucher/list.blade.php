@@ -17,10 +17,9 @@
     <div class="card">
       <div class="card-body p-0">
         <div class="d-flex justify-content-between flex-column flex-md-row px-3 py-3 align-items-md-center align-items-start">
-          <h4 class="card-title m-0"></h4>
+          <h4 class="card-title m-0">Coupons</h4>
           <div class="d-flex align-items-center justify-content-between">
-            
-
+          
 
             <a href="{{route('admin.vouchers.add')}}">
               <button type="button" class="btn btn-primary btn-md">

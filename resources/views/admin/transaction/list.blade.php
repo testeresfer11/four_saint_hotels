@@ -17,20 +17,20 @@
 <div class="row">
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="card-title">Booking Transactions</h4>
+            <div class="card-body p-0">
+                <div class="d-flex justify-content-between align-items-center py-3 px-3">
+                    <h4 class="card-title m-0">Booking Transactions</h4>
                     <form id="filter" method="GET">
-                        <div class="row align-items-end">
-                            <div class="col">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <div class="col-4">
                                 <input type="text" name="search_keyword" class="form-control" placeholder="Search Booking Code" value="{{ request('search_keyword') }}">
                             </div>
-                            <div class="col">
-                                <label>From</label>
+                            <div class="d-flex align-items-center">
+                                <label class="px-2">From</label>
                                 <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
                             </div>
-                            <div class="col">
-                                <label>To</label>
+                            <div class="d-flex align-items-center">
+                                <label class="px-2">To</label>
                                 <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
                             </div>
                             <div class="col-auto">

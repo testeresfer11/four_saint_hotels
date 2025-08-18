@@ -25,7 +25,7 @@
             <form class="forms-sample" id="add-staff" action="{{route('admin.staff.add')}}" method="POST" enctype="multipart/form-data">
               @csrf
                 <fieldset>
-                    <legend>Personal Information</legend>
+                    <legend class="card-title">Personal Information</legend>
                     <div class="form-group">
                         <div class="row">
                             <div class="col-6">
@@ -108,7 +108,7 @@
                     </div>
                 </fieldset>
             <fieldset>
-                <legend>Account Information</legend>
+                <legend class="card-title">Account Information</legend>
                 <div class="form-group">
                     <div class="row">
                         <div class="col-6">
