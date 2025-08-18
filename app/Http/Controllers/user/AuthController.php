@@ -452,14 +452,6 @@ class AuthController extends Controller
      */
 
    public function profile(Request $request)
-{
-    try {
-        if ($request->isMethod('get')) {
-            $user = Auth::user()->load('userDetail');
-            if (!$user) {
-                return $this->apiResponse('error', 404, 'Profile ' . config('constants.ERROR.NOT_FOUND'));
-
-    public function profile(Request $request)
     {
         try {
             if ($request->isMethod('get')) {
@@ -468,7 +460,6 @@ class AuthController extends Controller
                     return $this->apiResponse('error', 404, 'Profile' . config('constants.ERROR.NOT_FOUND'));
 
                 $data =  $user;
-
                 return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.FETCH_DONE'), $data);
             } elseif ($request->isMethod('post')) {
                 $validator = Validator::make($request->all(), [
@@ -482,8 +473,8 @@ class AuthController extends Controller
                     return $this->apiResponse('error', 422, $validator->errors()->first());
                 }
 
-                User::where('id', Auth::id())->update([
-                    'full_name'        => $request->full_name,
+                User::where('id', authId())->update([
+                    'full_name'        => $request->first_name,
 
                 ]);
 
@@ -508,84 +499,14 @@ class AuthController extends Controller
                 ]);
 
 
-                $data =  new UserResource(User::find(Auth::id()));
-
-                $user_id =  Auth::id(); // Replace with the actual driver user to notify
-
-                $notificationData = [
-                    'title' => 'profile updated',
-                    'body' => 'Your profile is updated successfully',
-                    'type' => 'profile_updated',
-                    
-                ];
-
-
-               /* $this->sendPushNotification(
-                    $notificationData['title'],
-                    $notificationData['body'],
-                    $notificationData['type'],
-                    $user_id
-                );*/
+                $data =  new UserResource(User::find(authId()));
 
                 return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.UPDATE_DONE'), $data);
-
             }
-
-            return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.FETCH_DONE'), $user);
+        } catch (\Exception $e) {
+            return $this->apiResponse('error', 400, $e->getMessage());
         }
-
-        if ($request->isMethod('post')) {
-            $validator = Validator::make($request->all(), [
-                'full_name'  => 'required|string|max:255',
-                'profile'    => 'nullable|image|max:2048',
-                'gender'     => 'in:Male,Female,Other'
-            ]);
-
-            if ($validator->fails()) {
-                return $this->apiResponse('error', 422, $validator->errors()->first());
-            }
-
-            // Update basic user info
-            User::where('id', Auth::id())->update([
-                'full_name' => $request->full_name,
-            ]);
-
-            $user = User::find(authId());
-            $ImgName = $user->userDetail?->profile ?? null;
-            $fullUrl = $ImgName; // fallback if no new image uploaded
-
-            if ($request->hasFile('profile')) {
-                // Delete old file
-                if ($ImgName) {
-                    deleteFile(basename($ImgName), 'images/');
-                }
-
-                // Upload new file
-                $newFileName = uploadFile($request->file('profile'), 'images/');
-                $fullUrl = asset('storage/images/' . $newFileName);
-            }
-
-            // Save UserDetails
-            UserDetail::updateOrCreate(['user_id' => authId()], [
-                'phone_number'        => $request->phone_number ?? '',
-                'address'             => $request->address ?? '',
-                'zip_code'            => $request->zip_code ?? '',
-                'country_code'        => $request->country_code ?? '',
-                'dob'                 => $request->dob ?? '',
-                'country_short_code'  => $request->country_short_code ?? '',
-                'profile'             => $fullUrl,
-                'gender'              => $request->gender ?? '',
-            ]);
-
-            $data = new UserResource(User::find(Auth::id()));
-
-            // Notification logic can go here (optional)
-            return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.UPDATE_DONE'), $data);
-        }
-    } catch (\Exception $e) {
-        return $this->apiResponse('error', 400, $e->getMessage());
     }
-}
 
     /*end method profile */
 

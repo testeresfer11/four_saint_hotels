@@ -145,17 +145,24 @@ table thead {
 }
 .navbar-nav-right .hotel_status {
   background: #B46326;
+<<<<<<< HEAD
   border-radius: 8px;
+=======
+  border-radius: 19px;
+>>>>>>> db86481a1bf3b6f48653daab94979a759d48381a
   color: #fff !important;
   border: none;
   padding: 8px 10px;
   font-size: 14px;
+<<<<<<< HEAD
 <<<<<<< HEAD
 }
 span.menu-icon i {
     font-size: 17px;
 =======
 >>>>>>> aabebacb0e6d7e26d852bbd7662254a60e84ea54
+=======
+>>>>>>> db86481a1bf3b6f48653daab94979a759d48381a
 }
 .hotel_status>a{
   color: #fff !important;

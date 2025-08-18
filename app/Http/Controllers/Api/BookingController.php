@@ -15,6 +15,7 @@ use App\Models\BookingService;
 use App\Models\BookingServicePrice;
 use App\Models\BookingPayment;
 use App\Models\OtherServiceCategory;
+use App\Models\User;
 use Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -184,35 +185,24 @@ class BookingController extends Controller
                         // Get email template by name
                         $template = $this->getTemplateByName('create_booking_invoice');
 
-                        if ($template) {
-                            // Replace placeholders with actual data
-                            $stringToReplace = ['{{$name}}', '{{$download}}'];
+                      if ($template) {
+                        // Replace placeholders with actual data
+                        $stringToReplace = ['{{$name}}', '{{$download}}'];
+                        $stringReplaceWith = [$validated['customer']['first_name'], $download];
+                        $emailBody = str_replace($stringToReplace, $stringReplaceWith, $template->template);
 
-                            $stringReplaceWith = [$validated['customer']['first_name'], $download];
-                            $emailBody = str_replace($stringToReplace, $stringReplaceWith, $template->template);
+                        // Prepare email payload using customer's email
+                        $emailData = $this->mailData(
+                            $validated['customer']['email'], // recipient
+                            $template->subject,             // email subject
+                            $emailBody,                     // email body
+                            'create_booking_invoice',       // template key or type
+                            $template->id                   // template id
+                        );
 
-                            // Prepare email payload using customer email, not auth user
-                            $emailData = $this->mailData(
-                                $validated['customer']['email'], // send to customer
-
-
-                            $stringReplaceWith = [$user->full_name, $download];
-                            $emailBody = str_replace($stringToReplace, $stringReplaceWith, $template->template);
-
-                            // Prepare email payload
-                            $emailData = $this->mailData(
-                                $user->email,
-
-
-                                $template->subject,
-                                $emailBody,
-                                'create_booking_invoice',
-                                $template->id
-                            );
-
-                            // Send the email
-                            $this->mailSend($emailData);
-                        }
+                        // Send the email
+                        $this->mailSend($emailData);
+                    }
 
                     } 
                 $user_id = auth()->id(); // Replace with the actual driver user to notify
@@ -225,7 +215,7 @@ class BookingController extends Controller
                 ];
 
 
-                 User::find(auth()->id())->notify(new BookingCreatedNotification($booking));
+                // User::find(auth()->id())->notify(new BookingCreatedNotification($booking));
 
 
 
@@ -588,56 +578,40 @@ class BookingController extends Controller
    
 
  
-   public function getBookingDetailById($id)
-{
-    $user = Auth::user();
+  public function getBookingDetailById($id)
+    {
+        $booking = Booking::with([
+            'customer',
+            'bookingGuests',
+            'bookingPrices',
+            'payments',
+            'hotel',
+            'roomType.images',
+            'bookingServices.bookingServicePrices'
+        ])->find($id);
 
-    $booking = Booking::with([
-        'customer',
-        'bookingGuests',
-        'bookingPrices',
-        'payments',
-        'hotel',
-        'roomType',
-        'roomType.images',
-        'bookingServices.bookingServicePrices', // ensure this is eager loaded
-    ])->find($id);
+        if (!$booking) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Booking not found.',
+            ], 404);
+        }
 
-    if (!$booking) {
+        $priceTotal = $booking->bookingPrices->sum('amount');
+        $serviceTotal = $booking->bookingServices->sum(function ($service) {
+            $service->total_quantity = collect($service->bookingServicePrices)->sum('quantity');
+            return collect($service->bookingServicePrices)->sum('amount');
+        });
+
+        $booking->total_amount = $priceTotal + $serviceTotal;
+
         return response()->json([
-            'status' => 'error',
-            'message' => 'Booking not found.',
-        ], 404);
+            'status' => 'success',
+            'data' => $booking,
+        ]);
     }
 
-    // Calculate total price
-    $priceTotal = $booking->bookingPrices->sum('amount');
-
-
-
-   $booking->bookingServices->map(function ($service) use (&$serviceTotal) {
-        $quantityTotal = collect($service->bookingServicePrices)->sum('quantity');
-        $service->total_quantity = $quantityTotal;
-
-        $serviceTotal += collect($service->bookingServicePrices)->sum('amount');
-        return $service;
-
-
-    $serviceTotal = $booking->bookingServices->sum(function ($service) {
-        return collect($service->bookingServicePrices)->sum('amount');
-    });
-
-    $booking->total_amount = $priceTotal + $serviceTotal;
-
-    return response()->json([
-        'status' => 'success',
-        'data' => $booking,
-    ]);
-}
-
-
-
-  public function saveBookingServices(Request $request, $id)
+/*  public function saveBookingServices(Request $request, $id)
 {
     $user = Auth::user();
 
@@ -731,7 +705,7 @@ class BookingController extends Controller
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
-
+*/
 
     public function saveBookingServices(Request $request, $id)
     {
