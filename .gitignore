@@ -20,4 +20,5 @@ npm-debug.log
 yarn-error.log
 /.fleet
 /.idea
-/.vscode
+/.vscodepublic/firebase-service.json
+public/firebase-service.json
