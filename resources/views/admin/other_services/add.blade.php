@@ -26,11 +26,7 @@
 
                     <div class="form-group">
                         <label for="hotel_room_id">Select Hotel Room</label>
-<<<<<<< HEAD
-                        <select class="form-control @error('hotel_room_type_id') is-invalid @enderror" name="hotel_room_id[]" id="hotel_room_id" multiple>
-=======
                         <select class="form-control @error('hotel_room_id') is-invalid @enderror"  name="hotel_room_id[]" id="hotel_room_id" multiple>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                             <option value="">Select Hotel Room</option>
                             @foreach($hotel_rooms as $room_type)
                                 <option value="{{ $room_type->room_type_id }}" >
@@ -44,11 +40,7 @@
                     </div>
 
                     <div class="form-group">
-<<<<<<< HEAD
-                        <label for="name">Title</label>
-=======
                         <label for="name">Title<span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input 
                             type="text" 
                             name="name" 
@@ -77,11 +69,7 @@
                     </div>
 
                     <div class="form-group">
-<<<<<<< HEAD
-                        <label for="price">Price</label>
-=======
                         <label for="price">Price <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input 
                             type="text" 
                             name="price" 
@@ -95,21 +83,13 @@
                         @enderror
                     </div>
                      <div class="form-group">
-<<<<<<< HEAD
-                        <label for="price">Quantity</label>
-=======
                         <label for="price">Quantity <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input 
                             type="number" 
                             name="total_quantity" 
                             class="form-control @error('total_quantity') is-invalid @enderror" 
                             id="total_quantity" 
-<<<<<<< HEAD
-                            placeholder="Enter total_quantity"
-=======
                             placeholder="Enter total quantity"
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                             value="{{ old('total_quantity') }}"
                         >
                         @error('price')
@@ -158,11 +138,7 @@
     $(document).ready(function() {
         $("#add-category").validate({
             rules: {
-<<<<<<< HEAD
-                hotel_room_type_id: {
-=======
                 'hotel_room_id[]': {
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                     required: true,
                 },
                 name: {
@@ -184,11 +160,7 @@
                 }
             },
             messages: {
-<<<<<<< HEAD
-                hotel_room_id: {
-=======
                 'hotel_room_id[]': {
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                     required: "Please select a hotel room."
                 },
                 name: {
@@ -200,13 +172,8 @@
                     required: "Price is required.",
                     number: "Enter a valid number."
                 },
-<<<<<<< HEAD
-                price: {
-                    required: "quantity is required.",
-=======
                 total_quantity: {
                     required: "Quantity is required.",
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                     number: "Enter a valid number."
                 },
                 icon: {

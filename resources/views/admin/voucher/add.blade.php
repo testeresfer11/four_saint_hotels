@@ -45,11 +45,7 @@
           <div class="col-12 col-md-6">
             {{-- Coupon Code --}}
             <div class="form-group">
-<<<<<<< HEAD
-              <label for="coupon_code">Coupon Code</label>
-=======
               <label for="coupon_code">Coupon Code  <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
               <input type="text" class="form-control @error('coupon_code') is-invalid @enderror"
                 id="coupon_code" name="coupon_code" placeholder="Enter coupon code" value="{{ old('coupon_code') }}">
               @error('coupon_code')
@@ -60,11 +56,7 @@
           <div class="col-12 col-md-6">
             {{-- Coupon Name --}}
             <div class="form-group">
-<<<<<<< HEAD
-              <label for="coupon_name">Coupon Name</label>
-=======
               <label for="coupon_name">Coupon Name  <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
               <input type="text" class="form-control @error('coupon_name') is-invalid @enderror"
                 id="coupon_name" name="coupon_name" placeholder="Enter coupon name" value="{{ old('coupon_name') }}">
               @error('coupon_name')
@@ -75,11 +67,7 @@
           <div class="col-12 col-md-6">
             {{-- Type --}}
             <div class="form-group">
-<<<<<<< HEAD
-              <label for="type">Type</label>
-=======
               <label for="type">Type  <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
               <select class="form-control @error('type') is-invalid @enderror" id="type" name="type">
                 <option value="">Select Type</option>
                 <option value="Fixed" {{ old('type') == 'Fixed' ? 'selected' : '' }}>Fixed</option>
@@ -93,11 +81,7 @@
           <div class="col-12 col-md-6">
             {{-- Value --}}
             <div class="form-group">
-<<<<<<< HEAD
-              <label for="value">Value</label>
-=======
               <label for="value">Value  <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
               <input type="number" step="0.01" class="form-control @error('value') is-invalid @enderror"
                 id="value" name="value" placeholder="Enter value" value="{{ old('value') }}">
               @error('value')
@@ -125,13 +109,8 @@
             {{-- Expiration Date --}}
             <div class="form-group">
               <label for="expiration_date">Expiration Date</label>
-<<<<<<< HEAD
-              <input type="date" class="form-control @error('expiration_date') is-invalid @enderror"
-                id="expiration_date" name="expiration_date" value="{{ old('expiration_date') }}">
-=======
               <input type="date" class="form-control @error('expiry_date') is-invalid @enderror"
                 id="expiry_date" name="expiry_date" value="{{ old('expiry_date') }}">
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
               @error('expiration_date')
               <span class="invalid-feedback">{{ $message }}</span>
               @enderror

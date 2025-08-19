@@ -28,45 +28,23 @@
               <div class="form-group">
                 <div class="row">
                     <div class="col-6">
-<<<<<<< HEAD
-                        <label for="exampleInputFirstName">First Name</label>
-                        <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="First Name" name="first_name">
-                        @error('first_name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                    <div class="col-6">
-                        <label for="exampleInputLastName">Last Name</label>
-                        <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="exampleInputLastName" placeholder="Last Name" name="last_name">
-                        @error('last_name')
-=======
                         <label for="exampleInputFirstName">
                             Full Name <span class="text-danger">*</span>
                         </label>
                         <input type="text" class="form-control @error('full_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="Full Name" name="full_name">
                         @error('full_name')
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
                     </div>
-<<<<<<< HEAD
-=======
                   
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                 </div>
               </div>
               <div class="form-group">
                 <div class="row">
                     <div class="col-6">
-<<<<<<< HEAD
-                        <label for="exampleInputEmail">Email address</label>
-=======
                         <label for="exampleInputEmail">Email address <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input type="email" class="form-control  @error('email') is-invalid @enderror" id="exampleInputEmail" placeholder="Email" name="email">
                         @error('email')
                             <span class="invalid-feedback" role="alert">
@@ -76,11 +54,7 @@
                     </div>
                     
                     <div class="col-6">
-<<<<<<< HEAD
-                        <label for="exampleInputGender">Gender</label>
-=======
                         <label for="exampleInputGender">Gender <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <select name="gender" id="exampleInputGender" class="form-control  @error('gender') is-invalid @enderror" >
                             <option value="" disabled selected hidden>Select Gender</option>
                             <option value="Male">Male</option>
@@ -157,12 +131,6 @@
                     </div>
 
                     <div class="col-6">
-<<<<<<< HEAD
-                        <label>Profile upload</label>
-                          <input type="file" name="profile" class="form-control file-upload-info" placeholder="Upload Image" accept="image/*">
-                    </div>
-                </div>
-=======
                     <label>Profile upload</label>
                     <input type="file" name="profile" class="form-control file-upload-info" placeholder="Upload Image" accept="image/*" onchange="previewImage(event)">
                     <div class="img-preview mt-2">
@@ -190,7 +158,6 @@
                 </script>
 
                 </div>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
               </div>
               
 <div class="text-end">

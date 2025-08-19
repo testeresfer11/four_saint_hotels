@@ -49,11 +49,7 @@
 
 
                     <div class="form-group">
-<<<<<<< HEAD
-                        <label for="title">Title</label>
-=======
                         <label for="title">Title <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input 
                             type="text" 
                             name="name" 
@@ -82,11 +78,7 @@
                     </div>
 
                     <div class="form-group">
-<<<<<<< HEAD
-                        <label for="title">Price</label>
-=======
                         <label for="title">Price <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input 
                             type="text" 
                             name="price" 
@@ -101,11 +93,7 @@
                     </div>
 
                        <div class="form-group">
-<<<<<<< HEAD
-                        <label for="price">Quantity</label>
-=======
                         <label for="price">Quantity<span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input 
                             type="text" 
                             name="total_quantity" 

@@ -20,16 +20,11 @@
       <div class="card">
 
         <div class="card-body p-0">
-<<<<<<< HEAD
             <div class=" custom-direction d-flex justify-content-between flex-row  px-3 row-gap-3 py-3  align-items-start">
-=======
-            <div class="d-flex justify-content-between flex-column flex-md-row px-3 row-gap-3 py-3 align-items-md-center align-items-start">
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                 <h4 class="card-title m-0">Booking Management</h4>
                 <div class="d-flex align-items-center justify-content-between">
                     <div class="admin-filters">
                         <form id="filter">
-<<<<<<< HEAD
                             <div class="d-flex align-items-center justify-content-end mr-2" style="column-gap: 10px;">
                                 {{-- <div class="col-3 d-flex gap-2"> --}}
                                     <input type="text" class="form-control"  placeholder="Search" name="search_keyword" value="{{request()->filled('search_keyword') ? request()->search_keyword : ''}}">            
@@ -44,22 +39,6 @@
                                 {{-- </div> --}}
 
                                 {{-- <div class="col-2"> --}}
-=======
-                            <div class="row align-items-center justify-content-end mr-2">
-                                <div class="col-3 d-flex gap-2">
-                                    <input type="text" class="form-control"  placeholder="Search" name="search_keyword" value="{{request()->filled('search_keyword') ? request()->search_keyword : ''}}">            
-                                </div>
-
-                                 <div class="col-md-2">
-                                    <input type="date" class="form-control" name="checkin_date" value="{{ request()->checkin_date }}">
-                                </div>
-
-                                <div class="col-md-2">
-                                    <input type="date" class="form-control" name="checkout_date" value="{{ request()->checkout_date }}">
-                                </div>
-
-                                <div class="col-2">
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                                     <select class="form-control" name="status" style="width:100%">
                                         <option value="">All</option>
                                         <option value="CheckedOut" {{(request()->filled('status') && request()->status == "CheckedOut")? 'selected' : ''}}>CheckedOut</option>
@@ -67,11 +46,7 @@
                                         <option value="Onboard" {{(request()->filled('status') && request()->status == "Onboard")? 'selected' : ''}}>Onboard</option>
 
                                     </select>
-<<<<<<< HEAD
                                 {{-- </div> --}}
-=======
-                                </div>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                                 
                                     <button type="submit" class="btn btn-primary">Filter</button>
                                     @if(request()->filled('search_keyword') || request()->filled('status') || request()->filled('category_id'))

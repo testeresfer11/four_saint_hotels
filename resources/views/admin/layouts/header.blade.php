@@ -45,10 +45,6 @@
     <i class="fa-regular fa-bell"></i>
     @if($notification_count)
       <span class="noti-count">{{ $notification_count }}</span>
-<<<<<<< HEAD
-      <span class="count bg-danger"></span>
-=======
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
     @endif
   </a>
 

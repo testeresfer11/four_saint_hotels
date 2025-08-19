@@ -27,20 +27,6 @@
             <form class="forms-sample p-3" id="profile-setting" action="{{route('admin.profile')}}" method="POST" enctype="multipart/form-data">
               @csrf
               <div class="form-group">
-<<<<<<< HEAD
-                <div class="row">
-                    <div class="col-6">
-                        <label for="exampleInputFirstName">Full Name</label>
-                        <input type="text" class="form-control @error('full_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="full name" name="full_name" value="{{$user->full_name ?? ''}}">
-                        @error('full_name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                   
-                </div>
-=======
               <div class="row">
                         <div class="col-6">
                             <label for="exampleInputFirstName">
@@ -60,16 +46,11 @@
                         </div>
                     </div>
 
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
               </div>
               <div class="form-group">
                 <div class="row">
                     <div class="col-6">
-<<<<<<< HEAD
-                        <label for="exampleInputEmail">Email address</label>
-=======
                         <label for="exampleInputEmail">Email address <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input type="email" class="form-control  @error('email') is-invalid @enderror" id="exampleInputEmail" placeholder="Email" name="email" value="{{$user->email ?? ''}}" readonly>
                         @error('email')
                             <span class="invalid-feedback" role="alert">
@@ -98,11 +79,7 @@
                     @endphp
 
                     <div class="col-6">
-<<<<<<< HEAD
-                      <label for="dob">Date Of Birth</label>
-=======
                       <label for="dob">Date Of Birth <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                       <input
                         type="date"
                         class="form-control @error('dob') is-invalid @enderror"
@@ -146,10 +123,6 @@
                     <div class="col-6">
                         <label>Profile upload</label>
                           <input type="file" name="profile" class="form-control file-upload-info" placeholder="Upload Image" accept="image/*">
-<<<<<<< HEAD
-                    </div>
-                </div>
-=======
                            <div class="col-6">
                           <img class="rounded-circle" src="{{ userImageById(authId()) }}" alt="User profile picture">
                         
@@ -160,21 +133,16 @@
 
                 </div>
                
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
               </div>
               <div class="form-group">
                 <label for="two_factor_auth">Two-Factor Authentication</label>
                 <div class="toggle-user dark-toggle">
                         <input type="checkbox" name="two_factor_enabled" data-id="{{$user->id}}" class="switch" @if ($user->two_factor_enabled == 1) checked @endif data-value="{{$user->two_factor_enabled}}">
                         </div> 
-<<<<<<< HEAD
-            </div>
-=======
 
 
             </div>
              
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
             <div class="text-end">
               <button type="submit" class="btn btn-primary mr-2">Update</button>
               {{-- <button class="btn btn-dark">Cancel</button> --}}

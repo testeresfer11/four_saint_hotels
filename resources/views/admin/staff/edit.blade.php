@@ -28,62 +28,24 @@
                 <fieldset>
                     <legend>Personal Information</legend>
                     <div class="form-group">
-<<<<<<< HEAD
-                        <div class="row">
-                            <div class="col-6">
-                                <label for="exampleInputFirstName">Profile</label>
-                                <img 
-                                    class=" img-lg  rounded-circle"
-                                    @if(isset($user->userDetail) && !is_null($user->userDetail->profile))
-                                        src="{{ asset('storage/images/' . $user->userDetail->profile) }}"
-                                    @else
-                                        src="{{ asset('admin/images/faces/face15.jpg') }}"
-                                    @endif
-                                    onerror="this.src = '{{ asset('admin/images/faces/face15.jpg') }}'"
-                                    alt="Staff profile picture">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <label for="exampleInputFirstName">First Name</label>
-                                <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="First Name" name="first_name" value="{{$user->first_name ?? ''}}">
-                                @error('first_name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                            <div class="col-6">
-                                <label for="exampleInputLastName">Last Name</label>
-                                <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="exampleInputLastName" placeholder="Last Name" name="last_name" value="{{$user->last_name ?? ''}}">
-                                @error('last_name')
-=======
                       
                         <div class="row">
                             <div class="col-6">
                                 <label for="exampleInputFirstName">Full Name</label>
                                 <input type="text" class="form-control @error('full_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="Full Name" name="full_name" value="{{$user->full_name ?? ''}}">
                                 @error('full_name')
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
                             </div>
-<<<<<<< HEAD
-=======
                            
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="row">
                             <div class="col-6">
-<<<<<<< HEAD
-                                <label for="exampleInputEmail">Email address</label>
-=======
                                 <label for="exampleInputEmail">Email address<span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                                 <input type="email" class="form-control  @error('email') is-invalid @enderror" id="exampleInputEmail" placeholder="Email" name="email" value="{{$user->email ?? ''}}" readonly>
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
@@ -92,11 +54,7 @@
                                 @enderror
                             </div>
                             <div class="col-6">
-<<<<<<< HEAD
-                                <label for="exampleInputGender">Gender</label>
-=======
                                 <label for="exampleInputGender">Gender<span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                                 <select name="gender" id="exampleInputGender" class="form-control  @error('gender') is-invalid @enderror" >
                                     <option value="">Select Gender</option>
                                     <option value="Male" {{$user->userDetail ? (($user->userDetail->gender == 'Male' ) ? 'selected': '') : ''}}>Male</option>
@@ -115,11 +73,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-6">
-<<<<<<< HEAD
-                                <label for="exampleInputRole">Role</label>
-=======
                                 <label for="exampleInputRole">Role<span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                                 <select name="role_id" id="exampleInputRole" class="form-control  @error('role_id') is-invalid @enderror" >
                                     <option value="">Select Role</option>
                                     @foreach ($roles as $role)
@@ -134,11 +88,7 @@
                             </div>
 
                             <div class="col-6 select_country_code">
-<<<<<<< HEAD
-                                <label for="phone">Phone Number</label>
-=======
                                 <label for="phone">Phone Number <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                                 <input type="text" class="form-control @error('phone_number') is-invalid @enderror" id="phone" placeholder="Phone Number" name="phone_number" value="{{$user->userDetail ? ($user->userDetail->phone_number ?? '') : ''}}" pattern="\d*" inputmode="numeric" 
                                 oninput="this.value = this.value.replace(/\D/g, '')">
                                 <input type="hidden" name="country_code" value="">
@@ -157,11 +107,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-6">
-<<<<<<< HEAD
-                                <label for="dob">Date Of Birth</label>
-=======
                                 <label for="dob">Date Of Birth <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                                 <input type="date" class="form-control  @error('dob') is-invalid @enderror" id="dob" placeholder="dob" name="dob"  value="{{$user->userDetail ? ($user->userDetail->dob ?? '') : ''}}">
                                 @error('dob')
                                     <span class="invalid-feedback" role="alert">
@@ -195,12 +141,6 @@
                                 </span>
                                 @enderror
                             </div>
-<<<<<<< HEAD
-                            <div class="col-6">
-                                <label>Profile upload</label>
-                                <input type="file" name="profile" class="form-control file-upload-info" placeholder="Upload Image" accept="image/*">
-                            </div>
-=======
                             <div class="row">
                             <div class="col-12">
                                 <label>Profile upload</label>
@@ -233,7 +173,6 @@
                         }
                         </script>
 
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         </div>
                     </div>
                 </fieldset>

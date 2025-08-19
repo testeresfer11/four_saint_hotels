@@ -46,11 +46,7 @@
     
   </div>
 
-<<<<<<< HEAD
   <div class="col-lg-6 bg-white px-md-5 py-md-5 px-2 py-2  d-grid justify-content-center align-items-center">
-=======
-  <div class="col-lg-6 bg-white px-md-5 py-md-5 px-2 py-2">
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
     <div class="card-body login-form px-md-5 py-md-3 px-4 py-2">
       <div class="text-center">
         <img src="{{asset('admin/images/auth/new_logo.png')}}" class="img-fluid" alt="">

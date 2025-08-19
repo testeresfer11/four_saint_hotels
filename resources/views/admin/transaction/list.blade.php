@@ -18,24 +18,6 @@
     <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body p-0">
-<<<<<<< HEAD
-                <div class="d-flex justify-content-between align-items-xl-center align-items-start flex-column row-gap-3 flex-xl-row py-3 px-3">
-                    <h4 class="card-title m-0">Booking Transactions</h4>
-                    <form id="filter" method="GET">
-                        <div class="d-flex align-items-center justify-content-end" style="column-gap: 10px;">
-                            {{-- <div class="col-4"> --}}
-                                <input type="text" name="search_keyword" class="form-control" placeholder="Search Booking Code" value="{{ request('search_keyword') }}">
-                            {{-- </div> --}}
-                            {{-- <div class="d-flex align-items-center"> --}}
-                                {{-- <label class="px-2">From</label> --}}
-                                <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
-                            {{-- </div> --}}
-                            {{-- <div class="d-flex align-items-center"> --}}
-                                {{-- <label class="px-2">To</label> --}}
-                                <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
-                            {{-- </div> --}}
-                            {{-- <div class="col-auto"> --}}
-=======
                 <div class="d-flex justify-content-between align-items-center py-3 px-3">
                     <h4 class="card-title m-0">Booking Transactions</h4>
                     <form id="filter" method="GET">
@@ -52,16 +34,11 @@
                                 <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
                             </div>
                             <div class="col-auto">
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                                 <button type="submit" class="btn btn-primary">Filter</button>
                                 @if(request()->filled('search_keyword') || request()->filled('from_date') || request()->filled('to_date'))
                                     <a href="{{ route('admin.payment.list') }}" class="btn btn-danger">Clear</a>
                                 @endif
-<<<<<<< HEAD
-                            {{-- </div> --}}
-=======
                             </div>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         </div>
                     </form>
                 </div>
@@ -84,11 +61,7 @@
                         <tbody>
                             @forelse($payments as $index => $payment)
                                 <tr>
-<<<<<<< HEAD
-                                    <td>{{ $index + 1 }}</td>
-=======
                                     <td>{{ $payments->firstItem() + $index }}</td>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                                     <td>{{ $payment['booking']['reservation_code'] ?? 'N/A' }}</td>
                                     <td>{{ $payment['amount'] }}</td>
                                     <td>{{ $payment['currency'] }}</td>

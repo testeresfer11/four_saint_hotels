@@ -274,30 +274,6 @@ $(document).ready(function () {
         }
     });
 
-<<<<<<< HEAD
-    function renderMessageContent(message, type) {
-        if (type === 'file') {
-            let fileUrl = message;
-            let filename = 'Download File';
-
-            if (typeof message === 'object') {
-                fileUrl = message.content || message.file_url;
-                filename = message.filename || 'Download File';
-            }
-
-            const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileUrl);
-            if (isImage) {
-                return `<a href="${fileUrl}" target="_blank">
-                            <img src="${fileUrl}" alt="Image" style="max-width: 200px; border-radius: 10px;" />
-                        </a>`;
-            } else {
-                return `<a href="${fileUrl}" download target="_blank">${filename}</a>`;
-            }
-        } else {
-            return `<div>${message}</div>`;
-        }
-    }
-=======
 function renderMessageContent(message, type) {
     if (type === 'file') {
         let fileUrl = message;
@@ -339,7 +315,6 @@ function renderMessageContent(message, type) {
     }
 }
 
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 });
 </script>
 @endsection

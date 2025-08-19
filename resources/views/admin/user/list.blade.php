@@ -16,11 +16,7 @@
     <div class="col-lg-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body p-0">
-<<<<<<< HEAD
-          <div class="d-flex justify-content-between flex-column row-gap-3 flex-xl-row px-3 py-3 align-items-xl-center align-items-start">
-=======
           <div class="d-flex justify-content-between flex-column row-gap-3 flex-md-row px-3 py-3 align-items-md-center align-items-start">
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
             <h4 class="card-title m-0">User Management</h4>
             <div class="d-flex align-items-center justify-content-between">
               <div class="admin-filters mr-2">

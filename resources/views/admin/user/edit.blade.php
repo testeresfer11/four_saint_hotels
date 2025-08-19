@@ -28,35 +28,6 @@
               
               <div class="form-group">
                 <div class="row">
-<<<<<<< HEAD
-                    <div class="col-6">
-                        <label for="exampleInputFirstName">Profile</label>
-                        <img 
-                            class=" img-lg  rounded-circle"
-                            @if(isset($user->userDetail) && !is_null($user->userDetail->profile))
-                                src="{{ asset('storage/images/' . $user->userDetail->profile) }}"
-                            @else
-                                src="{{ asset('admin/images/faces/face15.jpg') }}"
-                            @endif
-                            onerror="this.src = '{{ asset('admin/images/faces/face15.jpg') }}'"
-                            alt="User profile picture">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <label for="exampleInputFirstName">First Name</label>
-                        <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="First Name" name="first_name" value="{{$user->first_name ?? ''}}">
-                        @error('first_name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
-                    <div class="col-6">
-                        <label for="exampleInputLastName">Last Name</label>
-                        <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="exampleInputLastName" placeholder="Last Name" name="last_name" value="{{$user->last_name ?? ''}}">
-                        @error('last_name')
-=======
                     
                 </div>
                 <div class="row">
@@ -64,26 +35,18 @@
                         <label for="exampleInputFirstName">Full Name <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('full_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="Full Name" name="full_name" value="{{$user->full_name ?? ''}}">
                         @error('full_name')
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
                     </div>
-<<<<<<< HEAD
-=======
                
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                 </div>
               </div>
               <div class="form-group">
                 <div class="row">
                     <div class="col-6">
-<<<<<<< HEAD
-                        <label for="exampleInputEmail">Email address</label>
-=======
                         <label for="exampleInputEmail">Email address<span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input type="email" class="form-control  @error('email') is-invalid @enderror" id="exampleInputEmail" placeholder="Email" name="email" value="{{$user->email ?? ''}}" readonly>
                         @error('email')
                             <span class="invalid-feedback" role="alert">
@@ -92,11 +55,7 @@
                         @enderror
                     </div>
                     <div class="col-6">
-<<<<<<< HEAD
-                        <label for="exampleInputGender">Gender</label>
-=======
                         <label for="exampleInputGender">Gender <span class="text-danger">*</span></label>
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <select name="gender" id="exampleInputGender" class="form-control  @error('gender') is-invalid @enderror" >
                             <option value="">Select Gender</option>
                             <option value="Male" {{$user->userDetail ? (($user->userDetail->gender == 'Male' ) ? 'selected': '') : ''}}>Male</option>
@@ -160,14 +119,6 @@
                 </div>
               </div>
               <div class="form-group">
-<<<<<<< HEAD
-                <div class="row">
-                    <div class="col-12">
-                        <label>Profile upload</label>
-                          <input type="file" name="profile" class="form-control file-upload-info" placeholder="Upload Image" accept="image/*">
-                    </div>
-                </div>
-=======
            <div class="row">
             <div class="col-12">
                 <label for="profile">Profile upload</label>
@@ -202,7 +153,6 @@
         </script>
 
 
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
               </div>
               <button type="submit" class="btn btn-primary mr-2" >Update</button>
             </form>
