@@ -25,7 +25,11 @@
                     @csrf
 
                     <div class="form-group">
+<<<<<<< HEAD
                         <label for="hotel_id">Select Hotel</label>
+=======
+                        <label for="hotel_id">Select Hotel<span class="text-danger">*</span></label>
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <select class="form-control @error('hotel_id') is-invalid @enderror" name="hotel_id" id="hotel_id">
                             <option value="">Select Hotel</option>
                             @foreach($hotels as $hotel)
@@ -40,7 +44,11 @@
                     </div>
 
                     <div class="form-group">
+<<<<<<< HEAD
                         <label for="title">Title</label>
+=======
+                        <label for="title">Title<span class="text-danger">*</span></label>
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input 
                             type="text" 
                             name="title" 
@@ -69,7 +77,11 @@
                     </div>
 
                     <div class="form-group">
+<<<<<<< HEAD
                         <label for="icon">Icon (optional)</label>
+=======
+                        <label for="icon">Icon (optional)<span class="text-danger">*</span></label>
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input 
                             type="file" 
                             name="icon" 
@@ -84,9 +96,15 @@
 
                         <div class="mt-2">
                             @if($category->icon)
+<<<<<<< HEAD
                                 <img src="{{ asset('storage/' . $category->icon) }}" alt="Current Icon" style="max-width: 200px; border: 1px solid #ccc; padding: 5px; border-radius: 6px;">
                             @endif
                             <img id="iconPreview" src="#" style="display:none; max-width: 200px; border: 1px solid #ccc; padding: 5px; border-radius: 6px;">
+=======
+                                <img id="iconPreview" src="{{ asset('storage/' . $category->icon) }}" alt="Current Icon" style="max-width: 200px; border: 1px solid #ccc; padding: 5px; border-radius: 6px;">
+                            @endif
+                           
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         </div>
                     </div>
 

@@ -26,8 +26,12 @@ public function index(Request $request)
             $query->where(function ($q) use ($keyword) {
                 $q->where('message', 'like', '%' . $keyword . '%')
                   ->orWhereHas('user', function ($q2) use ($keyword) {
+<<<<<<< HEAD
                       $q2->where('first_name', 'like', '%' . $keyword . '%')
                          ->orWhere('last_name', 'like', '%' . $keyword . '%');
+=======
+                      $q2->orWhere('full_name', 'like', '%' . $keyword . '%');
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                   });
             });
         })

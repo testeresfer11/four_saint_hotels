@@ -44,5 +44,15 @@ return [
     'token' => env('TWILIO_TOKEN'),
     'from' => env('TWILIO_FROM'),
 ],
+<<<<<<< HEAD
+=======
+
+'paypal' => [
+    'client_id' => env('PAYPAL_CLIENT_ID'),
+    'secret'    => env('PAYPAL_CLIENT_SECRET'),
+    'mode'      => env('PAYPAL_MODE', 'sandbox'), // 'sandbox' or 'live'
+],
+
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 
 ];

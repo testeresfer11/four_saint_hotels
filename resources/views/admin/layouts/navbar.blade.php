@@ -130,7 +130,11 @@
                     {{-- <i class="mdi mdi-gift"></i> --}}
                     <img src="{{ asset('images/gift.png') }}" alt="logout" class="img-fluid">
                 </span>
+<<<<<<< HEAD
                 <span class="menu-title">Coupans</span>
+=======
+                <span class="menu-title">Coupons</span>
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
             </a>
         </li>
         @endcanany

@@ -111,6 +111,15 @@ public function getList(Request $request)
         ->when($request->filled('search_keyword'), function ($query) use ($request) {
             $query->where('room_name', 'like', '%' . $request->search_keyword . '%');
         })
+<<<<<<< HEAD
+=======
+        ->when($request->filled('start_date'), function ($query) use ($request) {
+                $query->whereDate('created_at', '>=', $request->start_date);
+            })
+            ->when($request->filled('end_date'), function ($query) use ($request) {
+                $query->whereDate('created_at', '<=', $request->end_date);
+            })
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
         ->get();
 
         $hotel = Hotel::where('hotel_id', $hotel_id)->first();

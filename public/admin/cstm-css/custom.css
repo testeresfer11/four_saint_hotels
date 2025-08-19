@@ -146,13 +146,22 @@ table thead {
   height: 14px;
   font-weight: 600;
 }
+<<<<<<< HEAD
 .navbar-menu-wrapper .hotel_status {
   background: #B46326;
   border-radius: 10px;
+=======
+
+.navbar-menu-wrapper .hotel_status {
+  background: #B46326;
+
+  border-radius: 19px;
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
   color: #fff !important;
   border: none;
   padding: 8px 10px;
   font-size: 14px;
+<<<<<<< HEAD
   width: auto;
 }
 .navbar-menu-wrapper .hotel_status>option:first-child{
@@ -168,6 +177,15 @@ table thead {
 .navbar-menu-wrapper .hotel_status>option:hover{
   background-color: red;
 }
+=======
+
+
+}
+span.menu-icon i {
+    font-size: 17px;
+  width: auto;
+}
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 .hotel_status>a{
   color: #fff !important;
 }
@@ -1337,9 +1355,13 @@ color: white;
 display: block;
 background: transparent;
 }
+<<<<<<< HEAD
 .select_country_code  .iti.iti--allow-dropdown.iti--show-flags{
   display: block;
 }
+=======
+
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 .select_country_code .iti--inline-dropdown .iti__dropdown-content {
 background: #ffffff;
 }
@@ -1399,7 +1421,30 @@ form#add-question .row .options {
 text-decoration: none;
 color:  #6c7293;
 }
+<<<<<<< HEAD
 
+=======
+.table-responsive tr{
+  height: 50px;
+}
+.card .card-title{
+  font-size: 20px;
+  font-weight: 600;
+}
+/*action buton*/
+/*td .menu-icon>a{
+  
+}*/
+td .menu-icon>a.edit-btn {
+    padding: 4px 6px;
+    border: 1px solid #2B7FFF;
+    border-radius: 5px;
+    background: #F3F8FF;
+}
+td .menu-icon>a.edit-btn i{
+  color: #2B7FFF;
+}
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 .swal2-icon.swal2-warning.swal2-icon-show , .swal2-icon.swal2-info.swal2-icon-show{
 margin: 0;
 }
@@ -1455,6 +1500,10 @@ color: #6c7293 !important;
 .admin-filters select.form-control, select.form-control {
   font-size: 13px;
   border: 1px solid #EDEDED;
+<<<<<<< HEAD
+=======
+  color: #fff;
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 }
 select.form-control:focus{
   outline: none;
@@ -1468,7 +1517,13 @@ select.form-control:focus{
   display: flex;
   column-gap: 15px;
 }
+<<<<<<< HEAD
 
+=======
+.table-responsive{
+  border-radius: 0 0 12px 12px !important;
+}
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 .table-responsive table tbody tr>td{
   padding-top: 11px !important;
   padding-bottom: 11px !important;
@@ -1505,10 +1560,14 @@ select.form-control:focus{
   background: #0090e7 !important;
   color: #fff;
 }
+<<<<<<< HEAD
 .btn-danger{
   padding: 13px 20px !important;
   border-radius: 8px !important;
 }
+=======
+
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 
 .btn-primary {
 
@@ -1535,6 +1594,7 @@ a {
   }
 }
 /* End model style */
+<<<<<<< HEAD
 @media screen and (max-width: 1366px)  {
   .content-wrapper .card a.add-btn span.menu-icon{
     display: none;
@@ -1556,11 +1616,15 @@ a {
   }
 }
 @media screen and (max-width: 1092px) {
+=======
+@media screen and (max-width:767px) {
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
   a.add-btn, button.fetch-btn {
     position: absolute;
     top: 10px;
     right: 10px;
   }
+<<<<<<< HEAD
   .content-wrapper .card a.add-btn>button{
     display: flex;
   }
@@ -1570,6 +1634,8 @@ a {
 }
 @media screen and (max-width:767px) {
  
+=======
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
   button.btn-md {
     padding: 7px 12px !important;
   }

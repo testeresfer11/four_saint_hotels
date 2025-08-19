@@ -35,7 +35,11 @@
                     @csrf
 
                     <div class="form-group">
+<<<<<<< HEAD
                         <label for="category_id">Select Feature</label>
+=======
+                        <label for="category_id">Select Feature <span class="text-danger">*</span></label>
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <select class="form-control @error('category_id') is-invalid @enderror" name="category_id" id="category_id">
                             <option value="">Select Feature</option>
                             @foreach($categories as $category)
@@ -48,7 +52,11 @@
                     </div>
 
                     <div class="form-group">
+<<<<<<< HEAD
                         <label for="title">Title</label>
+=======
+                        <label for="title">Title <span class="text-danger">*</span></label>
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" id="title" placeholder="Enter title">
                         @error('title')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
@@ -97,7 +105,11 @@
     $(document).ready(function() {
         $("#add-category").validate({
             rules: {
+<<<<<<< HEAD
                 hotel_id: {
+=======
+                category_id: {
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                     required: true,
                 },
                 title: {
@@ -111,8 +123,13 @@
                 }
             },
             messages: {
+<<<<<<< HEAD
                 hotel_id: {
                     required: "Please select a hotel."
+=======
+                category_id: {
+                    required: "Please select a Category."
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                 },
                 title: {
                     required: "Title is required.",

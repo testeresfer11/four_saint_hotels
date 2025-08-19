@@ -37,7 +37,11 @@ public function getList(Request $request)
     {
         if ($request->isMethod('post')) {
             try {
+<<<<<<< HEAD
                 // Validate the incoming request data
+=======
+                
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                 $validated = $request->validate([
                     'category_id' => 'required|exists:service_categories,id',
                     'title' => 'required|string|max:255',
@@ -110,6 +114,7 @@ public function getList(Request $request)
         return view('admin.sub_category.edit', compact('subCategory', 'categories'));
     }
 
+<<<<<<< HEAD
     public function delete($id)
     {
         try {
@@ -131,4 +136,42 @@ public function getList(Request $request)
             ->with('error', 'An error occurred while adding the sub-category. Please try again.');
     }
     }
+=======
+    public function delete($id){
+        try {
+            $subCategory = ServiceSubCategory::findOrFail($id);
+
+            if ($subCategory->image && Storage::disk('public')->exists($subCategory->image)) {
+                Storage::disk('public')->delete($subCategory->image);
+            }
+
+            $subCategory->delete();
+
+            // If it's an AJAX request, return JSON
+            if (request()->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Sub-category deleted successfully!'
+                ]);
+            }
+
+            // Otherwise, redirect (normal delete)
+            return redirect()->route('admin.sub_category.list')
+                ->with('success', 'Sub-category deleted successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error deleting sub-category: ' . $e->getMessage());
+
+            if (request()->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'An error occurred while deleting the sub-category. Please try again.'
+                ], 500);
+            }
+
+            return back()->withInput()
+                ->with('error', 'An error occurred while deleting the sub-category. Please try again.');
+        }
+    }
+
+>>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 }
