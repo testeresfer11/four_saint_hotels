@@ -20,7 +20,8 @@
         <div class="d-flex justify-content-between flex-column flex-md-row px-3 py-3 align-items-md-center align-items-start">
           <h4 class="card-title m-0">Sub Feature Management</h4>
           <a href="{{ route('admin.sub_category.add') }}" class="btn btn-primary btn-md">
-            + Add Sub Feature
+            <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
+                <span class="menu-text">Add Sub Feature</span>
           </a>
         </div>
 

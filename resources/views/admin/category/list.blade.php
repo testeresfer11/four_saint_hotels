@@ -16,15 +16,17 @@
   <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body p-0">
-        <div class="d-flex justify-content-between flex-column flex-md-row px-3 py-3 align-items-md-center align-items-start">
+        <div class="d-flex justify-content-between flex-column flex-xl-row px-3 py-3 align-items-xl-center row-gap-3 align-items-start">
           <h4 class="card-title m-0">Feature Management</h4>
           <div class="d-flex align-items-center justify-content-between">
             <div class="admin-filters mr-2">
               <x-filter />
             </div>
 
-            <a href="{{route('admin.category.add')}}"><button type="button" class="btn btn-primary btn-md">
-                <span class="menu-icon">+ Add Feature</span></button></a>
+            <a href="{{route('admin.category.add')}}" class="add-btn"><button type="button" class="btn btn-primary btn-md ">
+                <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
+                <span class="menu-text">Add Feature</span>
+              </button></a>
           </div>
         </div>
 

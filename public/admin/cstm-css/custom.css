@@ -148,12 +148,25 @@ table thead {
 }
 .navbar-menu-wrapper .hotel_status {
   background: #B46326;
-  border-radius: 19px;
+  border-radius: 10px;
   color: #fff !important;
   border: none;
   padding: 8px 10px;
   font-size: 14px;
   width: auto;
+}
+.navbar-menu-wrapper .hotel_status>option:first-child{
+  position: absolute;
+  top: 10px;
+}
+.navbar-menu-wrapper .hotel_status>option{
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  border: 1px solid red;
+  color: #000;
+}
+.navbar-menu-wrapper .hotel_status>option:hover{
+  background-color: red;
 }
 .hotel_status>a{
   color: #fff !important;
@@ -1324,7 +1337,9 @@ color: white;
 display: block;
 background: transparent;
 }
-
+.select_country_code  .iti.iti--allow-dropdown.iti--show-flags{
+  display: block;
+}
 .select_country_code .iti--inline-dropdown .iti__dropdown-content {
 background: #ffffff;
 }
@@ -1490,7 +1505,10 @@ select.form-control:focus{
   background: #0090e7 !important;
   color: #fff;
 }
-
+.btn-danger{
+  padding: 13px 20px !important;
+  border-radius: 8px !important;
+}
 
 .btn-primary {
 
@@ -1517,12 +1535,41 @@ a {
   }
 }
 /* End model style */
-@media screen and (max-width:767px) {
+@media screen and (max-width: 1366px)  {
+  .content-wrapper .card a.add-btn span.menu-icon{
+    display: none;
+  }
+  .custom-direction{
+    flex-direction: column !important;
+    align-items: start !important;
+  }
+  .fetch-hotels-btn{
+    padding: 10px !important;
+  }
+  .fetch-hotels-btn, .custom-add-btn{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+  .custom-add-btn>button{
+    padding: 10px !important;
+  }
+}
+@media screen and (max-width: 1092px) {
   a.add-btn, button.fetch-btn {
     position: absolute;
     top: 10px;
     right: 10px;
   }
+  .content-wrapper .card a.add-btn>button{
+    display: flex;
+  }
+  .content-wrapper .card a.add-btn span.menu-icon{
+    display: block;
+  }
+}
+@media screen and (max-width:767px) {
+ 
   button.btn-md {
     padding: 7px 12px !important;
   }

@@ -17,7 +17,7 @@
       <div class="card">
         
         <div class="card-body p-0">
-          <div class="d-flex justify-content-between flex-column flex-md-row px-3 row-gap-3 py-3 align-items-md-center align-items-start">
+          <div class="d-flex justify-content-between flex-column flex-xl-row px-3 row-gap-3 py-3 align-items-xl-center align-items-start">
             <h4 class="card-title m-0">NewsLetter Subscribers Management</h4>
               <div class="admin-filters">
                 <x-filter />

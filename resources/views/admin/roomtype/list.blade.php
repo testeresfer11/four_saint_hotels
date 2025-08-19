@@ -24,7 +24,7 @@
                     
                         <input type="text" name="search_keyword" class="form-control mr-2 " placeholder="Search by name" value="{{ request('search_keyword') }}">
                     
-                    <button id="fetchHotelsBtn" class="btn btn-sm btn-primary w-100  fetch-hotels-btn">
+                    <button id="fetchHotelsBtn" class="btn btn-sm btn-primary w-100  ">
                         <span class="fetch-icon" id="fetchBtnLoader"><i class="fa-solid fa-arrows-rotate spinner-icon"></i></span>
                         <span id="fetchBtnText" class="fetch-btn-text">Fetch Room Type</span>
                         {{-- <span  class="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span> --}}
