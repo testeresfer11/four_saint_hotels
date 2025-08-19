@@ -25,7 +25,7 @@
                     @csrf
 
                     <div class="form-group">
-                        <label for="hotel_id">Select Hotel</label>
+                        <label for="hotel_id">Select Hotel<span class="text-danger">*</span></label>
                         <select class="form-control @error('hotel_id') is-invalid @enderror" name="hotel_id" id="hotel_id">
                             <option value="">Select Hotel</option>
                             @foreach($hotels as $hotel)
@@ -38,7 +38,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="title">Title</label>
+                        <label for="title">Title <span class="text-danger">*</span></label>
                         <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" id="title" placeholder="Enter title" maxlength="20">
                         @error('title')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
@@ -54,7 +54,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="icon">Icon </label>
+                        <label for="icon">Icon <span class="text-danger">*</span></label>
                         <input type="file" name="icon" class="form-control @error('icon') is-invalid @enderror" id="icon" accept="image/*" onchange="previewIcon(event)">
                         @error('icon')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>

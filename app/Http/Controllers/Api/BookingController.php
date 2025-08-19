@@ -120,6 +120,7 @@ class BookingController extends Controller
 
     public function create(Request $request)
     {
+         $user = Auth::user();
         $validated = $request->validate([
             'hotel_id' => 'required|integer',
             'room_count' => 'required|integer',
@@ -177,7 +178,7 @@ class BookingController extends Controller
                 $booking = Booking::where("reservation_code", $response['reservation_code'])->first();
 
                     if ($booking) {
-                        $user = Auth::user();
+                        $user = User::where('email',$validated['customer']['email'])->first();
 
                         // Generate secure invoice download URL
                         $download = url('booking/invoice/' . $booking->id);
@@ -205,7 +206,9 @@ class BookingController extends Controller
                     }
 
                     } 
-                $user_id = auth()->id(); // Replace with the actual driver user to notify
+                    $user = User::where('email',$validated['customer']['email'])->first();
+
+                $user_id = $user->id; // Replace with the actual driver user to notify
 
                 $notificationData = [
                     'title' => 'New Booking created',
@@ -215,7 +218,7 @@ class BookingController extends Controller
                 ];
 
 
-                // User::find(auth()->id())->notify(new BookingCreatedNotification($booking));
+                 User::find($user_id)->notify(new BookingCreatedNotification($booking));
 
 
 

@@ -28,29 +28,23 @@
               <div class="form-group">
                 <div class="row">
                     <div class="col-6">
-                        <label for="exampleInputFirstName">First Name</label>
-                        <input type="text" class="form-control @error('first_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="First Name" name="first_name">
-                        @error('first_name')
+                        <label for="exampleInputFirstName">
+                            Full Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control @error('full_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="Full Name" name="full_name">
+                        @error('full_name')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
                     </div>
-                    <div class="col-6">
-                        <label for="exampleInputLastName">Last Name</label>
-                        <input type="text" class="form-control @error('last_name') is-invalid @enderror" id="exampleInputLastName" placeholder="Last Name" name="last_name">
-                        @error('last_name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
-                    </div>
+                  
                 </div>
               </div>
               <div class="form-group">
                 <div class="row">
                     <div class="col-6">
-                        <label for="exampleInputEmail">Email address</label>
+                        <label for="exampleInputEmail">Email address <span class="text-danger">*</span></label>
                         <input type="email" class="form-control  @error('email') is-invalid @enderror" id="exampleInputEmail" placeholder="Email" name="email">
                         @error('email')
                             <span class="invalid-feedback" role="alert">
@@ -60,7 +54,7 @@
                     </div>
                     
                     <div class="col-6">
-                        <label for="exampleInputGender">Gender</label>
+                        <label for="exampleInputGender">Gender <span class="text-danger">*</span></label>
                         <select name="gender" id="exampleInputGender" class="form-control  @error('gender') is-invalid @enderror" >
                             <option value="" disabled selected hidden>Select Gender</option>
                             <option value="Male">Male</option>
@@ -137,9 +131,32 @@
                     </div>
 
                     <div class="col-6">
-                        <label>Profile upload</label>
-                          <input type="file" name="profile" class="form-control file-upload-info" placeholder="Upload Image" accept="image/*">
+                    <label>Profile upload</label>
+                    <input type="file" name="profile" class="form-control file-upload-info" placeholder="Upload Image" accept="image/*" onchange="previewImage(event)">
+                    <div class="img-preview mt-2">
+                        <img id="preview" src="" alt="Preview" style="max-width: 150px; display: none; border-radius: 8px;" />
                     </div>
+                </div>
+
+                <script>
+                function previewImage(event) {
+                    let preview = document.getElementById('preview');
+                    let file = event.target.files[0];
+
+                    if (file) {
+                        let reader = new FileReader();
+                        reader.onload = function(e) {
+                            preview.src = e.target.result;
+                            preview.style.display = "block";
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        preview.src = "";
+                        preview.style.display = "none";
+                    }
+                }
+                </script>
+
                 </div>
               </div>
               

@@ -274,28 +274,47 @@ $(document).ready(function () {
         }
     });
 
-    function renderMessageContent(message, type) {
-        if (type === 'file') {
-            let fileUrl = message;
-            let filename = 'Download File';
+function renderMessageContent(message, type) {
+    if (type === 'file') {
+        let fileUrl = message;
+        let filename = 'Download File';
 
-            if (typeof message === 'object') {
-                fileUrl = message.content || message.file_url;
-                filename = message.filename || 'Download File';
-            }
-
-            const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileUrl);
-            if (isImage) {
-                return `<a href="${fileUrl}" target="_blank">
-                            <img src="${fileUrl}" alt="Image" style="max-width: 200px; border-radius: 10px;" />
-                        </a>`;
-            } else {
-                return `<a href="${fileUrl}" download target="_blank">${filename}</a>`;
-            }
-        } else {
-            return `<div>${message}</div>`;
+        if (typeof message === 'object') {
+            fileUrl = message.content || message.file_url;
+            filename = message.filename || 'Download File';
         }
+
+        const isImage = /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileUrl);
+        if (isImage) {
+            return `<a href="${fileUrl}" target="_blank">
+                        <img src="${fileUrl}" alt="Image" style="max-width: 200px; border-radius: 10px;" />
+                    </a>`;
+        } else {
+            return `<a href="${fileUrl}" download target="_blank">${filename}</a>`;
+        }
+    } 
+    
+    // ✅ NEW: handle hotel type
+    else if (type === 'hotel') {
+        let hotel = (typeof message === 'string') ? JSON.parse(message) : message;
+
+        return `
+            <div class="card shadow-sm" style="max-width: 250px; border-radius: 12px; overflow: hidden;">
+                <img src="${hotel.image}" alt="${hotel.name}" style="width: 100%; height: 140px; object-fit: cover;">
+                <div class="p-2">
+                    <h6 class="mb-1">${hotel.name}</h6>
+                    <p class="mb-1 text-muted small">${hotel.location}</p>
+                    <p class="mb-0 fw-bold">💲${hotel.price}</p>
+                </div>
+            </div>
+        `;
+    } 
+    
+    else {
+        return `<div>${message}</div>`;
     }
+}
+
 });
 </script>
 @endsection

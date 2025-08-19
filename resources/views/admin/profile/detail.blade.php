@@ -27,23 +27,30 @@
             <form class="forms-sample p-3" id="profile-setting" action="{{route('admin.profile')}}" method="POST" enctype="multipart/form-data">
               @csrf
               <div class="form-group">
-                <div class="row">
-                    <div class="col-6">
-                        <label for="exampleInputFirstName">Full Name</label>
-                        <input type="text" class="form-control @error('full_name') is-invalid @enderror" id="exampleInputFirstName" placeholder="full name" name="full_name" value="{{$user->full_name ?? ''}}">
-                        @error('full_name')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
+              <div class="row">
+                        <div class="col-6">
+                            <label for="exampleInputFirstName">
+                                Full Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control @error('full_name') is-invalid @enderror" 
+                                   id="exampleInputFirstName" 
+                                   placeholder="Full Name" 
+                                   name="full_name" 
+                                   value="{{ $user->full_name ?? '' }}">
+                            @error('full_name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
                     </div>
-                   
-                </div>
+
               </div>
               <div class="form-group">
                 <div class="row">
                     <div class="col-6">
-                        <label for="exampleInputEmail">Email address</label>
+                        <label for="exampleInputEmail">Email address <span class="text-danger">*</span></label>
                         <input type="email" class="form-control  @error('email') is-invalid @enderror" id="exampleInputEmail" placeholder="Email" name="email" value="{{$user->email ?? ''}}" readonly>
                         @error('email')
                             <span class="invalid-feedback" role="alert">
@@ -72,7 +79,7 @@
                     @endphp
 
                     <div class="col-6">
-                      <label for="dob">Date Of Birth</label>
+                      <label for="dob">Date Of Birth <span class="text-danger">*</span></label>
                       <input
                         type="date"
                         class="form-control @error('dob') is-invalid @enderror"
@@ -116,15 +123,26 @@
                     <div class="col-6">
                         <label>Profile upload</label>
                           <input type="file" name="profile" class="form-control file-upload-info" placeholder="Upload Image" accept="image/*">
+                           <div class="col-6">
+                          <img class="rounded-circle" src="{{ userImageById(authId()) }}" alt="User profile picture">
+                        
                     </div>
+                                             
+
+                    </div>
+
                 </div>
+               
               </div>
               <div class="form-group">
                 <label for="two_factor_auth">Two-Factor Authentication</label>
                 <div class="toggle-user dark-toggle">
                         <input type="checkbox" name="two_factor_enabled" data-id="{{$user->id}}" class="switch" @if ($user->two_factor_enabled == 1) checked @endif data-value="{{$user->two_factor_enabled}}">
                         </div> 
+
+
             </div>
+             
             <div class="text-end">
               <button type="submit" class="btn btn-primary mr-2">Update</button>
               {{-- <button class="btn btn-dark">Cancel</button> --}}

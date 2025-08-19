@@ -49,7 +49,7 @@
 
 
                     <div class="form-group">
-                        <label for="title">Title</label>
+                        <label for="title">Title <span class="text-danger">*</span></label>
                         <input 
                             type="text" 
                             name="name" 
@@ -78,7 +78,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="title">Price</label>
+                        <label for="title">Price <span class="text-danger">*</span></label>
                         <input 
                             type="text" 
                             name="price" 
@@ -93,7 +93,7 @@
                     </div>
 
                        <div class="form-group">
-                        <label for="price">Quantity</label>
+                        <label for="price">Quantity<span class="text-danger">*</span></label>
                         <input 
                             type="text" 
                             name="total_quantity" 

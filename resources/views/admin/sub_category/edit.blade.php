@@ -37,7 +37,7 @@
                     {{-- if you use POST for edit, no need for method spoofing --}}
                     
                     <div class="form-group">
-                        <label for="category_id">Select Feature</label>
+                        <label for="category_id">Select Feature <span class="text-danger">*</span></label>
                         <select class="form-control @error('category_id') is-invalid @enderror" name="category_id" id="category_id" required>
                             <option value="">Select Feature</option>
                             @foreach($categories as $category)
@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="title">Title</label>
+                        <label for="title">Title <span class="text-danger">*</span></label>
                         <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" id="title" 
                                placeholder="Enter title" value="{{ old('title', $subCategory->title) }}" required>
                         @error('title')
@@ -74,7 +74,7 @@
                         <label for="image">Icon (optional)</label>
                         @if($subCategory->image)
                             <div class="mb-2">
-                                <img src="{{ asset('storage/' . $subCategory->image) }}" alt="Current Icon" 
+                                <img  id="iconPreview" src="{{ asset('storage/' . $subCategory->image) }}" alt="Current Icon" 
                                      style="max-width: 200px; max-height: 150px; border: 1px solid #ccc; padding: 5px; border-radius: 6px;">
                             </div>
                         @endif
@@ -82,9 +82,7 @@
                         @error('image')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                         @enderror
-                        <div class="mt-2">
-                            <img id="iconPreview" src="#" style="display:none; max-width: 200px; border: 1px solid #ccc; padding: 5px; border-radius: 6px;">
-                        </div>
+                       
                         <small class="form-text text-muted">Upload new image to replace the existing one.</small>
                     </div>
 

@@ -61,7 +61,7 @@
                         <tbody>
                             @forelse($payments as $index => $payment)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $payments->firstItem() + $index }}</td>
                                     <td>{{ $payment['booking']['reservation_code'] ?? 'N/A' }}</td>
                                     <td>{{ $payment['amount'] }}</td>
                                     <td>{{ $payment['currency'] }}</td>

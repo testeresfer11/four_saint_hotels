@@ -22,9 +22,7 @@ class UserController extends Controller
             $users = User::where("role_id", 2)
                 ->when($request->filled('search_keyword'), function ($query) use ($request) {
                     $query->where(function ($query) use ($request) {
-                        $query->where('first_name', 'like', "%{$request->search_keyword}%")
-                            ->orWhere('last_name', 'like', "%{$request->search_keyword}%")
-                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$request->search_keyword}%"])
+                        $query->where('full_name', 'like', "%{$request->search_keyword}%")
                             ->orWhere('email', 'like', "%{$request->search_keyword}%");
                     });
                 })
@@ -56,9 +54,8 @@ class UserController extends Controller
             $users = User::where("role_id", 2)->onlyTrashed()
                 ->when($request->filled('search_keyword'), function ($query) use ($request) {
                     $query->where(function ($query) use ($request) {
-                        $query->where('first_name', 'like', "%$request->search_keyword%")
-                            ->orWhere('last_name', 'like', "%$request->search_keyword%")
-                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$request->search_keyword}%"])
+                        $query->where('full_name', 'like', "%$request->search_keyword%")
+                         
                             ->orWhere('email', 'like', "%$request->search_keyword%");
                     });
                 })
@@ -85,8 +82,8 @@ class UserController extends Controller
                 return view("admin.user.add", compact("roles"));
             } elseif ($request->isMethod('post')) {
                 $validator = Validator::make($request->all(), [
-                    'first_name'    => 'required|string|max:255',
-                    'last_name'     => 'required|string|max:255',
+                    'full_name'    => 'required|string|max:255',
+                  
                     'email'         => 'required|unique:users,email|email:rfc,dns',
                     'profile'       => 'image|max:5048',
                     'gender'        => 'required|in:Male,Female,Other',
@@ -107,8 +104,8 @@ class UserController extends Controller
 
                 $user = User::Create([
                     'role_id'           => $roleId,
-                    'first_name'        => $request->first_name,
-                    'last_name'         => $request->last_name,
+                    'full_name'        => $request->full_name,
+                    
                     'email'             => $request->email,
                     'password'          => Hash::make($password),
                     'is_email_verified' => 1,
@@ -119,6 +116,8 @@ class UserController extends Controller
                 $ImgName = User::find(authId())->userDetail->profile ?? null;
                 if ($request->hasFile('profile')) {
                     $ImgName = uploadFile($request->file('profile'), 'images/');
+                    $ImgName = url('storage/images/' . $ImgName);
+
                 }
 
                 UserDetail::create([
@@ -185,8 +184,8 @@ class UserController extends Controller
                 return view("admin.user.edit", compact('user'));
             } elseif ($request->isMethod('post')) {
                 $validator = Validator::make($request->all(), [
-                    'first_name'    => 'required|string|max:255',
-                    'last_name'     => 'required|string|max:255',
+                    'full_name'    => 'required|string|max:255',
+                   
                     'email'         => 'required|email:rfc,dns',
                     'profile'       => 'image|max:2048'
                 ]);
@@ -194,8 +193,8 @@ class UserController extends Controller
                     return redirect()->back()->withErrors($validator)->withInput();
                 }
                 User::where('id', $id)->update([
-                    'first_name'        => $request->first_name,
-                    'last_name'         => $request->last_name,
+                    'full_name'        => $request->full_name,
+                  
                 ]);
 
                 $user = User::find($id);
@@ -203,6 +202,7 @@ class UserController extends Controller
                 if ($request->hasFile('profile')) {
                     deleteFile($ImgName, 'images/');
                     $ImgName = uploadFile($request->file('profile'), 'images/');
+                    $ImgName = url('storage/images/' . $ImgName);
                 }
 
                 UserDetail::updateOrCreate(['user_id' => $id], [

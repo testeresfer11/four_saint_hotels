@@ -20,9 +20,12 @@
             <div class="card-body p-0">
                 <div class="d-flex justify-content-between flex-column row-gap-3 flex-sm-row px-3 py-3 align-items-md-center align-items-center">
                     <h4 class="card-title mb-0">Room Type Management</h4>
+                    <div class="admin-filters">
+                            <x-filter />
+                          </div>
                     <div class="d-flex justify-content-between align-items-center ">
                     
-                        <input type="text" name="search_keyword" class="form-control mr-2 " placeholder="Search by name" value="{{ request('search_keyword') }}">
+                         
                     
                     <button id="fetchHotelsBtn" class="btn btn-sm btn-primary w-100  fetch-hotels-btn">
                         <span class="fetch-icon" id="fetchBtnLoader"><i class="fa-solid fa-arrows-rotate spinner-icon"></i></span>
