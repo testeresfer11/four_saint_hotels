@@ -10,46 +10,52 @@ use Spatie\Permission\Models\Permission;
 
 class AdminSeeder extends Seeder
 {
-    public function run(): void
-    {
-       
-         $adminRole = Role::firstOrCreate([
-            'name' => 'admin',
-            'guard_name' => 'web'
-        ]);
-        
+   public function run(): void
+{
+    $adminRole = Role::firstOrCreate([
+        'name' => 'admin',
+        'guard_name' => 'web'
+    ]);
 
-        // 3. Define modules and their actions
-        $modulesWithActions = [
-            'Dashboard' => ['view'],
-            'User' => ['view', 'add', 'edit', 'delete'],
-            'HelpDesk' => ['view', 'add', 'respond', 'changeStatus'],
-            'Contact' => ['view', 'edit', 'delete'],
-            'Category' => ['view', 'add', 'edit', 'delete', 'changeStatus'],
-            'ConfigSetting' => ['smtp', 'stripe', 'config', 'paypal'],
-            'ContentPages' => ['view', 'edit'],
-            'FAQ' => ['view', 'add', 'edit', 'delete', 'changeStatus'],
-            'Notification' => ['view', 'read', 'delete'],
-            'Newsletter' => ['view', 'delete', 'changeStatus'],
-            'Announcements' => ['create', 'view', 'send', 'delete', 'changeStatus'],
-            'Vouchers' => ['view', 'add', 'edit', 'delete', 'changeStatus'],
-            'Feedback' => ['view', 'delete', 'changeStatus'],
-            'Transaction' => ['view'],
-            'profile' => ['view', 'add', 'edit'],
-             
-        ];
+    $modulesWithActions = [
+        'Dashboard' => ['view'],
+        'User' => ['list', 'add', 'edit', 'delete', 'view', 'changeStatus', 'changeSubscription', 'trashedList', 'restore'],
+        'Staff' => ['list', 'add', 'edit', 'delete', 'view', 'changeStatus'],
+        'Role' => ['list', 'add', 'edit', 'delete', 'changeStatus'],
+        'HelpDesk' => ['list', 'add', 'response', 'changeStatus', 'generatePaymentLink'],
+        'Contact' => ['list', 'edit', 'delete'],
+        'Booking' => ['list', 'edit', 'view', 'cancel', 'getRooms'],
+        'Hotel' => ['list', 'view', 'uploadImages', 'imageDelete'],
+        'RoomType' => ['list', 'view', 'uploadImages', 'imageDelete'],
+        'ConfigSetting' => ['smtp', 'stripe', 'config', 'paypal'],
+        'ContentPages' => ['list', 'detail'],
+        'FAQ' => ['list', 'add', 'edit', 'delete', 'changeStatus'],
+        'Notification' => ['list', 'read', 'delete'],
+        'PushNotification' => ['list', 'add', 'edit', 'delete'],
+        'Newsletter' => ['index', 'delete', 'changeStatus'],
+        'Announcements' => ['create', 'index', 'send', 'delete', 'changeStatus'],
+        'Vouchers' => ['list', 'add', 'edit', 'delete', 'sync'],
+        'Feedback' => ['list', 'changeStatus', 'delete', 'view'],
+        'Transaction' => ['list', 'view'],
+        'Chat' => ['list', 'messages', 'send', 'conversations'],
+        'Category' => ['list', 'add', 'edit', 'delete'],
+        'OtherServices' => ['list', 'add', 'edit', 'delete'],
+        'SubCategory' => ['list', 'add', 'edit', 'delete'],
+        'Service' => ['list', 'view'],
+        'Payment' => ['list', 'view'],
+        'Auth' => ['profile', 'changePassword'],
+    ];
 
-        // 4. Create permissions and assign to admin role
-        foreach ($modulesWithActions as $model => $actions) {
-            foreach ($actions as $action) {
-                $permission = Permission::firstOrCreate([
-                    'name' => $action,
-                    'module' => $model
-                ]);
-             $adminRole->permissions()->syncWithoutDetaching([$permission->id]);
+    foreach ($modulesWithActions as $module => $actions) {
+        foreach ($actions as $action) {
+            $permission = Permission::firstOrCreate([
+                'name' => strtolower($module) . '-' . $action,
+                'guard_name' => 'web',
+            ]);
 
-            }
+            $adminRole->permissions()->syncWithoutDetaching([$permission->id]);
         }
-        
     }
+}
+
 }

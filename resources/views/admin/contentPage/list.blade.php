@@ -41,8 +41,10 @@
                     
                     <td class="text-end pr-4"> 
                       <span class="menu-icon ">
+                        @can('contentPages-detail')
                         <a href="{{ route('admin.contentPages.detail', ['slug' => $data->slug]) }}" title="Edit" class="text-success edit-btn"><i class="fa-solid fa-pencil"></i></a>
                       </span>&nbsp;&nbsp;
+                      @endcan
                       
                     </td>
                   </tr>

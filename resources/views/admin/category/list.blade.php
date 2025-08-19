@@ -55,8 +55,12 @@
                 
               <td>{{ \Illuminate\Support\Str::words($category->description, 10, '...') }}</td>
                 <td>
+                  @can('category-edit')
                   <a href="{{ route('admin.category.edit', $category->id) }}" class="text-success" ><i class="mdi mdi-pencil"></i></a>
+                  @endcan
+                   @can('category-delete')
                   <a href="{{ route('admin.category.delete', $category->id) }}" class="text-danger deleteUser"  onclick="return confirm('Are you sure?')"><i class="mdi mdi-delete"></i></a>
+                  @endcan
                 </td>
               </tr>
               @endforeach
