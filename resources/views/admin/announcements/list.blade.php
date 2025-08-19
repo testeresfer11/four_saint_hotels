@@ -17,14 +17,14 @@
       <div class="card">
         
         <div class="card-body p-0">
-          <div class="d-flex justify-content-between flex-column flex-md-row px-3 row-gap-3 py-3 align-items-md-center align-items-start">
+          <div class="custom-direction d-flex justify-content-between  flex-row px-3 row-gap-3 py-3  align-items-start">
             <h4 class="card-title m-0">Announcements Management</h4>
             <div class="d-flex align-items-center justify-content-between">
               <div class="admin-filters mr-2">
                 <x-filter />
               </div>
               @can('announcements-create')
-              <a href="{{route('admin.announcements.create')}}" class="add-btn"><button type="button" class="btn btn-primary btn-md">
+              <a href="{{route('admin.announcements.create')}}" class="custom-add-btn"><button type="button" class="btn btn-primary btn-md">
                 <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
                 <span class="menu-text">Add Annoucement</span></button></a>
                 @endcan

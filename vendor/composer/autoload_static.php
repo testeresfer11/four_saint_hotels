@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
+class ComposerStaticInit1aab722313fffbef3a6ea178638b542d
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -456,8 +456,8 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -521,8 +521,8 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri',
-            1 => __DIR__ . '/..' . '/league/uri-interfaces',
+            0 => __DIR__ . '/..' . '/league/uri-interfaces',
+            1 => __DIR__ . '/..' . '/league/uri',
         ),
         'League\\OAuth2\\Server\\' => 
         array (
@@ -848,7 +848,6 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         'App\\Events\\SolvedTicketNotification' => __DIR__ . '/../..' . '/app/Events/SolvedTicketNotification.php',
         'App\\Exports\\SampleCards' => __DIR__ . '/../..' . '/app/Exports/SampleCards.php',
         'App\\Helpers\\ResponseHelper' => __DIR__ . '/../..' . '/app/Helpers/ResponseHelper.php',
-        'App\\Http\\Controllers\\Api\\BookingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/BookingController.php',
         'App\\Http\\Controllers\\Api\\BookingPaymentController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/BookingPaymentController.php',
         'App\\Http\\Controllers\\Api\\ReviewController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/ReviewController.php',
         'App\\Http\\Controllers\\Api\\SabeeHotelController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/SabeeHotelController.php',
@@ -12126,10 +12125,10 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit296aafa6c013f79b52cc694dad2113eb::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit296aafa6c013f79b52cc694dad2113eb::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit296aafa6c013f79b52cc694dad2113eb::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit296aafa6c013f79b52cc694dad2113eb::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit1aab722313fffbef3a6ea178638b542d::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit1aab722313fffbef3a6ea178638b542d::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit1aab722313fffbef3a6ea178638b542d::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit1aab722313fffbef3a6ea178638b542d::$classMap;
 
         }, null, ClassLoader::class);
     }

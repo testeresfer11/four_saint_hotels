@@ -12,7 +12,6 @@ return array(
     'App\\Events\\SolvedTicketNotification' => $baseDir . '/app/Events/SolvedTicketNotification.php',
     'App\\Exports\\SampleCards' => $baseDir . '/app/Exports/SampleCards.php',
     'App\\Helpers\\ResponseHelper' => $baseDir . '/app/Helpers/ResponseHelper.php',
-    'App\\Http\\Controllers\\Api\\BookingController' => $baseDir . '/app/Http/Controllers/Api/BookingController.php',
     'App\\Http\\Controllers\\Api\\BookingPaymentController' => $baseDir . '/app/Http/Controllers/Api/BookingPaymentController.php',
     'App\\Http\\Controllers\\Api\\ReviewController' => $baseDir . '/app/Http/Controllers/Api/ReviewController.php',
     'App\\Http\\Controllers\\Api\\SabeeHotelController' => $baseDir . '/app/Http/Controllers/Api/SabeeHotelController.php',

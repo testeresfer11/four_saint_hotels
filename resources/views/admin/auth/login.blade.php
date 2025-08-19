@@ -45,7 +45,7 @@
   </div>
   
 </div>
-  <div class="col-lg-6 bg-white px-md-5 py-md-5 px-2 py-2">
+  <div class="col-lg-6 bg-white px-md-5 py-md-5 px-2 py-2  d-grid justify-content-center align-items-center">
     {{-- <div class=" d-flex align-items-center"> --}}
     <div class="card-body login-form px-md-5 py-md-3 px-4 py-2">
       <div class="text-center">

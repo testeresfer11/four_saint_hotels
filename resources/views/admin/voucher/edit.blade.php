@@ -91,7 +91,6 @@
                         {{-- Expiration Date --}}
                         <div class="mb-3">
                             <label for="expiration_date" class="form-label">Expiration Date</label>
-
                             <input type="date" 
                                    class="form-control @error('expiration_date') is-invalid @enderror" 
                                    id="expiration_date" 
