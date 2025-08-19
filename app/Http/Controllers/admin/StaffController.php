@@ -28,13 +28,7 @@ class StaffController extends Controller
         $users = User::whereIn("role_id", $role)
             ->when($request->filled('search_keyword'), function ($query) use ($request) {
                 $query->where(function ($query) use ($request) {
-<<<<<<< HEAD
-                    $query->where('first_name', 'like', "%{$request->search_keyword}%")
-                        ->orWhere('last_name', 'like', "%{$request->search_keyword}%")
-                        ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$request->search_keyword}%"])
-=======
                     $query->where('full_name', 'like', "%{$request->search_keyword}%")
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                         ->orWhere('email', 'like', "%{$request->search_keyword}%");
                 });
             })
@@ -71,13 +65,8 @@ class StaffController extends Controller
                 return view("admin.staff.add", compact('roles'));
             } elseif ($request->isMethod('post')) {
                 $validator = Validator::make($request->all(), [
-<<<<<<< HEAD
-                    'first_name'    => 'required|string|max:255',
-                    'last_name'     => 'required|string|max:255',
-=======
                     'full_name'    => 'required|string|max:255',
                    
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                     'email'         => 'required|unique:users,email|email:rfc,dns',
                     'profile'       => 'image|max:2048',
                     'gender'        => 'required|in:Male,Female,Other',
@@ -95,12 +84,7 @@ class StaffController extends Controller
 
                 $user = User::Create([
                     'role_id'           => $request->role_id,
-<<<<<<< HEAD
-                    'first_name'        => $request->first_name,
-                    'last_name'         => $request->last_name,
-=======
                     'full_name'        => $request->full_name,
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                     'email'             => $request->email,
                     'password'          => Hash::make($password),
                     'is_email_verified' => 1,
@@ -111,10 +95,7 @@ class StaffController extends Controller
                 $ImgName = User::find(authId())->userDetail->profile ?? null;
                 if ($request->hasFile('profile')) {
                     $ImgName = uploadFile($request->file('profile'), 'images/');
-<<<<<<< HEAD
-=======
                     $ImgName = url('storage/images/' . $ImgName);
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                 }
 
                 $role = Role::findOrFail($request->role_id);
@@ -217,13 +198,8 @@ class StaffController extends Controller
                 return view("admin.staff.edit", compact('user', 'roles'));
             } elseif ($request->isMethod('post')) {
                 $validator = Validator::make($request->all(), [
-<<<<<<< HEAD
-                    'first_name'    => 'required|string|max:255',
-                    'last_name'     => 'required|string|max:255',
-=======
                     'full_name'    => 'required|string|max:255',
                    
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                     'email'         => 'required|email:rfc,dns',
                     'profile'       => 'image|max:2048',
                     'status'        => 'required|in:0,1',
@@ -248,12 +224,7 @@ class StaffController extends Controller
                 }
 
                 User::where('id', $id)->update([
-<<<<<<< HEAD
-                    'first_name'        => $request->first_name,
-                    'last_name'         => $request->last_name,
-=======
                     'full_name'        => $request->full_name,
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                     'status'            => $request->status,
                     'password'          => $password,
                     'role_id'           => $request->role_id
@@ -264,10 +235,7 @@ class StaffController extends Controller
                 if ($request->hasFile('profile')) {
                     deleteFile($ImgName, 'images/');
                     $ImgName = uploadFile($request->file('profile'), 'images/');
-<<<<<<< HEAD
-=======
                     $ImgName = url('storage/images/' . $ImgName);
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                 }
 
                 UserDetail::updateOrCreate(['user_id' => $id], [

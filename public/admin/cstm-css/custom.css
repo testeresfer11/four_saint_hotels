@@ -1355,13 +1355,9 @@ color: white;
 display: block;
 background: transparent;
 }
-<<<<<<< HEAD
 .select_country_code  .iti.iti--allow-dropdown.iti--show-flags{
   display: block;
 }
-=======
-
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 .select_country_code .iti--inline-dropdown .iti__dropdown-content {
 background: #ffffff;
 }

@@ -3,15 +3,10 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'ffda81f37eb50c050e889600c0114bfebc830e61',
+        'reference' => 'ec1c8993952e7173502065a14cd7aa8a25aae9d1',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-<<<<<<< HEAD
-        'reference' => '47c1598231b5cc9ce07fa6e5de0c274cd761c404',
-        'name' => 'laravel/laravel',
-=======
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
         'dev' => true,
     ),
     'versions' => array(
@@ -582,14 +577,10 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ffda81f37eb50c050e889600c0114bfebc830e61',
+            'reference' => 'ec1c8993952e7173502065a14cd7aa8a25aae9d1',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-<<<<<<< HEAD
-            'reference' => '47c1598231b5cc9ce07fa6e5de0c274cd761c404',
-=======
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
             'dev_requirement' => false,
         ),
         'laravel/pail' => array(
@@ -640,17 +631,10 @@
         'laravel/sanctum' => array(
             'pretty_version' => 'v4.1.1',
             'version' => '4.1.1.0',
-<<<<<<< HEAD
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../laravel/sanctum',
-            'aliases' => array(),
-            'reference' => 'a360a6a1fd2400ead4eb9b6a9c1bb272939194f5',
-=======
             'reference' => 'a360a6a1fd2400ead4eb9b6a9c1bb272939194f5',
             'type' => 'library',
             'install_path' => __DIR__ . '/../laravel/sanctum',
             'aliases' => array(),
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
             'dev_requirement' => false,
         ),
         'laravel/serializable-closure' => array(
@@ -1431,17 +1415,10 @@
         'stripe/stripe-php' => array(
             'pretty_version' => 'v17.2.1',
             'version' => '17.2.1.0',
-<<<<<<< HEAD
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../stripe/stripe-php',
-            'aliases' => array(),
-            'reference' => 'a84ec46e82e2d1f1dbd04cf332317923ade82ba6',
-=======
             'reference' => 'a84ec46e82e2d1f1dbd04cf332317923ade82ba6',
             'type' => 'library',
             'install_path' => __DIR__ . '/../stripe/stripe-php',
             'aliases' => array(),
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
             'dev_requirement' => false,
         ),
         'symfony/clock' => array(
@@ -1747,17 +1724,10 @@
         'twilio/sdk' => array(
             'pretty_version' => '8.6.1',
             'version' => '8.6.1.0',
-<<<<<<< HEAD
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../twilio/sdk',
-            'aliases' => array(),
-            'reference' => 'de0b95f62942758e849a4337f23426e84e36cfe4',
-=======
             'reference' => 'de0b95f62942758e849a4337f23426e84e36cfe4',
             'type' => 'library',
             'install_path' => __DIR__ . '/../twilio/sdk',
             'aliases' => array(),
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
             'dev_requirement' => false,
         ),
         'vlucas/phpdotenv' => array(

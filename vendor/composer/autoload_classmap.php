@@ -12,7 +12,6 @@ return array(
     'App\\Events\\SolvedTicketNotification' => $baseDir . '/app/Events/SolvedTicketNotification.php',
     'App\\Exports\\SampleCards' => $baseDir . '/app/Exports/SampleCards.php',
     'App\\Helpers\\ResponseHelper' => $baseDir . '/app/Helpers/ResponseHelper.php',
-    'App\\Http\\Controllers\\Api\\BookingController' => $baseDir . '/app/Http/Controllers/Api/BookingController.php',
     'App\\Http\\Controllers\\Api\\BookingPaymentController' => $baseDir . '/app/Http/Controllers/Api/BookingPaymentController.php',
     'App\\Http\\Controllers\\Api\\ReviewController' => $baseDir . '/app/Http/Controllers/Api/ReviewController.php',
     'App\\Http\\Controllers\\Api\\SabeeHotelController' => $baseDir . '/app/Http/Controllers/Api/SabeeHotelController.php',
@@ -76,10 +75,7 @@ return array(
     'App\\Http\\Resources\\MycardsResource' => $baseDir . '/app/Http/Resources/MycardsResource.php',
     'App\\Http\\Resources\\UserResource' => $baseDir . '/app/Http/Resources/UserResource.php',
     'App\\Mail\\AdminTwoFactorCode' => $baseDir . '/app/Mail/AdminTwoFactorCode.php',
-<<<<<<< HEAD
-=======
     'App\\Mail\\BookingInvoiceMail' => $baseDir . '/app/Mail/BookingInvoiceMail.php',
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
     'App\\Mail\\ContactReplyMail' => $baseDir . '/app/Mail/ContactReplyMail.php',
     'App\\Mail\\OTPMail' => $baseDir . '/app/Mail/OTPMail.php',
     'App\\Mail\\PasswordResetMail' => $baseDir . '/app/Mail/PasswordResetMail.php',
@@ -116,10 +112,7 @@ return array(
     'App\\Models\\HotelRoomOtherServiceCategory' => $baseDir . '/app/Models/HotelRoomOtherServiceCategory.php',
     'App\\Models\\HotelRoomType' => $baseDir . '/app/Models/HotelRoomType.php',
     'App\\Models\\ManagefAQ' => $baseDir . '/app/Models/ManagefAQ.php',
-<<<<<<< HEAD
-=======
     'App\\Models\\Message' => $baseDir . '/app/Models/Message.php',
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
     'App\\Models\\NewsletterSubscriber' => $baseDir . '/app/Models/NewsletterSubscriber.php',
     'App\\Models\\Notification' => $baseDir . '/app/Models/Notification.php',
     'App\\Models\\OTPRequest' => $baseDir . '/app/Models/OTPRequest.php',
@@ -128,17 +121,11 @@ return array(
     'App\\Models\\Page' => $baseDir . '/app/Models/Page.php',
     'App\\Models\\PageContent' => $baseDir . '/app/Models/PageContent.php',
     'App\\Models\\Permission' => $baseDir . '/app/Models/Permission.php',
-<<<<<<< HEAD
-    'App\\Models\\QueryResponse' => $baseDir . '/app/Models/QueryResponse.php',
-    'App\\Models\\Review' => $baseDir . '/app/Models/Review.php',
-    'App\\Models\\Role' => $baseDir . '/app/Models/Role.php',
-=======
     'App\\Models\\PushNotification' => $baseDir . '/app/Models/PushNotification.php',
     'App\\Models\\QueryResponse' => $baseDir . '/app/Models/QueryResponse.php',
     'App\\Models\\Review' => $baseDir . '/app/Models/Review.php',
     'App\\Models\\Role' => $baseDir . '/app/Models/Role.php',
     'App\\Models\\Room' => $baseDir . '/app/Models/Room.php',
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
     'App\\Models\\RoomAvailability' => $baseDir . '/app/Models/RoomAvailability.php',
     'App\\Models\\RoomRate' => $baseDir . '/app/Models/RoomRate.php',
     'App\\Models\\RoomTypeImage' => $baseDir . '/app/Models/RoomTypeImage.php',
@@ -151,13 +138,9 @@ return array(
     'App\\Models\\UserDetail' => $baseDir . '/app/Models/UserDetail.php',
     'App\\Models\\VideoRoom' => $baseDir . '/app/Models/VideoRoom.php',
     'App\\Models\\VoucherPurchase' => $baseDir . '/app/Models/VoucherPurchase.php',
-<<<<<<< HEAD
-    'App\\Notifications\\AccountDeleteNotification' => $baseDir . '/app/Notifications/AccountDeleteNotification.php',
-=======
     'App\\Models\\chat' => $baseDir . '/app/Models/chat.php',
     'App\\Notifications\\AccountDeleteNotification' => $baseDir . '/app/Notifications/AccountDeleteNotification.php',
     'App\\Notifications\\BookingCreated' => $baseDir . '/app/Notifications/BookingCreated.php',
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
     'App\\Notifications\\BookingCreatedNotification' => $baseDir . '/app/Notifications/BookingCreatedNotification.php',
     'App\\Notifications\\NewMessageNotification' => $baseDir . '/app/Notifications/NewMessageNotification.php',
     'App\\Notifications\\NewTicketNotification' => $baseDir . '/app/Notifications/NewTicketNotification.php',
@@ -7342,8 +7325,6 @@ return array(
     'Stripe\\Webhook' => $vendorDir . '/stripe/stripe-php/lib/Webhook.php',
     'Stripe\\WebhookEndpoint' => $vendorDir . '/stripe/stripe-php/lib/WebhookEndpoint.php',
     'Stripe\\WebhookSignature' => $vendorDir . '/stripe/stripe-php/lib/WebhookSignature.php',
-<<<<<<< HEAD
-=======
     'Svg\\CssLength' => $vendorDir . '/dompdf/php-svg-lib/src/Svg/CssLength.php',
     'Svg\\DefaultStyle' => $vendorDir . '/dompdf/php-svg-lib/src/Svg/DefaultStyle.php',
     'Svg\\Document' => $vendorDir . '/dompdf/php-svg-lib/src/Svg/Document.php',
@@ -7373,7 +7354,6 @@ return array(
     'Svg\\Tag\\Symbol' => $vendorDir . '/dompdf/php-svg-lib/src/Svg/Tag/Symbol.php',
     'Svg\\Tag\\Text' => $vendorDir . '/dompdf/php-svg-lib/src/Svg/Tag/Text.php',
     'Svg\\Tag\\UseTag' => $vendorDir . '/dompdf/php-svg-lib/src/Svg/Tag/UseTag.php',
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
     'Symfony\\Bridge\\PsrHttpMessage\\ArgumentValueResolver\\PsrServerRequestResolver' => $vendorDir . '/symfony/psr-http-message-bridge/ArgumentValueResolver/PsrServerRequestResolver.php',
     'Symfony\\Bridge\\PsrHttpMessage\\EventListener\\PsrResponseListener' => $vendorDir . '/symfony/psr-http-message-bridge/EventListener/PsrResponseListener.php',
     'Symfony\\Bridge\\PsrHttpMessage\\Factory\\HttpFoundationFactory' => $vendorDir . '/symfony/psr-http-message-bridge/Factory/HttpFoundationFactory.php',

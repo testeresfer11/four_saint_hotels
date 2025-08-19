@@ -37,11 +37,7 @@ public function getList(Request $request)
     {
         if ($request->isMethod('post')) {
             try {
-<<<<<<< HEAD
-                // Validate the incoming request data
-=======
                 
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
                 $validated = $request->validate([
                     'category_id' => 'required|exists:service_categories,id',
                     'title' => 'required|string|max:255',
@@ -114,29 +110,6 @@ public function getList(Request $request)
         return view('admin.sub_category.edit', compact('subCategory', 'categories'));
     }
 
-<<<<<<< HEAD
-    public function delete($id)
-    {
-        try {
-        $subCategory = ServiceSubCategory::findOrFail($id);
-
-        if ($subCategory->image && Storage::disk('public')->exists($subCategory->image)) {
-            Storage::disk('public')->delete($subCategory->image);
-        }
-
-        $subCategory->delete();
-
-        return redirect()->route('admin.sub_category.list')->with('success', 'Sub-category deleted successfully!');
-    } catch (\Exception $e) {
-        // Log the error for debugging
-        Log::error('Error deleting sub-category: ' . $e->getMessage());
-
-        // Redirect back with an error message
-        return back()->withInput()
-            ->with('error', 'An error occurred while adding the sub-category. Please try again.');
-    }
-    }
-=======
     public function delete($id){
         try {
             $subCategory = ServiceSubCategory::findOrFail($id);
@@ -173,5 +146,4 @@ public function getList(Request $request)
         }
     }
 
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 }

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
+class ComposerStaticInit1aab722313fffbef3a6ea178638b542d
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -100,13 +100,9 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Clock\\' => 24,
             'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
-<<<<<<< HEAD
-            'Stripe\\' => 7,
-=======
             'Svg\\' => 4,
             'Stripe\\' => 7,
             'Srmklive\\PayPal\\' => 16,
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
             'Spatie\\Permission\\' => 18,
             'Sample\\' => 7,
             'Sabberworm\\CSS\\' => 15,
@@ -406,24 +402,18 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         array (
             0 => __DIR__ . '/..' . '/symfony/psr-http-message-bridge',
         ),
-<<<<<<< HEAD
-=======
         'Svg\\' => 
         array (
             0 => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg',
         ),
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
         'Stripe\\' => 
         array (
             0 => __DIR__ . '/..' . '/stripe/stripe-php/lib',
         ),
-<<<<<<< HEAD
-=======
         'Srmklive\\PayPal\\' => 
         array (
             0 => __DIR__ . '/..' . '/srmklive/paypal/src',
         ),
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
         'Spatie\\Permission\\' => 
         array (
             0 => __DIR__ . '/..' . '/spatie/laravel-permission/src',
@@ -466,8 +456,8 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -531,8 +521,8 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri',
-            1 => __DIR__ . '/..' . '/league/uri-interfaces',
+            0 => __DIR__ . '/..' . '/league/uri-interfaces',
+            1 => __DIR__ . '/..' . '/league/uri',
         ),
         'League\\OAuth2\\Server\\' => 
         array (
@@ -858,7 +848,6 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         'App\\Events\\SolvedTicketNotification' => __DIR__ . '/../..' . '/app/Events/SolvedTicketNotification.php',
         'App\\Exports\\SampleCards' => __DIR__ . '/../..' . '/app/Exports/SampleCards.php',
         'App\\Helpers\\ResponseHelper' => __DIR__ . '/../..' . '/app/Helpers/ResponseHelper.php',
-        'App\\Http\\Controllers\\Api\\BookingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/BookingController.php',
         'App\\Http\\Controllers\\Api\\BookingPaymentController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/BookingPaymentController.php',
         'App\\Http\\Controllers\\Api\\ReviewController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/ReviewController.php',
         'App\\Http\\Controllers\\Api\\SabeeHotelController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/SabeeHotelController.php',
@@ -922,10 +911,7 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         'App\\Http\\Resources\\MycardsResource' => __DIR__ . '/../..' . '/app/Http/Resources/MycardsResource.php',
         'App\\Http\\Resources\\UserResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserResource.php',
         'App\\Mail\\AdminTwoFactorCode' => __DIR__ . '/../..' . '/app/Mail/AdminTwoFactorCode.php',
-<<<<<<< HEAD
-=======
         'App\\Mail\\BookingInvoiceMail' => __DIR__ . '/../..' . '/app/Mail/BookingInvoiceMail.php',
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
         'App\\Mail\\ContactReplyMail' => __DIR__ . '/../..' . '/app/Mail/ContactReplyMail.php',
         'App\\Mail\\OTPMail' => __DIR__ . '/../..' . '/app/Mail/OTPMail.php',
         'App\\Mail\\PasswordResetMail' => __DIR__ . '/../..' . '/app/Mail/PasswordResetMail.php',
@@ -962,10 +948,7 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         'App\\Models\\HotelRoomOtherServiceCategory' => __DIR__ . '/../..' . '/app/Models/HotelRoomOtherServiceCategory.php',
         'App\\Models\\HotelRoomType' => __DIR__ . '/../..' . '/app/Models/HotelRoomType.php',
         'App\\Models\\ManagefAQ' => __DIR__ . '/../..' . '/app/Models/ManagefAQ.php',
-<<<<<<< HEAD
-=======
         'App\\Models\\Message' => __DIR__ . '/../..' . '/app/Models/Message.php',
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
         'App\\Models\\NewsletterSubscriber' => __DIR__ . '/../..' . '/app/Models/NewsletterSubscriber.php',
         'App\\Models\\Notification' => __DIR__ . '/../..' . '/app/Models/Notification.php',
         'App\\Models\\OTPRequest' => __DIR__ . '/../..' . '/app/Models/OTPRequest.php',
@@ -974,17 +957,11 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         'App\\Models\\Page' => __DIR__ . '/../..' . '/app/Models/Page.php',
         'App\\Models\\PageContent' => __DIR__ . '/../..' . '/app/Models/PageContent.php',
         'App\\Models\\Permission' => __DIR__ . '/../..' . '/app/Models/Permission.php',
-<<<<<<< HEAD
-        'App\\Models\\QueryResponse' => __DIR__ . '/../..' . '/app/Models/QueryResponse.php',
-        'App\\Models\\Review' => __DIR__ . '/../..' . '/app/Models/Review.php',
-        'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
-=======
         'App\\Models\\PushNotification' => __DIR__ . '/../..' . '/app/Models/PushNotification.php',
         'App\\Models\\QueryResponse' => __DIR__ . '/../..' . '/app/Models/QueryResponse.php',
         'App\\Models\\Review' => __DIR__ . '/../..' . '/app/Models/Review.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
         'App\\Models\\Room' => __DIR__ . '/../..' . '/app/Models/Room.php',
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
         'App\\Models\\RoomAvailability' => __DIR__ . '/../..' . '/app/Models/RoomAvailability.php',
         'App\\Models\\RoomRate' => __DIR__ . '/../..' . '/app/Models/RoomRate.php',
         'App\\Models\\RoomTypeImage' => __DIR__ . '/../..' . '/app/Models/RoomTypeImage.php',
@@ -997,13 +974,9 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         'App\\Models\\UserDetail' => __DIR__ . '/../..' . '/app/Models/UserDetail.php',
         'App\\Models\\VideoRoom' => __DIR__ . '/../..' . '/app/Models/VideoRoom.php',
         'App\\Models\\VoucherPurchase' => __DIR__ . '/../..' . '/app/Models/VoucherPurchase.php',
-<<<<<<< HEAD
-        'App\\Notifications\\AccountDeleteNotification' => __DIR__ . '/../..' . '/app/Notifications/AccountDeleteNotification.php',
-=======
         'App\\Models\\chat' => __DIR__ . '/../..' . '/app/Models/chat.php',
         'App\\Notifications\\AccountDeleteNotification' => __DIR__ . '/../..' . '/app/Notifications/AccountDeleteNotification.php',
         'App\\Notifications\\BookingCreated' => __DIR__ . '/../..' . '/app/Notifications/BookingCreated.php',
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
         'App\\Notifications\\BookingCreatedNotification' => __DIR__ . '/../..' . '/app/Notifications/BookingCreatedNotification.php',
         'App\\Notifications\\NewMessageNotification' => __DIR__ . '/../..' . '/app/Notifications/NewMessageNotification.php',
         'App\\Notifications\\NewTicketNotification' => __DIR__ . '/../..' . '/app/Notifications/NewTicketNotification.php',
@@ -8188,8 +8161,6 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         'Stripe\\Webhook' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Webhook.php',
         'Stripe\\WebhookEndpoint' => __DIR__ . '/..' . '/stripe/stripe-php/lib/WebhookEndpoint.php',
         'Stripe\\WebhookSignature' => __DIR__ . '/..' . '/stripe/stripe-php/lib/WebhookSignature.php',
-<<<<<<< HEAD
-=======
         'Svg\\CssLength' => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg/CssLength.php',
         'Svg\\DefaultStyle' => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg/DefaultStyle.php',
         'Svg\\Document' => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg/Document.php',
@@ -8219,7 +8190,6 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
         'Svg\\Tag\\Symbol' => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg/Tag/Symbol.php',
         'Svg\\Tag\\Text' => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg/Tag/Text.php',
         'Svg\\Tag\\UseTag' => __DIR__ . '/..' . '/dompdf/php-svg-lib/src/Svg/Tag/UseTag.php',
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
         'Symfony\\Bridge\\PsrHttpMessage\\ArgumentValueResolver\\PsrServerRequestResolver' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/ArgumentValueResolver/PsrServerRequestResolver.php',
         'Symfony\\Bridge\\PsrHttpMessage\\EventListener\\PsrResponseListener' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/EventListener/PsrResponseListener.php',
         'Symfony\\Bridge\\PsrHttpMessage\\Factory\\HttpFoundationFactory' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/HttpFoundationFactory.php',
@@ -12155,13 +12125,10 @@ class ComposerStaticInit296aafa6c013f79b52cc694dad2113eb
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit296aafa6c013f79b52cc694dad2113eb::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit296aafa6c013f79b52cc694dad2113eb::$prefixDirsPsr4;
-<<<<<<< HEAD
-=======
-            $loader->prefixesPsr0 = ComposerStaticInit296aafa6c013f79b52cc694dad2113eb::$prefixesPsr0;
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
-            $loader->classMap = ComposerStaticInit296aafa6c013f79b52cc694dad2113eb::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit1aab722313fffbef3a6ea178638b542d::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit1aab722313fffbef3a6ea178638b542d::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit1aab722313fffbef3a6ea178638b542d::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit1aab722313fffbef3a6ea178638b542d::$classMap;
 
         }, null, ClassLoader::class);
     }

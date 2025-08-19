@@ -5,12 +5,9 @@
 /public/storage
 /storage/*.key
 /vendor
-<<<<<<< HEAD
-=======
 /vendorsss
 /vendorss
 /vendors
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
 .env
 .env.backup
 .env.production
@@ -23,9 +20,5 @@ npm-debug.log
 yarn-error.log
 /.fleet
 /.idea
-<<<<<<< HEAD
-/.vscode
-=======
 /.vscodepublic/firebase-service.json
 public/firebase-service.json
->>>>>>> fd6d5498800e3253463bb27f83c0fae87c89c321
