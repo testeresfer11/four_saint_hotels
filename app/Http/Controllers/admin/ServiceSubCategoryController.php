@@ -58,14 +58,14 @@ public function getList(Request $request)
                 ServiceSubCategory::create($validated);
 
                 return redirect()->route('admin.sub_category.list')
-                    ->with('success', 'Sub-category added successfully!');
+                    ->with('success', 'Sub-feature added successfully!');
             } catch (\Exception $e) {
                 // Log the error for debugging
-                Log::error('Error adding sub-category: ' . $e->getMessage());
+                Log::error('Error adding sub-feature: ' . $e->getMessage());
 
                 // Redirect back with an error message
                 return back()->withInput()
-                    ->with('error', 'An error occurred while adding the sub-category. Please try again.');
+                    ->with('error', 'An error occurred while adding the sub-feature. Please try again.');
             }
         }
 
@@ -102,7 +102,7 @@ public function getList(Request $request)
 
             $subCategory->update($validated);
 
-            return redirect()->route('admin.sub_category.list')->with('success', 'Sub-category updated successfully!');
+            return redirect()->route('admin.sub_category.list')->with('success', 'Sub-feature updated successfully!');
         }
 
         $categories = ServiceCategory::all();
@@ -124,25 +124,25 @@ public function getList(Request $request)
             if (request()->ajax()) {
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Sub-category deleted successfully!'
+                    'message' => 'Sub-feature deleted successfully!'
                 ]);
             }
 
             // Otherwise, redirect (normal delete)
             return redirect()->route('admin.sub_category.list')
-                ->with('success', 'Sub-category deleted successfully!');
+                ->with('success', 'Sub-feature deleted successfully!');
         } catch (\Exception $e) {
-            Log::error('Error deleting sub-category: ' . $e->getMessage());
+            Log::error('Error deleting sub-feature: ' . $e->getMessage());
 
             if (request()->ajax()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'An error occurred while deleting the sub-category. Please try again.'
+                    'message' => 'An error occurred while deleting the sub-feature. Please try again.'
                 ], 500);
             }
 
             return back()->withInput()
-                ->with('error', 'An error occurred while deleting the sub-category. Please try again.');
+                ->with('error', 'An error occurred while deleting the sub-feature. Please try again.');
         }
     }
 

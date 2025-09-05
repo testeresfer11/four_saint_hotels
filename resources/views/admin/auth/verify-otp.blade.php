@@ -58,13 +58,17 @@
       @if(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
       @endif
+      @if(session('message'))
+    <div class="alert alert-success">
+        {{ session('message') }}
+    </div>
+@endif
 
 
      <form method="POST" action="{{ route('verify') }}">
         @csrf
         <div class="form-group">
-            <input type="hidden" name="email" value="{{ $email }}">
-
+<input type="email" name="email" value="{{ session('email') }}" readonly>
             <label for="otp">Enter Code</label>
             <input type="text" name="otp" id="otp" class="form-control" required maxlength="6">
         </div>

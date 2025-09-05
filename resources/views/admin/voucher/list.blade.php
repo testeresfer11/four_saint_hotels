@@ -21,12 +21,14 @@
           <div class="d-flex align-items-center justify-content-between">
           
 
-            <a href="{{route('admin.vouchers.add')}}">
-              <button type="button" class="btn btn-primary btn-md">
-                <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
-                <span class="menu-text">Add Coupons</span>
-
-            </a>
+           @can('vouchers-add')
+              <a href="{{ route('admin.vouchers.add') }}">
+                  <button type="button" class="btn btn-primary btn-md">
+                      <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
+                      <span class="menu-text">Add Coupons</span>
+                  </button>
+              </a>
+          @endcan
 
           </div>
         </div>
@@ -53,14 +55,29 @@
                         <td>{{ $coupon->value }}</td>
                         <td>{{ $coupon->available }}</td>
                         <td>{{ $coupon->expiration_date ?? 'N/A' }}</td>
-                        <td> 
-                      <span class="menu-icon">
-                        <a href="{{route('admin.vouchers.edit',['id' => $coupon->id])}}" title="Edit" class="text-success"><i class="mdi mdi-pencil"></i></a>
-                      </span>&nbsp;&nbsp;
-                      <span class="menu-icon">
-                        <a href="#" title="Delete" class="text-danger deleteRole" data-id="{{$coupon->id}}"><i class="mdi mdi-delete"></i></a>
-                      </span> 
-                    </td>
+                       <td> 
+                      @can('vouchers-edit')
+                          <span class="menu-icon">
+                              <a href="{{ route('admin.vouchers.edit', ['id' => $coupon->id]) }}" 
+                                 title="Edit" 
+                                 class="text-success">
+                                  <i class="mdi mdi-pencil"></i>
+                              </a>
+                          </span>
+                      @endcan
+
+                      @can('vouchers-delete')
+                          <span class="menu-icon">
+                              <a href="javascript:void(0);" 
+                                 title="Delete" 
+                                 class="text-danger deleteRole" 
+                                 data-id="{{ $coupon->id }}">
+                                  <i class="mdi mdi-delete"></i>
+                              </a>
+                          </span>
+                      @endcan
+                  </td>
+
                     </tr>
                 @endforeach
             </tbody>

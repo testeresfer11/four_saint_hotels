@@ -21,11 +21,14 @@
             <div class="card-body p-0">
                 <div class="d-flex px-3 py-3 justify-content-between align-items-center">
                     <h4 class="card-title m-0">Push Notifications Management</h4>
+                   @can('pushnotification-add')
                     <a href="{{ route('admin.pushnotification.add') }}">
                         <button type="button" class="btn btn-primary btn-md">
                             <i class="fa-solid fa-plus"></i> Add Push Notification
                         </button>
                     </a>
+                @endcan
+
                 </div>
 
                 <div class="table-responsive">
@@ -64,14 +67,24 @@
                                     <td>{{ $notification->notification_type ?? '-' }}</td>
                                     <td>{{ $notification->created_at->format('d M Y H:i') }}</td>
                                     <td>
-                                        <a href="{{ route('admin.pushnotification.edit', $notification->id) }}" class="text-success">
-                                           <i class="mdi mdi-pencil"></i>
-                                        </a>
-                                     
-                                           <span class="menu-icon">
-                                        <a href="#" title="Delete" class="text-danger deleteNotification" data-id="{{ $notification->id }}"><i class="mdi mdi-delete"></i></a>
-                                      </span> 
+                                        @can('pushnotification-edit')
+                                            <a href="{{ route('admin.pushnotification.edit', $notification->id) }}" class="text-success">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </a>
+                                        @endcan
+
+                                        @can('pushnotification-delete')
+                                            <span class="menu-icon">
+                                                <a href="javascript:void(0);" 
+                                                   title="Delete" 
+                                                   class="text-danger deleteNotification" 
+                                                   data-id="{{ $notification->id }}">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            </span>
+                                        @endcan
                                     </td>
+
                                 </tr>
                             @empty
                                 <tr>

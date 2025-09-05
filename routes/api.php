@@ -19,10 +19,7 @@ Route::get('/user', function (Request $request) {
         Route::get('/bookings/{id}/services/invoice','getInvoiveDataPdf');
         Route::get('/booking/invoice/{id}','downloadPdf');
 
-
-
     });
-
 
     Route::post('/chat/message', [ChatController::class, 'storeMessage']);
     Route::get('/chat/messages/{conversationId}', [ChatController::class, 'getMessages']);

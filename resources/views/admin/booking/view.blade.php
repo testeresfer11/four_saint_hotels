@@ -126,8 +126,8 @@
                         <td>{{ number_format($payment->amount, 2) }}</td>
                         <td>{{ $payment->currency }}</td>
                         <td>{{ $payment->payment_type }}</td>
-                        <td>{{ $payment->payment_status ?? '-' }}</td>
-                        <td>{{ $payment->description ?? '-' }}</td>
+                        <td>{{ $payment->payment_status ?? 'Pending' }}</td>
+                        <td>{{ $payment->description ?? 'N/A' }}</td>
                         <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y H:i') }}</td>
                     </tr>
                     @endforeach

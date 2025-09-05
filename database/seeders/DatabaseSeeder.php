@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
             RoleTableSeeder::class,
             UsersTableSeeder::class,
             PermissionSeeder::class,
-
             ConfigSettingTableSeeder::class,
             EmailTemplateSeeder::class,
             ContentPageSeeder::class,

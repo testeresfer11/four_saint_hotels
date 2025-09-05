@@ -39,7 +39,9 @@ background: #DFDFDF;
   left: 2px;
   transition: 0.5s;
 }
-
+.verify-second{
+    height: 100vh;
+}
 .preloader {
 position: fixed;
 top: 45%;

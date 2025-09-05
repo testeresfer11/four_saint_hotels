@@ -120,16 +120,42 @@
                           </span>
                         @enderror
                     </div>
-                    <div class="col-6">
-                        <label>Profile upload</label>
-                          <input type="file" name="profile" class="form-control file-upload-info" placeholder="Upload Image" accept="image/*">
-                           <div class="col-6">
-                          <img class="rounded-circle" src="{{ userImageById(authId()) }}" alt="User profile picture">
-                        
-                    </div>
-                                             
+                <div class="col-6">
+                    <label>Profile upload</label>
+                    <input type="file" 
+                           name="profile" 
+                           class="form-control file-upload-info" 
+                           placeholder="Upload Image" 
+                           accept="image/*" 
+                           onchange="previewImage(event)">
 
+                    <div class="col-6 mt-2">
+                        <img class="img-sm rounded-circle" 
+                             src="{{ userImageById(authId()) }}" 
+                             alt="User profile picture" 
+                             id="preview">
                     </div>
+                </div>
+
+                <script>
+                function previewImage(event) {
+                    let preview = document.getElementById('preview');
+                    let file = event.target.files[0];
+
+                    if (file) {
+                        let reader = new FileReader();
+                        reader.onload = function(e) {
+                            preview.src = e.target.result;
+                            preview.style.display = "block";
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        preview.src = "";
+                        preview.style.display = "none";
+                    }
+                }
+                </script>
+
 
                 </div>
                
@@ -145,7 +171,7 @@
              
             <div class="text-end">
               <button type="submit" class="btn btn-primary mr-2">Update</button>
-              {{-- <button class="btn btn-dark">Cancel</button> --}}
+          
             </div>
             </form>
           </div>
@@ -157,6 +183,9 @@
 @section('scripts')
 <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ09dtOd8YHF_ZCbfbaaMHJKiOr26noY8&libraries=places" ></script>
  --><script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/js/intlTelInput.min.js"></script>
+
+
+
 <script>
     $('#two_factor_auth').on('change', function () {
     const label = $(this).next('label');
@@ -305,4 +334,5 @@
     });
   });
   </script>
+
 @stop

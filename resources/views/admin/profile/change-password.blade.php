@@ -79,73 +79,77 @@
 
 @section('scripts')
 <script>
-  $("#change-password").submit(function(e){
-      e.preventDefault();
-  }).validate({
-      rules: {
-          current_password: {
-              required: true,
-              noSpace: true,
-              minlength: 8,
-          },
-          password: {
-            required: true,
-            noSpace: true,
-            minlength: 8,
-          },
-          password_confirmation: {
-            required: true,
-            noSpace: true,
-            minlength: 8,
-            equalTo: "#password",
-          },
-      },
-      messages: {
-          current_password: {
-              required: 'Current password is required.',
-              minlength: 'Current password length must contain 8 charcter.'
-          },
-          password: {
-            required: 'New password is required.',
-            minlength: 'New password length must contain 8 charcter.',
-          },
-          password_confirmation: {
-              required: 'Confirm password is required.',
-              minlength: 'Confirm password length must contain 8 charcter.',
-              equalTo: "New password and confirm password must be same"
-          },
-      },
-      submitHandler: function(form) {
-        var formData = new FormData(form);
-        var action = $(form).attr('action'); // Corrected to use jQuery
-        $.ajax({
-            url: action, // Use the form's action attribute
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-              console.log(response);  
-                // Handle success
-                if (response.status == "success") {
-                  toastr.success(response.message);
-                    
-                  setTimeout(function() {
-                      location.reload();
-                  }, 2000);
-                } else {
-                  toastr.error(response.message);
-                }
-            },
-            error: function(xhr) {
-                // Handle error
-                // let errors = xhr.responseJSON;
-                let response = xhr.responseJSON;
-                toastr.error(response.message);
-            }
-        });
-    }
+  $(document).ready(function() {
 
-  });
+    // Custom method: new password should not equal current password
+    $.validator.addMethod("notEqualToCurrent", function(value, element) {
+        return value !== $("#exampleInputPassword").val();
+    }, "New password must not be the same as current password.");
+
+    // Initialize validation
+    $("#change-password").validate({
+        rules: {
+            current_password: {
+                required: true,
+                noSpace: true,
+                minlength: 8,
+            },
+            password: {
+                required: true,
+                noSpace: true,
+                minlength: 8,
+                notEqualToCurrent: true
+            },
+            password_confirmation: {
+                required: true,
+                noSpace: true,
+                minlength: 8,
+                equalTo: "#password",
+            },
+        },
+        messages: {
+            current_password: {
+                required: 'Current password is required.',
+                minlength: 'Current password length must contain 8 characters.'
+            },
+            password: {
+                required: 'New password is required.',
+                minlength: 'New password length must contain 8 characters.',
+            },
+            password_confirmation: {
+                required: 'Confirm password is required.',
+                minlength: 'Confirm password length must contain 8 characters.',
+                equalTo: "New password and confirm password must be same"
+            },
+        },
+        submitHandler: function(form) {
+            var formData = new FormData(form);
+            var action = $(form).attr('action');
+            $.ajax({
+                url: action,
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.status == "success") {
+                        toastr.success(response.message);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    let response = xhr.responseJSON;
+                    toastr.error(response.message);
+                }
+            });
+        }
+    });
+
+});
+
 </script>
 @stop

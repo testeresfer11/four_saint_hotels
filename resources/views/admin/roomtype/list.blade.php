@@ -61,19 +61,32 @@
                                 </td>
 
                                 
-                                  <td>
-                                  <span class="menu-icon">
-                                        <a href="{{route('admin.roomtype.view',['id' => $room->room_type_id])}}" title="View" class="text-primary"><i class="mdi mdi-eye"></i></a>
-                                    </span>&nbsp;&nbsp;&nbsp;
+                                 <td>
+                                    @can('roomtype-view')
+                                        <span class="menu-icon">
+                                            <a href="{{ route('admin.roomtype.view', ['id' => $room->room_type_id]) }}" 
+                                               title="View" 
+                                               class="text-primary">
+                                                <i class="mdi mdi-eye"></i>
+                                            </a>
+                                        </span>
+                                    @endcan
 
-                                    <span class="menu-icon">
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#uploadImagesModal" data-room-id="{{ $room->room_type_id }}" data-description="{{ $room->description }}" title="Add Images" class="text-success openImageUploadModal">
-                                            <i class="mdi mdi-pen"></i>
-                                        </a>
-                                    </span>
-
+                                    @can('roomtype-upload-images')
+                                        <span class="menu-icon">
+                                            <a href="javascript:void(0);" 
+                                               data-bs-toggle="modal" 
+                                               data-bs-target="#uploadImagesModal" 
+                                               data-room-id="{{ $room->room_type_id }}" 
+                                               data-description="{{ $room->description }}" 
+                                               title="Add Images" 
+                                               class="text-success openImageUploadModal">
+                                                <i class="mdi mdi-pen"></i>
+                                            </a>
+                                        </span>
+                                    @endcan
                                 </td>
-                                
+
                             </tr>
                             @empty
                             <tr>

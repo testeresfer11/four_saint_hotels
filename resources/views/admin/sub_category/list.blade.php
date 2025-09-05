@@ -19,9 +19,11 @@
 
         <div class="d-flex justify-content-between flex-column flex-md-row px-3 py-3 align-items-md-center align-items-start">
           <h4 class="card-title m-0">Sub Feature Management</h4>
-          <a href="{{ route('admin.sub_category.add') }}" class="btn btn-primary btn-md">
-            + Add Sub Feature
-          </a>
+          @can('sub_category-add')
+            <a href="{{ route('admin.sub_category.add') }}" class="btn btn-primary btn-md">
+                + Add Sub Feature
+            </a>
+        @endcan
         </div>
 
         <div class="table-responsive">
@@ -52,15 +54,22 @@
                 
                 <td>{{ $subCategory->created_at->format('d M, Y') }}</td>
                 <td>
-                  <a href="{{ route('admin.sub_category.edit', $subCategory->id) }}" class="text-success me-2">
-                    <i class="mdi mdi-pencil"></i>
-                  </a>
-                  <a href="javascript:void(0);" 
-                    class="text-danger deleteSubCategory" 
-                    data-id="{{ $subCategory->id }}">
-                    <i class="mdi mdi-delete"></i>
-                  </a>
-                </td>
+                  @can('sub_category-edit')
+                      <a href="{{ route('admin.sub_category.edit', $subCategory->id) }}" 
+                         class="text-success me-2">
+                          <i class="mdi mdi-pencil"></i>
+                      </a>
+                  @endcan
+
+                  @can('sub_category-delete')
+                      <a href="javascript:void(0);" 
+                         class="text-danger deleteSubCategory" 
+                         data-id="{{ $subCategory->id }}">
+                          <i class="mdi mdi-delete"></i>
+                      </a>
+                  @endcan
+              </td>
+
               </tr>
               @empty
               <tr>
@@ -90,7 +99,7 @@
 
     Swal.fire({
       title: "Are you sure?",
-      text: "You want to delete this sub-category?",
+      text: "You want to delete this sub-feature?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#B46326",
@@ -107,7 +116,7 @@
           success: function(response) {
             if (response.status === "success") {
               $(`tr[data-id="${id}"]`).remove();
-              toastr.success(response.message || "Sub-category deleted successfully.");
+              toastr.success(response.message || "Sub-feature deleted successfully.");
             } else {
               toastr.error(response.message || "Something went wrong.");
             }

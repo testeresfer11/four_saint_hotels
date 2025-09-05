@@ -125,16 +125,19 @@ if(!function_exists('convertDate')){
  * createdDate  : 04-06-2024
  * purpose      : To get the userImage by id
 */
-if(!function_exists('userImageById')){
-    function userImageById($id){
-       $user =  User::find($id);
+if (!function_exists('userImageById')) {
+    function userImageById($id)
+    {
+        $user = User::find($id);
 
-       if(isset($user->userDetail) && !is_null($user->userDetail->profile) && file_exists(public_path('storage/images/' .$user->userDetail->profile)))
-            return  asset('storage/images/' . $user->userDetail->profile) ;
-        else
-            return asset('admin/images/faces/face15.jpg');
+        if (isset($user->userDetail) && !is_null($user->userDetail->profile)) {
+            return $user->userDetail->profile; // Already a full URL
+        } else {
+            return asset('admin/images/faces/face15.jpg'); // Default image
+        }
     }
 }
+
 /** end methd userImageById */
 
 /*

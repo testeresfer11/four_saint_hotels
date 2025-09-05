@@ -16,46 +16,55 @@ class TransactionController extends Controller
      * createdDate  : 14-06-2024
      * purpose      : Get the list for all transactions
      */
-    public function getList(Request $request)
-    {
-        try {
-            $fromDate = null;
-            $toDate = null;
-            if ($request->filled('from_date') && $request->filled('to_date')) {
-                $fromDate = Carbon::parse($request->from_date);
-                $toDate = Carbon::parse($request->to_date);
-                if ($fromDate->gt($toDate)) {
-                    $temp = $fromDate;
-                    $fromDate = $toDate;
-                    $toDate = $temp;
-                }
-            }
+   public function getList(Request $request)
+{
+    try {
+        $fromDate = null;
+        $toDate = null;
 
-            $transactions = Payment::when($fromDate && $toDate, function ($query) use ($fromDate, $toDate) {
-                $query->whereBetween('created_at', [$fromDate, $toDate]);
-            })->when($request->filled('search_keyword'), function ($query) use ($request) {
+        // Handle date filter
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate   = Carbon::parse($request->to_date)->endOfDay();
+
+            // Swap if from_date is greater than to_date
+            if ($fromDate->gt($toDate)) {
+                [$fromDate, $toDate] = [$toDate, $fromDate];
+            }
+        }
+
+        // Fetch transactions with filters
+        $transactions = Payment::when($fromDate && $toDate, function ($query) use ($fromDate, $toDate) {
+                $query->whereBetween('payment_date', [$fromDate, $toDate]);
+            })
+            ->when($request->filled('search_keyword'), function ($query) use ($request) {
                 $keyword = $request->search_keyword;
+
                 $query->where(function ($query) use ($keyword) {
                     $query->where('payment_id', 'like', "%$keyword%")
                         ->orWhere('amount', 'like', "%$keyword%")
                         ->orWhere('payment_type', 'like', "%$keyword%")
                         ->orWhereHas('user', function ($query) use ($keyword) {
-                            $query->where(function ($query) use ($keyword) {
-                                $query->where('first_name', 'like', "%$keyword%")
-                                    ->orWhere('last_name', 'like', "%$keyword%")
-                                    ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$keyword%"]);
-                            });
+                            $query->where('first_name', 'like', "%$keyword%")
+                                ->orWhere('last_name', 'like', "%$keyword%")
+                                ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$keyword%"]);
                         })
                         ->orWhereHas('order', function ($query) use ($keyword) {
                             $query->where('uuid', 'like', "%$keyword%");
                         });
                 });
-            })->orderBy('id', 'desc')->paginate(10);
-            return view("admin.transaction.list", compact("transactions"));
-        } catch (\Exception $e) {
-            return redirect()->back()->with("error", $e->getMessage());
-        }
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+
+        // Return to view
+        return view("admin.transaction.list", compact("transactions"));
+
+    } catch (\Exception $e) {
+        return redirect()->back()->with("error", $e->getMessage());
     }
+}
+
     /**End method getList**/
 
     /**

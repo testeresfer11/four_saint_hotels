@@ -19210,7 +19210,10 @@ body.avgrund-active {
     .form-group {
       position: relative;
     }
-    
+    .verify-second{
+      height: 100vh;
+      background-color: #ffeddf !important;
+    }
     label.error {
       color: #ff0000;
       /* position: relative; */

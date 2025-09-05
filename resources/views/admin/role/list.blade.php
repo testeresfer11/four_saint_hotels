@@ -19,9 +19,15 @@
           <div class="d-flex px-3 py-3 justify-content-between align-items-center">
             <h4 class="card-title m-0">Role Management</h4>
 
-              <a href="{{route('admin.role.add')}}"><button type="button" class="btn btn-primary btn-md">
-                <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
-                <span class="menu-text"> Add Role</span></button></a>
+             @can('role-add')
+              <a href="{{ route('admin.role.add') }}">
+                  <button type="button" class="btn btn-primary btn-md">
+                      <span class="menu-icon"><i class="fa-solid fa-plus"></i></span>
+                      <span class="menu-text"> Add Role</span>
+                  </button>
+              </a>
+          @endcan
+
           </div>
           <div class="table-responsive">
             <table class="table table-striped">
@@ -38,13 +44,28 @@
                     <td>{{++$key}}</td>
                     <td> {{ucfirst($role->name)}} </td>
                     <td> 
-                      <span class="menu-icon">
-                        <a href="{{route('admin.role.edit',['id' => $role->id])}}" title="Edit" class="text-success"><i class="mdi mdi-pencil"></i></a>
-                      </span>&nbsp;&nbsp;
-                      <span class="menu-icon">
-                        <a href="#" title="Delete" class="text-danger deleteRole" data-id="{{$role->id}}"><i class="mdi mdi-delete"></i></a>
-                      </span> 
+                        @can('role-edit')
+                            <span class="menu-icon">
+                                <a href="{{ route('admin.role.edit',['id' => $role->id]) }}" 
+                                   title="Edit" 
+                                   class="text-success">
+                                    <i class="mdi mdi-pencil"></i>
+                                </a>
+                            </span>
+                        @endcan
+
+                        @can('role-delete')
+                            <span class="menu-icon">
+                                <a href="javascript:void(0);" 
+                                   title="Delete" 
+                                   class="text-danger deleteRole" 
+                                   data-id="{{ $role->id }}">
+                                    <i class="mdi mdi-delete"></i>
+                                </a>
+                            </span>
+                        @endcan
                     </td>
+
                   </tr>
                 @empty
                     <tr>

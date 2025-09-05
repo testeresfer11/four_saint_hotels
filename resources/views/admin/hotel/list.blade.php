@@ -64,15 +64,18 @@
                                 <td>{{ $hotel->email }}</td>
                                 <td>{{ $hotel->phone }}</td>
                                 <td>
+                                    @can('hotel-view')
                                     <span class="menu-icon">
                                         <a href="{{route('admin.hotel.view',['id' => $hotel->hotel_id])}}" title="View" class="text-primary"><i class="mdi mdi-eye"></i></a>
                                     </span>&nbsp;&nbsp;&nbsp;
-
+                                      @endcan
+                                        @can('hotel-upload-images')
                                     <span class="menu-icon">
                                         <a href="#" data-bs-toggle="modal" data-bs-target="#uploadImagesModal" data-hotel-id="{{ $hotel->id }}" data-rate-per-night ="{{$hotel->rate_per_night }}" data-description="{{ $hotel->description }}" title="Add Images" class="text-success openImageUploadModal">
                                             <i class="mdi mdi-pen"></i>
                                         </a>
                                     </span>
+                                    @endcan
 
                                 </td>
                             </tr>

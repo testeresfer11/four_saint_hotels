@@ -81,60 +81,74 @@
         </thead>
         <tbody>
         @forelse($bookings as $booking)
-            <tr>
-                <td>{{ $booking->reservation_code }}</td>
-                <td>
-                    {{ $booking->room_type_name }}<br>
-                    <small>{{ $booking->room_name }}</small>
-                </td>
-                <td>
-                    @foreach($booking->bookingGuests as $guest)
-                        {{ $guest->first_name }} {{ $guest->last_name }}<br>
-                        <small>{{ $guest->email }}</small><br>
-                    @endforeach
-                </td>
-                <td>
-                    @foreach($booking->bookingPrices as $price)
-                        Date: {{ $price->date }}<br>
-                        Amount: {{ $price->amount }} {{ $booking->currency }}<br>
-                        VAT: {{ $price->vat }}<br><br>
-                    @endforeach
-                </td>
-                <td>
-                    @forelse($booking->bookingServices as $service)
-                        {{ $service->service_name }} - £{{ $service->total_price }}<br>
-                    @empty
-                        <em>No Services</em>
-                    @endforelse
-                </td>
-                <td>
-                    @if($booking->customer)
-                        {{ $booking->customer->first_name }} {{ $booking->customer->last_name }}<br>
-                        <small>{{ $booking->customer->email }}</small><br>
-                        <small>{{ $booking->customer->phone_number }}</small>
-                    @else
-                        <em>No Customer</em>
-                    @endif
-                </td>
-                <td>{{ $booking->status }}</td>
-                <td>{{ $booking->checkin_date }}</td>
-                <td>{{ $booking->checkout_date }}</td>
-                 <td> 
-                <span class="menu-icon">
-                    @can('booking-view')
-                        <a href="{{route('admin.booking.view',['id' => $booking->id])}}" title="View" class="text-primary"><i class="mdi mdi-eye"></i></a>
-                      </span>&nbsp;&nbsp;&nbsp;
-                      @endcan
-                       {{--<a href="{{ route('admin.booking.edit', ['id' => $booking->id]) }}" ><i class="mdi mdi-pencil"></i></a>&nbsp;&nbsp;&nbsp;--}}
-                        @can('booking-cancel')
-                   <a href="#" title="Cancel Booking" class="text-danger cancelBooking" data-id="{{ $booking->reservation_code }}" data-hotel="{{ $booking->hotel_id }}"><i class="mdi mdi-cancel"></i></a>
-                   @endcan
+          <tr>
+    <td>{{ $booking->reservation_code ?? 'N/A' }}</td>
 
-                </td>
+    <td>
+        {{ $booking->room_type_name ?? 'N/A' }}<br>
+        <small>{{ $booking->room_name ?? 'N/A' }}</small>
+    </td>
 
-               
+    <td>
+        @forelse($booking->bookingGuests as $guest)
+            {{ $guest->first_name ?? 'N/A' }} {{ $guest->last_name ?? 'N/A' }}<br>
+            <small>{{ $guest->email ?? 'N/A' }}</small><br>
+        @empty
+            <em>N/A</em>
+        @endforelse
+    </td>
 
-            </tr>
+    <td>
+        @forelse($booking->bookingPrices as $price)
+            Date: {{ $price->date ?? 'N/A' }}<br>
+            Amount: {{ $price->amount ?? 'N/A' }} {{ $booking->currency ?? '' }}<br>
+            VAT: {{ $price->vat ?? 'N/A' }}<br><br>
+        @empty
+            <em>N/A</em>
+        @endforelse
+    </td>
+
+    <td>
+        @forelse($booking->bookingServices as $service)
+            {{ $service->service_name ?? 'N/A' }} - £{{ $service->total_price ?? 'N/A' }}<br>
+        @empty
+            <em>N/A</em>
+        @endforelse
+    </td>
+
+    <td>
+        @if($booking->customer)
+            {{ $booking->customer->first_name ?? 'N/A' }} {{ $booking->customer->last_name ?? 'N/A' }}<br>
+            <small>{{ $booking->customer->email ?? 'N/A' }}</small><br>
+            <small>{{ $booking->customer->phone_number ?? 'N/A' }}</small>
+        @else
+            <em>N/A</em>
+        @endif
+    </td>
+
+    <td>{{ $booking->status ?? 'N/A' }}</td>
+    <td>{{ $booking->checkin_date ?? 'N/A' }}</td>
+    <td>{{ $booking->checkout_date ?? 'N/A' }}</td>
+
+    <td>
+        <span class="menu-icon">
+            @can('booking-view')
+                <a href="{{ route('admin.booking.view',['id' => $booking->id]) }}" title="View" class="text-primary">
+                    <i class="mdi mdi-eye"></i>
+                </a>
+            @endcan
+        </span>&nbsp;&nbsp;&nbsp;
+
+        @can('booking-cancel')
+            <a href="#" title="Cancel Booking" class="text-danger cancelBooking"
+               data-id="{{ $booking->reservation_code ?? '' }}" 
+               data-hotel="{{ $booking->hotel_id ?? '' }}">
+                <i class="mdi mdi-cancel"></i>
+            </a>
+        @endcan
+    </td>
+</tr>
+
         @empty
             <tr>
                 <td colspan="9" class="text-center">No bookings found.</td>

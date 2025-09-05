@@ -54,10 +54,13 @@
                     <td>{{$user->email}}</td>
                     
                     
-                    <td> <div class="toggle-user dark-toggle">
+                    <td> 
+                       @can('user-change-status')
+                      <div class="toggle-user dark-toggle">
                       <input type="checkbox" name="is_active" data-id="{{$user->id}}" class="switch" @if ($user->status == 1) checked @endif data-value="{{$user->status}}">
-
-                    </div> </td>
+                       @endcan
+                    </div>
+                     </td>
                     <td> 
                    @can('user-view')
                       <span class="menu-icon">

@@ -166,29 +166,34 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ09dtOd8YHF_ZCbfbaaMHJKiOr26noY8&libraries=places" ></script>
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/js/intlTelInput.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const input = document.querySelector("#phone");
-        const countryShortCode = document.querySelector("input[name='country_short_code']").value;
-        const iti = window.intlTelInput(input, {
-            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/js/utils.js",
-            initialCountry: countryShortCode,
-            formatOnDisplay: false,  
-            nationalMode: false,    
-        });
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.querySelector("#phone");
 
-        
-        document.querySelector("#phone").addEventListener("change", function(event) {
-            const countryData = iti.getSelectedCountryData();
-            
-            let phoneNumber = iti.getNumber("e164");
-            phoneNumber = phoneNumber.replace(/\D/g, '');
-           
-            document.querySelector("input[name='country_code']").value = countryData.dialCode;
-            document.querySelector("input[name='country_short_code']").value = countryData.iso2;
+    // Get initial country code from hidden input or default
+    const initialCountry = document.querySelector("input[name='country_short_code']").value || "us";
 
-            input.value = phoneNumber;
-        });
+    const iti = window.intlTelInput(input, {
+        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/js/utils.js",
+        initialCountry: initialCountry,
+        formatOnDisplay: false,
+        nationalMode: false,
     });
+
+    // On load, set hidden fields if there is a prefilled number
+    if (input.value) {
+        const countryData = iti.getSelectedCountryData();
+        document.querySelector("input[name='country_code']").value = countryData.dialCode;
+        document.querySelector("input[name='country_short_code']").value = countryData.iso2;
+    }
+
+    // Update hidden fields whenever the input loses focus
+    input.addEventListener("blur", function() {
+        const countryData = iti.getSelectedCountryData();
+        document.querySelector("input[name='country_code']").value = countryData.dialCode;
+        document.querySelector("input[name='country_short_code']").value = countryData.iso2;
+    });
+});
+
 </script>
 
 <script>

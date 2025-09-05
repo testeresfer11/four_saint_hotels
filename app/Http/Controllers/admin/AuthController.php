@@ -79,10 +79,10 @@ class AuthController extends Controller
                         // Logout and trigger 2FA
                         Auth::logout();
 
-                        $otp = rand(100000, 999999);
+                        $code = rand(100000, 999999);
 
                         $user->update([
-                            'two_factor_code' => $otp,
+                            'two_factor_code' => $code,
                             'two_factor_expires_at' => now()->addMinutes(10)
                         ]);
 
@@ -91,7 +91,7 @@ class AuthController extends Controller
 
                         if ($template) {
                             $placeholders = ['{{$name}}', '{{$companyName}}', '{{$code}}', '{{YEAR}}'];
-                            $replacements = ['Admin', config('app.name'), $otp, date(format: 'Y')];
+                            $replacements = ['Admin', config('app.name'), $code, date(format: 'Y')];
 
                             $formattedTemplate = str_replace($placeholders, $replacements, $template->template);
 
@@ -108,8 +108,9 @@ class AuthController extends Controller
                         }
 
                         session(['2fa_user_id' => $user->id]);
+                        session(['email' => $user->email]);
 
-                        return redirect()->route('verify')->with('message', 'OTP sent to your email.');
+                        return redirect()->route('admin.2fa.verify')->with('message', 'OTP sent to your email.')->with('email', $request->email);
                     }
 
                     return redirect()->route('admin.dashboard')->with('success', 'Login Successfully!');
@@ -349,7 +350,11 @@ class AuthController extends Controller
                     if ($ImgName) {
                         deleteFile($ImgName, 'images');
                     }
-                    $ImgName = uploadFile($request->file('profile'), 'images');
+
+                    $fileName = uploadFile($request->file('profile'), 'images');
+
+                    // Save full URL instead of just file name
+                    $ImgName = url('storage/images/' . $fileName);
                 }
 
 

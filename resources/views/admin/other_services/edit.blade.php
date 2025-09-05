@@ -35,10 +35,13 @@
                     <label for="hotel_room_id">Select Hotel Room</label>
                    <select class="form-control @error('hotel_room_id') is-invalid @enderror" name="hotel_room_id[]" id="hotel_room_id" multiple>
                     @foreach($hotel_rooms as $room_type)
-                        <option value="{{ $room_type->room_type_id }}" {{ $selectedHotelRoomId == $room_type->room_type_id ? 'selected' : '' }}>
-                                {{ $room_type->room_name }}
-                            </option>
+                        <option value="{{ $room_type->room_type_id }}"
+                            {{ (old('room_type') == $room_type->room_type_id || (isset($selectedRoomType) && $selectedRoomType == $room_type->room_type_id)) ? 'selected' : '' }}>
+                            {{ $room_type->room_name }}
+                        </option>
                     @endforeach
+                </select>
+
                 </select>
 
                     @error('hotel_room_id')

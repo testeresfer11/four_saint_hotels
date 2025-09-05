@@ -81,6 +81,7 @@ class UserController extends Controller
                 $roles = Role::whereNotIn('name', [config('constants.ROLES.ADMIN'), config('constants.ROLES.USER')])->paginate(10);
                 return view("admin.user.add", compact("roles"));
             } elseif ($request->isMethod('post')) {
+
                 $validator = Validator::make($request->all(), [
                     'full_name'    => 'required|string|max:255',
                   

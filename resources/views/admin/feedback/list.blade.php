@@ -54,14 +54,16 @@
 
                     </div> </td>
                     <td> 
-                     
+                     @can('feedback-view')
                       <span class="menu-icon">
                         <a href="{{route('admin.feedback.view',['id' => $feedback->id])}}" title="View" class="text-primary"><i class="mdi mdi-eye"></i></a>
                       </span>&nbsp;&nbsp;&nbsp;
-                      
+                      @endcan
+                       @can('feedback-delete')
                       <span class="menu-icon">
                         <a href="#" title="Delete" class="text-danger deleteUser" data-id="{{$feedback->id}}"><i class="mdi mdi-delete"></i></a>
                       </span> 
+                      @endcan
                     </td>
                   </tr>
                 @empty

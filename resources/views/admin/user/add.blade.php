@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/css/intlTelInput.css">
 @endsection
 @section('title', 'Add User')
+
 @section('breadcrum')
 <div class="page-header">
     <h3 class="page-title"> Users</h3>
@@ -85,7 +86,7 @@
                         <label for="phone">Phone Number</label>
                         <input type="tel" class="form-control @error('phone_number') is-invalid @enderror" id="phone" placeholder="Phone Number" name="phone_number" value="">
                         <input type="hidden" name="country_code" value="">
-                        <input type="hidden" name="country_short_code" value="us">
+                        <input type="hidden" name="country_short_code" value="">
                         @error('phone_number')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -122,12 +123,38 @@
                 <div class="row">
                     <div class="col-6">
                         <label for="password">Password</label>
-                        <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" placeholder="Password" name = "password">
+                        <div class="password-container">
+
+                          <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" placeholder="Password" name="password">
+                       <span class="position-absolute" 
+                              style="top: 30px; right: 36px; cursor: pointer;" 
+                              onclick="togglePassword()">
+                            <i id="eyeIcon" class="fas fa-eye"></i>
+                        </span>
+                        </div>
+
+
                         @error('password')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
+
+                        <script>
+                    function togglePassword() {
+                        const passwordInput = document.getElementById('password');
+                        const eyeIcon = document.getElementById('eyeIcon');
+                        if (passwordInput.type === 'password') {
+                            passwordInput.type = 'text';
+                            eyeIcon.classList.remove('fa-eye');
+                            eyeIcon.classList.add('fa-eye-slash');
+                        } else {
+                            passwordInput.type = 'password';
+                            eyeIcon.classList.remove('fa-eye-slash');
+                            eyeIcon.classList.add('fa-eye');
+                        }
+                    }
+                    </script>
                     </div>
 
                     <div class="col-6">
@@ -160,7 +187,7 @@
                 </div>
               </div>
               
-<div class="text-end">
+                    <div class="text-end">
               <button type="submit" class="btn btn-primary mr-2">Add</button>
               {{-- <button class="btn btn-dark">Cancel</button> --}}
             </div>
@@ -175,31 +202,54 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ09dtOd8YHF_ZCbfbaaMHJKiOr26noY8&libraries=places" ></script>
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/js/intlTelInput.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const input = document.querySelector("#phone");
-        const iti = window.intlTelInput(input, {
-            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/js/utils.js",
-            initialCountry: "us",
-            formatOnDisplay: false,  
-            nationalMode: false,    
-        });
+  $(document).ready(function () {
+  
+     //  Toggle  Password Start
+     $("#togglePassword").removeClass("fa fa-eye").addClass("fa fa-eye-slash");
+     $("#togglePassword").click(function() {
+        const passwordInput = $("#password-field");
+        const type = passwordInput.attr("type");
 
-        
-        document.querySelector("#phone").addEventListener("change", function(event) {
-            // Get the selected country data
-            const countryData = iti.getSelectedCountryData();
-            
-            // Get the raw phone number
-            let phoneNumber = iti.getNumber("e164");
-            phoneNumber = phoneNumber.replace(/\D/g, '');
-           
-            // Set hidden fields with country code and short code
-            document.querySelector("input[name='country_code']").value = countryData.dialCode;
-            document.querySelector("input[name='country_short_code']").value = countryData.iso2;
-
-            input.value = phoneNumber;
-        });
+        if (type === "password") {
+            passwordInput.attr("type", "text");
+            $("#togglePassword").removeClass("fa fa-eye-slash").addClass("fa fa-eye");
+        } else {
+            passwordInput.attr("type", "password");
+            $("#togglePassword").removeClass("fa fa-eye").addClass("fa fa-eye-slash");
+        }
     });
+    //  Toggle  Password End
+    
+  });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const input = document.querySelector("#phone");
+    const iti = window.intlTelInput(input, {
+        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.6.1/build/js/utils.js",
+        initialCountry: "us",
+        formatOnDisplay: false,
+        nationalMode: false,
+    });
+
+    // Update hidden fields on input change or blur
+    input.addEventListener("blur", function() {
+        const countryData = iti.getSelectedCountryData();
+
+        // Get full international number in E.164 format
+        let phoneNumber = iti.getNumber(); // e.g., +1234567890
+
+        // Optional: remove non-digit characters if needed
+        let rawNumber = phoneNumber.replace(/\D/g, '');
+
+        // Populate hidden fields
+        document.querySelector("input[name='country_code']").value = countryData.dialCode;
+        document.querySelector("input[name='country_short_code']").value = countryData.iso2;
+
+        // Optional: update input with raw number
+        // input.value = rawNumber;
+    });
+});
+
 </script>
 
 <script>
@@ -230,18 +280,13 @@
         e.preventDefault();
     }).validate({
         rules: {
-            first_name: {
+            full_name: {
                 required: true,
                 noSpace: true,
                 minlength: 3,
                 maxlength:25,
             },
-            last_name: {
-                required: true,
-                noSpace: true,
-                minlength: 3,
-                maxlength:25
-            },
+          
             email: {
                 required: true,
                 email: true,
@@ -261,15 +306,11 @@
         },
         messages: {
             first_name: {
-                required: "First name is required",
-                minlength: "First name must consist of at least 3 characters",
-                maxlength: "First name must not contains more then 25 characters."
+                required: "Full name is required",
+                minlength: "Full name must consist of at least 3 characters",
+                maxlength: "Full name must not contains more then 25 characters."
             },
-            last_name: {
-                required: "Last name is required",
-                minlength: "Last name must consist of at least 3 characters",
-                maxlength: "Last name must not contains more then 25 characters."
-            },
+           
             email: {
                 required: 'Email is required.',
                 email: "Please enter a valid email address"

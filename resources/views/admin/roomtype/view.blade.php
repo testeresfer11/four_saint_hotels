@@ -2,11 +2,11 @@
 @section('title', 'View Hotel')
 @section('breadcrum')
 <div class="page-header">
-    <h3 class="page-title">Hotel</h3>
+    <h3 class="page-title">Room Type</h3>
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('admin.hotel.list') }}">Hotel</a></li>
-            <li class="breadcrumb-item active" aria-current="page">View Hotel</li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.hotel.list') }}">Room Type</a></li>
+            <li class="breadcrumb-item active" aria-current="page">View Room Type</li>
         </ol>
     </nav>
 </div>
@@ -14,7 +14,7 @@
 @section('content')
 <div>
     <hr>
-    <h4 class="mt-4">Hotel Details</h4>
+    <h4 class="mt-4">Room Type Details</h4>
     <div class="card mt-3">
         <div class="card-body">
             <h6><strong>Hotel Name:</strong> {{ $hotel->hotel->name }}</h6>

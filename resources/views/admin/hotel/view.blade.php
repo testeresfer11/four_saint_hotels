@@ -28,6 +28,7 @@
             <h6><strong>Email:</strong> {{ $hotel->email }}</h6>
             <h6><strong>Currency:</strong> {{ $hotel->currency }}</h6>
             <h6><strong>Room Rate per Night:</strong> {{ $hotel->rate_per_night }}</h6>
+            <h6><strong>Description:</strong> {{ $hotel->description }}</h6>
         </div>
         @if($hotel->hotel_images)
         <h4 class="mt-4">Hotel Images</h4>

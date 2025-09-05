@@ -98,13 +98,13 @@ class ChatController extends Controller
         ];
 
 
-       $y= $this->sendPushNotification(
+       /*$y= $this->sendPushNotification(
             $notificationData['title'],
             $notificationData['body'],
             $notificationData['type'],
             $notificationData['notification_type'],
             $request->receiver_id
-        );
+        );*/
 
 
 
@@ -116,7 +116,7 @@ class ChatController extends Controller
                 'message' => $message,
 
 
-                'jshfs'   => $y,
+               /* 'jshfs'   => $y,*/
             ],
         ]);
 

@@ -65,14 +65,23 @@
                                     <td>{{ $payment['booking']['reservation_code'] ?? 'N/A' }}</td>
                                     <td>{{ $payment['amount'] }}</td>
                                     <td>{{ $payment['currency'] }}</td>
-                                    <td>{{ ucfirst($payment['payment_type']) }}</td>
+                                   <td>{{ $payment['payment_type'] ? ucfirst($payment['payment_type']) : 'Pending' }}</td>
+
                                     <td>{{ \Carbon\Carbon::parse($payment['payment_date'])->format('d M Y, H:i') }}</td>
-                                    <td>{{ $payment['payment_status'] }}</td>
+                                    <td>{{ $payment['payment_status'] ?? $payment['status']  }}</td>
                                     <td>{{ $payment['booking']['room_name'] ?? 'N/A' }}</td>
                                     <td> 
                                     <span class="menu-icon">
-                                            <a href="{{route('admin.booking.view',['id' => $payment['booking']['id']])}}" title="View" class="text-primary"><i class="mdi mdi-eye"></i></a>
-                                          </span>&nbsp;&nbsp;&nbsp;
+                                           @can('booking-view')
+                                            <span class="menu-icon">
+                                                <a href="{{ route('admin.booking.view', ['id' => $payment['booking']['id']]) }}" 
+                                                   title="View" 
+                                                   class="text-primary">
+                                                    <i class="mdi mdi-eye"></i>
+                                                </a>
+                                            </span>
+                                        @endcan
+
                                     </td>
                                 </tr>
                             @empty

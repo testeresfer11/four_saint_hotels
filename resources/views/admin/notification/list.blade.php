@@ -57,10 +57,13 @@
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="col-lg-1 col-2">
+                                        @can('notification-delete')
                                         <button class="btn del-btn deleteNotification" data-id="{{ $notification->id }}">
                                             <img src="{{ asset('images/delete.png') }}" alt="" class="img-fluid">
                                         </button>
+                                        @endcan
                                     </div>
                                 </div>
                             </div>

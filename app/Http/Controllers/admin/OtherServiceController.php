@@ -116,7 +116,7 @@ public function edit(Request $request, $id)
 
             $category->save();
 
-            // 🔁 Remove old links & add new ones in the pivot table
+            //  Remove old links & add new ones in the pivot table
             HotelRoomOtherServiceCategory::where('other_service_category_id', $category->id)->delete();
 
             foreach ($request->hotel_room_id as $roomTypeId) {
@@ -134,7 +134,7 @@ public function edit(Request $request, $id)
                              ->with('success', 'Other service updated successfully.');
         }
 
-        $hotel_rooms = HotelRoom::all();
+         $hotel_rooms = HotelRoomType::all();
         $selectedRoomIds = HotelRoomOtherServiceCategory::where('other_service_category_id', $category->id)
                                                         ->pluck('hotel_room_id')
                                                         ->toArray();

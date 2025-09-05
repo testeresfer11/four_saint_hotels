@@ -110,7 +110,7 @@
             <div class="form-group">
               <label for="expiration_date">Expiration Date</label>
               <input type="date" class="form-control @error('expiry_date') is-invalid @enderror"
-                id="expiry_date" name="expiry_date" value="{{ old('expiry_date') }}">
+                id="expiry_date" name="expiry_date" value="{{ old('expiry_date') }}" min="{{ date('Y-m-d') }}">
               @error('expiration_date')
               <span class="invalid-feedback">{{ $message }}</span>
               @enderror

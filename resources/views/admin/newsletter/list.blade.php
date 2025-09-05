@@ -40,15 +40,18 @@
                     <td>{{++$key}}</td>
                     <td> {{Str::limit($data->email,50, '...')}} </td>
                      <td> 
+                      @can('newsletter-change-status')
                         <div class="toggle-user dark-toggle">
                         <input type="checkbox" name="is_active" data-id="{{$data->id}}" class="switch" @if ($data->status == 1) checked @endif data-value="{{$data->status}}">
                         </div> 
+                        @endcan
                     </td>
                     <td> 
-                     
+                       @can('newsletter-delete')
                       <span class="menu-icon">
                         <a href="#" title="Delete" class="text-danger deleteCategory" data-id="{{$data->id}}"><i class="mdi mdi-delete"></i></a>
                       </span> 
+                      @endcan
                     </td>
                   </tr>
                 @empty

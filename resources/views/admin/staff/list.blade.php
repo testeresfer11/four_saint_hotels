@@ -60,13 +60,15 @@
                     <td> {{$user->full_name}} </td>
                     <td>{{$user->email}}</td>
                     <td>{{$user->role ? ucfirst($user->role->name) : 'N/A'}}</td>
-                    @can('staff-edit')
+                  
                       <td> 
+                          @can('staff-change-status')
                         <div class="toggle-user dark-toggle">
                           <input type="checkbox" name="is_active" data-id="{{$user->id}}" class="switch" @if ($user->status == 1) checked @endif data-value="{{$user->status}}">
+                           @endcan
                         </div> 
                       </td>
-                    @endcan
+                   
                     @canany(['staff-edit','staff-view','staff-delete'])
                       <td> 
                         @can('staff-view')

@@ -55,15 +55,21 @@
                  <td>{{ $subCategory->total_left ??  $subCategory->total_quantity}}</td>
                 <td>{{ $subCategory->created_at->format('d M, Y') }}</td>
                 <td>
-                  <a href="{{ route('admin.other_services.edit', $subCategory->id) }}" class="text-success me-2">
-                    <i class="mdi mdi-pencil"></i>
-                  </a>
-                  <a href="javascript:void(0);" 
-                    class="text-danger deleteSubCategory" 
-                    data-id="{{ $subCategory->id }}">
-                    <i class="mdi mdi-delete"></i>
-                  </a>
-                </td>
+                  @can('other_services-edit')
+                      <a href="{{ route('admin.other_services.edit', $subCategory->id) }}" class="text-success me-2">
+                          <i class="mdi mdi-pencil"></i>
+                      </a>
+                  @endcan
+
+                  @can('other_services-delete')
+                      <a href="javascript:void(0);" 
+                          class="text-danger deleteSubCategory" 
+                          data-id="{{ $subCategory->id }}">
+                          <i class="mdi mdi-delete"></i>
+                      </a>
+                  @endcan
+              </td>
+
               </tr>
               @empty
               <tr>

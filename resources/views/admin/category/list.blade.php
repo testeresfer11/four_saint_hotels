@@ -42,8 +42,9 @@
               </tr>
             </thead>
             <tbody>
-              @foreach($categories as $category)
-              <tr>
+              @forelse($categories as $category)
+                 <tr data-id="{{ $category->id }}">
+
                 <td>
                   @if ($category->icon && file_exists(public_path('storage/' . $category->icon)))
                       <img src="{{ asset('storage/' . $category->icon) }}" alt="Category Icon" width="50" height="50">
@@ -61,11 +62,21 @@
                   <a href="{{ route('admin.category.edit', $category->id) }}" class="text-success" ><i class="mdi mdi-pencil"></i></a>
                   @endcan
                    @can('category-delete')
-                  <a href="{{ route('admin.category.delete', $category->id) }}" class="text-danger deleteUser"  onclick="return confirm('Are you sure?')"><i class="mdi mdi-delete"></i></a>
+                  <a href="javascript:void(0);" 
+                     data-url="{{ route('admin.category.delete', $category->id) }}" 
+                     data-id="{{ $category->id }}" 
+                     class="text-danger deleteCategory">
+                     <i class="mdi mdi-delete"></i>
+                  </a>
                   @endcan
                 </td>
               </tr>
-              @endforeach
+              @empty
+              <tr>
+                <td colspan="7" class="text-center">No Feature found.</td>
+              </tr>
+              @endforelse
+              
             </tbody>
           </table>
         </div>
@@ -81,6 +92,8 @@
 <script>
   $('.deleteCategory').on('click', function() {
     var category_id = $(this).data('id');
+    var url = $(this).data('url'); // Use route-generated URL
+
     Swal.fire({
       title: "Are you sure?",
       text: "You want to delete this Feature?",
@@ -90,13 +103,16 @@
       cancelButtonColor: '#fff',
       confirmButtonText: "Yes, delete it!",
       customClass: {
-            cancelButton: 'swal-cancel-custom'
-        }
+        cancelButton: 'swal-cancel-custom'
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         $.ajax({
-          url: "/admin/category/delete/" + category_id,
-          type: "GET",
+          url: url,
+          type: "GET", // <-- better than GET
+          data: {
+            _token: "{{ csrf_token() }}" // CSRF protection
+          },
           success: function(response) {
             if (response.status == "success") {
               if (response.count == 0) {
@@ -104,7 +120,7 @@
                 toastr.success(response.message);
               } else {
                 Swal.fire({
-                  title: "OOPs! Unable to delete. ",
+                  title: "OOPs! Unable to delete.",
                   text: response.message,
                   icon: "info",
                   confirmButtonColor: "#2ea57c",
@@ -119,7 +135,6 @@
       }
     });
   });
-
   $('.switch').on('click', function() {
     var status = $(this).data('value');
     var action = (status == 1) ? 0 : 1;

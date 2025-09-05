@@ -453,13 +453,21 @@ class AuthController extends Controller
 
    public function profile(Request $request)
     {
+
         try {
             if ($request->isMethod('get')) {
                $user = Auth::user()->load('userDetail');
                 if (!$user)
                     return $this->apiResponse('error', 404, 'Profile' . config('constants.ERROR.NOT_FOUND'));
-
+                  $userOne = min($user->id, 1);
+                    $userTwo = max($user->id, 1);
+                 $conversation = Conversation::firstOrCreate([
+                    'user_one_id' => $userOne,
+                    'user_two_id' => $userTwo,
+            ]);
+            $conversationId = $conversation->id;
                 $data =  $user;
+                $data['conversationId'] = $conversationId;
                 return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.FETCH_DONE'), $data);
             } elseif ($request->isMethod('post')) {
                 $validator = Validator::make($request->all(), [
@@ -486,6 +494,9 @@ class AuthController extends Controller
                     deleteFile($ImgName, 'images/');
                     $ImgName = uploadFile($request->file('profile'), 'images/');
                 }
+              
+
+           
 
                 UserDetail::updateOrCreate(['user_id' => authId()], [
                     'phone_number'      => $request->phone_number ? $request->phone_number : '',
@@ -496,12 +507,12 @@ class AuthController extends Controller
                     'country_short_code' => $request->country_short_code ? $request->country_short_code : '',
                     'profile'           => $ImgName,
                     'gender'            => $request->gender ? $request->gender : '',
+                     
                 ]);
 
 
-                $data =  new UserResource(User::find(authId()));
 
-                return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.UPDATE_DONE'), $data);
+                return $this->apiResponse('success', 200, 'Profile ' . config('constants.SUCCESS.UPDATE_DONE'), $data );
             }
         } catch (\Exception $e) {
             return $this->apiResponse('error', 400, $e->getMessage());

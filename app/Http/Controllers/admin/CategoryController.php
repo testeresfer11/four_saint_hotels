@@ -86,10 +86,25 @@ class CategoryController extends Controller
         return view('admin.category.edit', compact('category', 'hotels'));
     }
 
-    public function delete($id)
-    {
-        $category = ServiceCategory::findOrFail($id);
-        $category->delete();
-        return redirect()->route('admin.category.list')->with('success', 'Feature deleted successfully.');
+   public function delete($id)
+{
+    $category = ServiceCategory::find($id);
+
+    if (!$category) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Category not found'
+        ], 404);
     }
+
+    // Delete category
+    $category->delete();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Feature deleted successfully.',
+        'count' => 0 // or you can return remaining count if needed
+    ]);
+}
+
 }
